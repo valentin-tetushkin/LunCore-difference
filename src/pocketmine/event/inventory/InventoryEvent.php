@@ -1,5 +1,31 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
+/**
+ * Inventory related events
+ */
+
 namespace pocketmine\event\inventory;
 
 use pocketmine\event\Event;

@@ -1,20 +1,37 @@
 <?php
-/*
+
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
 
-use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item as ItemItem;
-use pocketmine\network\mcpe\protocol\{AddEntityPacket, EntityEventPacket};
+use pocketmine\item\ItemIds;
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 use pocketmine\math\Vector3;
 use pocketmine\level\Level;
@@ -88,19 +105,19 @@ class Zombie extends Monster {
 				if(mt_rand(0, 199) < (5 + 2 * $lootingL)){
 					switch(mt_rand(0, 3)){
 						case 0:
-							$drops[] = ItemItem::get(ItemItem::IRON_INGOT, 0, 1);
+							$drops[] = ItemItem::get(ItemIds::IRON_INGOT);
 							break;
 						case 1:
-							$drops[] = ItemItem::get(ItemItem::CARROT, 0, 1);
+							$drops[] = ItemItem::get(ItemIds::CARROT);
 							break;
 						case 2:
-							$drops[] = ItemItem::get(ItemItem::POTATO, 0, 1);
+							$drops[] = ItemItem::get(ItemIds::POTATO);
 							break;
 					}
 				}
 				$count = mt_rand(0, 2 + $lootingL);
 				if($count > 0){
-					$drops[] = ItemItem::get(ItemItem::ROTTEN_FLESH, 0, $count);
+					$drops[] = ItemItem::get(ItemIds::ROTTEN_FLESH, 0, $count);
 				}
 			}
 		}
@@ -108,18 +125,16 @@ class Zombie extends Monster {
 		return $drops;
 	}
 	
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->isClosed() or !$this->isAlive()){
-			return parent::onUpdate($currentTick);
+			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
 		
 		if($this->isMorph){
 			return true;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
         if ($this->getLevel() !== null) {
             $block = $this->getLevel()->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
         }else{
@@ -150,7 +165,7 @@ class Zombie extends Monster {
 								$this->farest = $viewer;
 							}
 							
-							if($this->farest != $viewer){
+							if($this->farest !== $viewer){
 								if($this->distance($viewer) < $this->distance($this->farest)){
 									$this->farest = $viewer;
 								}
@@ -245,8 +260,6 @@ class Zombie extends Monster {
 		if((($x != 0)or($y != 0)or($z != 0))and($this->motionVector != null)){
 			$this->setMotion(new Vector3($x, $y, $z));
 		}
-		
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

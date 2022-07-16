@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -32,7 +24,7 @@ class SetBlockCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.setblock.description",
-			"%commands.setblock.usage"
+			"/setblock <x> <y> <z> <ИмяБлока> [Урон]"
 		);
 		$this->setPermission("pocketmine.command.setblock");
 	}

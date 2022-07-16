@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -84,13 +76,12 @@ class SpawnpointCommand extends VanillaCommand {
 				$target->setSpawn($pos);
 
 				Command::broadcastCommandMessage($sender, new TranslationContainer("commands.spawnpoint.success", [$target->getName(), round($pos->x, 2), round($pos->y, 2), round($pos->z, 2)]));
-				return true;
-			}else{
+            }else{
 				$sender->sendMessage(TextFormat::RED . "Please provide a player!");
 
-				return true;
-			}
-		}
+            }
+            return true;
+        }
 
 		$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
 

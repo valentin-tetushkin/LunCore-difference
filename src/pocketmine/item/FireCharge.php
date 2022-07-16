@@ -1,30 +1,31 @@
 <?php
 
-/*
- *
- *  _____            _               _____           
- * / ____|          (_)             |  __ \          
- *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
- *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
- *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
- * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
- *                         __/ |                    
- *                        |___/                     
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author GenisysPro
- * @link https://github.com/GenisysPro/GenisysPro
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\item;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Fire;
 use pocketmine\block\Portal;
 use pocketmine\block\Solid;
@@ -50,13 +51,6 @@ class FireCharge extends Item {
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
-	}
-
-	/**
 	 * @param Level  $level
 	 * @param Player $player
 	 * @param Block  $block
@@ -69,33 +63,33 @@ class FireCharge extends Item {
 	 * @return bool
 	 */
 	public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz){
-		if($target->getId() === Block::OBSIDIAN and $player->getServer()->netherEnabled){
+		if($target->getId() === BlockIds::OBSIDIAN and $player->getServer()->netherEnabled){
 			$tx = $target->getX();
 			$ty = $target->getY();
 			$tz = $target->getZ();
 			$x_max = $tx;
 			$x_min = $tx;
-			for($x = $tx + 1; $level->getBlock($this->temporalVector->setComponents($x, $ty, $tz))->getId() == Block::OBSIDIAN; $x++){
+			for($x = $tx + 1; $level->getBlock($this->temporalVector->setComponents($x, $ty, $tz))->getId() == BlockIds::OBSIDIAN; $x++){
 				$x_max++;
 			}
-			for($x = $tx - 1; $level->getBlock($this->temporalVector->setComponents($x, $ty, $tz))->getId() == Block::OBSIDIAN; $x--){
+			for($x = $tx - 1; $level->getBlock($this->temporalVector->setComponents($x, $ty, $tz))->getId() == BlockIds::OBSIDIAN; $x--){
 				$x_min--;
 			}
 			$count_x = $x_max - $x_min + 1;
 			if($count_x >= 4 and $count_x <= 23){
 				$x_max_y = $ty;
 				$x_min_y = $ty;
-				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($x_max, $y, $tz))->getId() == Block::OBSIDIAN; $y++){
+				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($x_max, $y, $tz))->getId() == BlockIds::OBSIDIAN; $y++){
 					$x_max_y++;
 				}
-				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($x_min, $y, $tz))->getId() == Block::OBSIDIAN; $y++){
+				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($x_min, $y, $tz))->getId() == BlockIds::OBSIDIAN; $y++){
 					$x_min_y++;
 				}
 				$y_max = min($x_max_y, $x_min_y) - 1;
 				$count_y = $y_max - $ty + 2;
 				if($count_y >= 5 and $count_y <= 23){
 					$count_up = 0;
-					for($ux = $x_min; ($level->getBlock($this->temporalVector->setComponents($ux, $y_max, $tz))->getId() == Block::OBSIDIAN and $ux <= $x_max); $ux++){
+					for($ux = $x_min; ($level->getBlock($this->temporalVector->setComponents($ux, $y_max, $tz))->getId() == BlockIds::OBSIDIAN and $ux <= $x_max); $ux++){
 						$count_up++;
 					}
 					if($count_up == $count_x){
@@ -115,27 +109,27 @@ class FireCharge extends Item {
 
 			$z_max = $tz;
 			$z_min = $tz;
-			for($z = $tz + 1; $level->getBlock($this->temporalVector->setComponents($tx, $ty, $z))->getId() == Block::OBSIDIAN; $z++){
+			for($z = $tz + 1; $level->getBlock($this->temporalVector->setComponents($tx, $ty, $z))->getId() == BlockIds::OBSIDIAN; $z++){
 				$z_max++;
 			}
-			for($z = $tz - 1; $level->getBlock($this->temporalVector->setComponents($tx, $ty, $z))->getId() == Block::OBSIDIAN; $z--){
+			for($z = $tz - 1; $level->getBlock($this->temporalVector->setComponents($tx, $ty, $z))->getId() == BlockIds::OBSIDIAN; $z--){
 				$z_min--;
 			}
 			$count_z = $z_max - $z_min + 1;
 			if($count_z >= 4 and $count_z <= 23){
 				$z_max_y = $ty;
 				$z_min_y = $ty;
-				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($tx, $y, $z_max))->getId() == Block::OBSIDIAN; $y++){
+				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($tx, $y, $z_max))->getId() == BlockIds::OBSIDIAN; $y++){
 					$z_max_y++;
 				}
-				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($tx, $y, $z_min))->getId() == Block::OBSIDIAN; $y++){
+				for($y = $ty; $level->getBlock($this->temporalVector->setComponents($tx, $y, $z_min))->getId() == BlockIds::OBSIDIAN; $y++){
 					$z_min_y++;
 				}
 				$y_max = min($z_max_y, $z_min_y) - 1;
 				$count_y = $y_max - $ty + 2;
 				if($count_y >= 5 and $count_y <= 23){
 					$count_up = 0;
-					for($uz = $z_min; ($level->getBlock($this->temporalVector->setComponents($tx, $y_max, $uz))->getId() == Block::OBSIDIAN and $uz <= $z_max); $uz++){
+					for($uz = $z_min; ($level->getBlock($this->temporalVector->setComponents($tx, $y_max, $uz))->getId() == BlockIds::OBSIDIAN and $uz <= $z_max); $uz++){
 						$count_up++;
 					}
 					if($count_up == $count_z){

@@ -1,11 +1,31 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\level\generator\object;
 
 use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
 

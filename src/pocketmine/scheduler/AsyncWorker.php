@@ -1,21 +1,16 @@
 <?php
 
+
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
 */
 
@@ -30,10 +25,12 @@ use function ini_set;
 use function set_error_handler;
 
 class AsyncWorker extends Worker{
-	/** @var mixed[] */
+	/** @var array */
 	private static $store = [];
 
+	/** @var \ThreadedLogger */
 	private $logger;
+	/** @var int */
 	private $id;
 
 	/** @var int */
@@ -73,14 +70,10 @@ class AsyncWorker extends Worker{
 	}
 
 	/**
-	 * @param \Throwable $e
+	 * @return void
 	 */
 	public function handleException(\Throwable $e){
 		$this->logger->logException($e);
-	}
-
-	public function getAsyncWorkerId() : int{
-		return $this->id;
 	}
 
 	/**
@@ -90,26 +83,27 @@ class AsyncWorker extends Worker{
 		return "Asynchronous Worker #" . $this->id;
 	}
 
-	/**
-	 * Saves mixed data into the worker's thread-local object store. This can be used to store objects which you
-	 * want to use on this worker thread from multiple AsyncTasks.
-	 *
-	 * @param string $identifier
+	public function getAsyncWorkerId() : int{
+		return $this->id;
+	}
+
+    /**
+     * Сохраняет смешанные данные в локальном хранилище объектов рабочего потока. Это можно использовать для хранения объектов, которые вы
+     * хотите использовать в этом рабочем потоке из нескольких AsyncTasks.
+     *
 	 * @param mixed  $value
 	 */
 	public function saveToThreadStore(string $identifier, $value) : void{
 		self::$store[$identifier] = $value;
 	}
-	
-	/**
-	 * Retrieves mixed data from the worker's thread-local object store.
-	 *
-	 * Note that the thread-local object store could be cleared and your data might not exist, so your code should
-	 * account for the possibility that what you're trying to retrieve might not exist.
-	 *
-	 * Objects stored in this storage may ONLY be retrieved while the task is running.
-	 *
-	 * @param string $identifier
+
+    /**
+     * Извлекает смешанные данные из локального хранилища объектов рабочего потока.
+     *
+     * Обратите внимание, что локальное хранилище объектов потока может быть очищено, и ваши данные могут не существовать, поэтому ваш код должен
+     * учитывайте возможность того, что то, что вы пытаетесь получить, может не существовать.
+     *
+     * Объекты, хранящиеся в этом хранилище, могут быть извлечены ТОЛЬКО во время выполнения задачи.
 	 *
 	 * @return mixed
 	 */
@@ -117,11 +111,9 @@ class AsyncWorker extends Worker{
 		return self::$store[$identifier] ?? null;
 	}
 
-	/**
-	 * Removes previously-stored mixed data from the worker's thread-local object store.
-	 *
-	 * @param string $identifier
-	 */
+    /**
+     * Удаляет ранее сохраненные смешанные данные из локального хранилища объектов рабочего потока.
+     */
 	public function removeFromThreadStore(string $identifier) : void{
 		unset(self::$store[$identifier]);
 	}

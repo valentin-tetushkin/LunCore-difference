@@ -1,17 +1,44 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
+/**
+ * Implementation of MCPE-style chunks with subchunks with XZY ordering.
+ */
 declare(strict_types = 1);
 
 namespace pocketmine\level\format;
 
 use pocketmine\block\Block;
-use pocketmine\entity\{Entity, XPOrb};
+use pocketmine\entity\Entity;
+use pocketmine\entity\XPOrb;
 use pocketmine\level\format\io\ChunkException;
 use pocketmine\level\Level;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\Player;
-use pocketmine\tile\{Spawnable, Tile};
+use pocketmine\tile\Spawnable;
+use pocketmine\tile\Tile;
 use pocketmine\utils\BinaryStream;
 use function array_fill;
 use function array_filter;
@@ -602,7 +629,7 @@ class Chunk{
      * @param Entity $entity
      */
     public function addEntity(Entity $entity){
-    	if($entity->isClosed() and !($entity instanceof XPOrb)){
+    	if($entity->isClosed() and !($entity instanceof XPOrb)){ //TODO: очень тупой костыль
             throw new \InvalidArgumentException("Attempted to add a garbage closed Entity to a chunk");
         }
         $this->entities[$entity->getId()] = $entity;
@@ -742,7 +769,6 @@ class Chunk{
 
                     if(!(($entity = Entity::createEntity($nbt["id"], $level, $nbt)) instanceof Entity)){
                         $changed = true;
-                        continue;
                     }
                 }
             }
@@ -764,7 +790,6 @@ class Chunk{
 
                     if(Tile::createTile($nbt["id"], $level, $nbt) === null){
                         $changed = true;
-                        continue;
                     }
                 }
             }

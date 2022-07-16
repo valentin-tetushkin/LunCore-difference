@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\biome;
 
 use pocketmine\level\generator\noise\Simplex;
@@ -7,26 +29,23 @@ use pocketmine\utils\Random;
 
 class BiomeSelector {
 
-	/** @var Biome */
 	private $fallback;
 
-	/** @var Simplex */
 	private $temperature;
-	/** @var Simplex */
+
 	private $rainfall;
 
-	/** @var Biome[] */
 	private $biomes = [];
 
 	private $map = [];
 
 	private $lookup;
 
-	public function __construct(Random $random, callable $lookup, Biome $fallback){
+	public function __construct(Random $random, callable $lookup, Biome $fallback){ // Шум для биомов
 		$this->fallback = $fallback;
 		$this->lookup = $lookup;
-		$this->temperature = new Simplex($random, 2, 1 / 16, 1 / 512);
-		$this->rainfall = new Simplex($random, 2, 1 / 16, 1 / 512);
+		$this->temperature = new Simplex($random, 7, 1 / 64, 1 / 1612); // шум для биомов 1612
+		$this->rainfall = new Simplex($random, 7, 1 / 64, 1 / 1612); // шум для биомов 1612
 	}
 
 	public function recalculate(){
@@ -62,6 +81,6 @@ class BiomeSelector {
 		$rainfall = (int) ($this->getRainfall($x, $z) * 63);
 
 		$biomeId = $this->map[$temperature + ($rainfall << 6)];
-		return isset($this->biomes[$biomeId]) ? $this->biomes[$biomeId] : $this->fallback;
+		return $this->biomes[$biomeId] ?? $this->fallback;
 	}
 }

@@ -1,26 +1,30 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\inventory;
 
+use pocketmine\block\BlockIds;
 use pocketmine\item\Item;
 use pocketmine\math\Vector2;
 use pocketmine\Server;
@@ -147,7 +151,7 @@ class ShapedRecipeFromJson extends ShapedRecipe {
 				if($ingredient !== null){
 					$ingredients[$y][$x] = clone $ingredient;
 				}else{
-					$ingredients[$y][$x] = Item::get(Item::AIR);
+					$ingredients[$y][$x] = Item::get(BlockIds::AIR);
 				}
 			}
 		}
@@ -162,7 +166,7 @@ class ShapedRecipeFromJson extends ShapedRecipe {
 	 * @return null|Item
 	 */
 	public function getIngredient($x, $y){
-		return isset($this->ingredients[$y][$x]) ? $this->ingredients[$y][$x] : Item::get(Item::AIR);
+		return $this->ingredients[$y][$x] ?? Item::get(BlockIds::AIR);
 	}
 
 	/**

@@ -1,16 +1,30 @@
 <?php
 
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\inventory;
 
+use pocketmine\block\BlockIds;
 use pocketmine\entity\Human;
 use pocketmine\event\entity\EntityArmorChangeEvent;
 use pocketmine\event\entity\EntityInventoryChangeEvent;
@@ -37,7 +51,7 @@ class PlayerInventory extends BaseInventory{
 	 * @param null $contents
 	 */
 	public function __construct(Human $player, $contents = null){
-		$this->hotbar = range(0, $this->getHotbarSize() - 1, 1);
+		$this->hotbar = range(0, $this->getHotbarSize() - 1);
 		parent::__construct($player, InventoryType::get(InventoryType::PLAYER));
 
 		if($contents !== null){
@@ -180,7 +194,7 @@ class PlayerInventory extends BaseInventory{
 		if($item instanceof Item){
 			return $item;
 		}else{
-			return Item::get(Item::AIR, 0, 0);
+			return Item::get(BlockIds::AIR, 0, 0);
 		}
 	}
 
@@ -308,7 +322,7 @@ class PlayerInventory extends BaseInventory{
 
 		$this->slots[$itemIndex]->useOn($this->slots[$itemIndex]);
 		if($this->slots[$itemIndex]->getDamage() >= $this->slots[$itemIndex]->getMaxDurability()){
-			$this->setItem($itemIndex, Item::get(Item::AIR, 0, 0));
+			$this->setItem($itemIndex, Item::get(BlockIds::AIR, 0, 0));
 		}
 
 		$this->sendArmorContents($this->getViewers());
@@ -398,18 +412,17 @@ class PlayerInventory extends BaseInventory{
 				$this->sendArmorSlot($index, $this->getViewers());
 				return false;
 			}
-			$item = $ev->getNewItem();
-		}else{
+        }else{
 			Server::getInstance()->getPluginManager()->callEvent($ev = new EntityInventoryChangeEvent($this->getHolder(), $this->getItem($index), $item, $index));
 			if($ev->isCancelled()){
 				$this->sendSlot($index, $this->getViewers());
 				return false;
 			}
-			$item = $ev->getNewItem();
-		}
+        }
+        $item = $ev->getNewItem();
 
 
-		$old = $this->getItem($index);
+        $old = $this->getItem($index);
 		$this->slots[$index] = clone $item;
 		$this->onSlotChange($index, $old, $send);
 
@@ -424,32 +437,23 @@ class PlayerInventory extends BaseInventory{
 	 */
 	public function clear($index, $send = true){
 		if(isset($this->slots[$index])){
-			$item = Item::get(Item::AIR, 0, 0);
+			$item = Item::get(BlockIds::AIR, 0, 0);
 			$old = $this->slots[$index];
 			if($index >= $this->getSize() and $index < $this->size){ //Armor change
 				Server::getInstance()->getPluginManager()->callEvent($ev = new EntityArmorChangeEvent($this->getHolder(), $old, $item, $index));
-				if($ev->isCancelled()){
-					if($index >= $this->size){
-						$this->sendArmorSlot($index, $this->getViewers());
-					}else{
-						$this->sendSlot($index, $this->getViewers());
-					}
-					return false;
-				}
-				$item = $ev->getNewItem();
-			}else{
+            }else{
 				Server::getInstance()->getPluginManager()->callEvent($ev = new EntityInventoryChangeEvent($this->getHolder(), $old, $item, $index));
-				if($ev->isCancelled()){
-					if($index >= $this->size){
-						$this->sendArmorSlot($index, $this->getViewers());
-					}else{
-						$this->sendSlot($index, $this->getViewers());
-					}
-					return false;
-				}
-				$item = $ev->getNewItem();
-			}
-			if($item->getId() !== Item::AIR){
+            }
+            if($ev->isCancelled()){
+                if($index >= $this->size){
+                    $this->sendArmorSlot($index, $this->getViewers());
+                }else{
+                    $this->sendSlot($index, $this->getViewers());
+                }
+                return false;
+            }
+            $item = $ev->getNewItem();
+            if($item->getId() !== BlockIds::AIR){
 				$this->slots[$index] = clone $item;
 			}else{
 				unset($this->slots[$index]);
@@ -479,7 +483,7 @@ class PlayerInventory extends BaseInventory{
 		for($index = 0; $index < $limit; ++$index){
 			$this->clear($index, false);
 		}
-		$this->hotbar = range(0, $this->getHotbarSize() - 1, 1);
+		$this->hotbar = range(0, $this->getHotbarSize() - 1);
 		$this->sendContents($this->getViewers());
 	}
 
@@ -518,10 +522,10 @@ class PlayerInventory extends BaseInventory{
 	public function setArmorContents(array $items){
 		for($i = 0; $i < 4; ++$i){
 			if(!isset($items[$i]) or !($items[$i] instanceof Item)){
-				$items[$i] = Item::get(Item::AIR, 0, 0);
+				$items[$i] = Item::get(BlockIds::AIR, 0, 0);
 			}
 
-			if($items[$i]->getId() === Item::AIR){
+			if($items[$i]->getId() === BlockIds::AIR){
 				$this->clear($this->getSize() + $i);
 			}else{
 				$this->setItem($this->getSize() + $i, $items[$i]);
@@ -577,7 +581,7 @@ class PlayerInventory extends BaseInventory{
 
 		//Because PE is stupid and shows 9 less slots than you send it, give it 9 dummy slots so it shows all the REAL slots.
 		for($i = $this->getSize(); $i < $this->getSize() + $this->getHotbarSize(); ++$i){
-			$pk->slots[$i] = Item::get(Item::AIR, 0, 0);
+			$pk->slots[$i] = Item::get(BlockIds::AIR, 0, 0);
 		}
 
 		foreach($target as $player){
@@ -615,16 +619,15 @@ class PlayerInventory extends BaseInventory{
 			if($player === $this->getHolder()){
 				/** @var Player $player */
 				$pk->windowid = 0;
-				$player->dataPacket(clone $pk);
-			}else{
+            }else{
 				if(($id = $player->getWindowId($this)) === -1){
 					$this->close($player);
 					continue;
 				}
 				$pk->windowid = $id;
-				$player->dataPacket(clone $pk);
-			}
-		}
+            }
+            $player->dataPacket(clone $pk);
+        }
 	}
 
 	/**

@@ -1,27 +1,23 @@
 <?php
 
+
 /*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+*/
 
 namespace pocketmine\tile;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\entity\Item as ItemEntity;
 use pocketmine\inventory\DropperInventory;
 use pocketmine\inventory\InventoryHolder;
@@ -120,7 +116,7 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable 
 	public function getItem($index){
 		$i = $this->getSlotIndex($index);
 		if($i < 0){
-			return Item::get(Item::AIR, 0, 0);
+			return Item::get(BlockIds::AIR, 0, 0);
 		}else{
 			return Item::nbtDeserialize($this->namedtag->Items[$i]);
 		}
@@ -137,7 +133,7 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable 
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		if($item->getId() === Item::AIR or $item->getCount() <= 0){
+		if($item->getId() === BlockIds::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
 			}
@@ -215,7 +211,7 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable 
 		$itemIndex = [];
 		for($i = 0; $i < $this->getSize(); $i++){
 			$item = $this->getInventory()->getItem($i);
-			if($item->getId() != Item::AIR){
+			if($item->getId() != BlockIds::AIR){
 				$itemIndex[] = [$i, $item];
 			}
 		}
@@ -228,17 +224,17 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable 
 			/** @var Item $item */
 			$item = $itemArr[1];
 			$item->setCount($item->getCount() - 1);
-			$this->getInventory()->setItem($itemArr[0], $item->getCount() > 0 ? $item : Item::get(Item::AIR));
+			$this->getInventory()->setItem($itemArr[0], $item->getCount() > 0 ? $item : Item::get(BlockIds::AIR));
 			$motion = $this->getMotion();
 			$needItem = Item::get($item->getId(), $item->getDamage());
 			$block = $this->getLevel()->getBlock($this->add($motion[0], $motion[1], $motion[2]));
 			switch($block->getId()){
-				case Block::CHEST:
-				case Block::TRAPPED_CHEST:
-				case Block::DROPPER:
-				case Block::DISPENSER:
-				case Block::BREWING_STAND_BLOCK:
-				case Block::FURNACE:
+				case BlockIds::CHEST:
+				case BlockIds::TRAPPED_CHEST:
+				case BlockIds::DROPPER:
+				case BlockIds::DISPENSER:
+				case BlockIds::BREWING_STAND_BLOCK:
+				case BlockIds::FURNACE:
 					$t = $this->getLevel()->getTile($block);
 					/** @var Chest|Dispenser|Dropper|BrewingStand|Furnace $t */
 					if($t instanceof Tile){
@@ -286,9 +282,9 @@ class Dropper extends Spawnable implements InventoryHolder, Container, Nameable 
 	public function getSpawnCompound(){
 		$c = new CompoundTag("", [
 			new StringTag("id", Tile::DROPPER),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z)
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z)
 		]);
 
 		if($this->hasName()){

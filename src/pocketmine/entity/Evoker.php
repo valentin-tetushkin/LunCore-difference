@@ -1,8 +1,31 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -53,9 +76,9 @@ class Evoker extends Monster {
 	 */
 	public function getDrops(){
 		$drops = [
-			ItemItem::get(ItemItem::EMERALD, 0, mt_rand(0, 1))
+			ItemItem::get(ItemIds::EMERALD, 0, mt_rand(0, 1))
 		];
-		$drops[] = ItemItem::get(ItemItem::TOTEM, 0, 1);
+		$drops[] = ItemItem::get(ItemIds::TOTEM, 0, mt_rand(0, 1));
 
 		return $drops;
 	}

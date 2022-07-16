@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\light;
 
 use pocketmine\block\Block;
@@ -10,9 +32,7 @@ use pocketmine\Server;
 
 class LightPopulationTask extends AsyncTask{
 
-	/** @var int */
 	public $levelId;
-	/** @var string */
 	public $chunk;
 
 	public function __construct(Level $level, Chunk $chunk){
@@ -24,8 +44,7 @@ class LightPopulationTask extends AsyncTask{
 		if(!Block::isInit()){
 			Block::init();
 		}
-		/** @var Chunk $chunk */
-		$chunk = Chunk::fastDeserialize($this->chunk);
+        $chunk = Chunk::fastDeserialize($this->chunk);
 
 		$chunk->recalculateHeightMap();
 		$chunk->populateSkyLight();
@@ -37,8 +56,7 @@ class LightPopulationTask extends AsyncTask{
 	public function onCompletion(Server $server){
 		$level = $server->getLevel($this->levelId);
 		if($level !== null){
-			/** @var Chunk $chunk */
-			$chunk = Chunk::fastDeserialize($this->chunk);
+            $chunk = Chunk::fastDeserialize($this->chunk);
 			$level->generateChunkCallback($chunk->getX(), $chunk->getZ(), $chunk);
 		}
 	}

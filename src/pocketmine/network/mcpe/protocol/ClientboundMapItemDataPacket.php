@@ -1,5 +1,26 @@
 <?php
 
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -30,12 +51,12 @@ class ClientboundMapItemDataPacket extends DataPacket {
 	 *
 	 */
 	public function decode(){
-		$this->mapId = $this->getVarInt();
+		$this->mapId = $this->getEntityId();
 		$this->type = $this->getUnsignedVarInt();
 		if(($this->type & self::BITFLAG_ENTITY_UPDATE) !== 0){
 			$count = $this->getUnsignedVarInt();
 			for($i = 0; $i < $count && !$this->feof(); ++$i){
-				$this->eids[] = $this->getVarInt(); //entity unique ID, signed var-int
+				$this->eids[] = $this->getEntityId();
 			}
 		}
 		if(($this->type & (self::BITFLAG_DECORATION_UPDATE | self::BITFLAG_TEXTURE_UPDATE)) !== 0){ //Decoration bitflag or colour bitflag
@@ -71,7 +92,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 	 */
 	public function encode(){
 		$this->reset();
-		$this->putVarInt($this->mapId); //entity unique ID, signed var-int
+		$this->putEntityId($this->mapId); //entity unique ID, signed var-int
 		$type = 0;
 		if(($eidsCount = count($this->eids)) > 0){
 			$type |= self::BITFLAG_ENTITY_UPDATE;
@@ -86,7 +107,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 		if(($type & self::BITFLAG_ENTITY_UPDATE) !== 0){ //TODO: find out what these are for
 			$this->putUnsignedVarInt($eidsCount);
 			foreach($this->eids as $eid){
-				$this->putVarInt($eid);
+				$this->putEntityId($eid);
 			}
 		}
 		if(($type & (self::BITFLAG_TEXTURE_UPDATE | self::BITFLAG_DECORATION_UPDATE)) !== 0){
@@ -99,6 +120,7 @@ class ClientboundMapItemDataPacket extends DataPacket {
 				$this->putByte($decoration["xOffset"]);
 				$this->putByte($decoration["yOffset"]);
 				$this->putString($decoration["label"]);
+				assert($decoration["color"] instanceof Color);
 				$this->putLInt($decoration["color"]->toABGR());
 			}
 		}

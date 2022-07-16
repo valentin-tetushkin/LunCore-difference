@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\event;
 
 class TranslationContainer extends TextContainer {
@@ -30,7 +52,7 @@ class TranslationContainer extends TextContainer {
 	 * @return string
 	 */
 	public function getParameter($i){
-		return isset($this->params[$i]) ? $this->params[$i] : null;
+		return $this->params[$i] ?? null;
 	}
 
 	/**
@@ -51,7 +73,7 @@ class TranslationContainer extends TextContainer {
 	public function setParameters(array $params){
 		$i = 0;
 		foreach($params as $str){
-			$this->params[$i] = (string) $str;
+			$this->params[$i] = $str;
 
 			++$i;
 		}

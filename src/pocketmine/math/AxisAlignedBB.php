@@ -1,8 +1,28 @@
 <?php
 
-namespace pocketmine\math;
 
-use pocketmine\level\MovingObjectPosition;
+/*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
+namespace pocketmine\math;
 
 class AxisAlignedBB{
 
@@ -85,11 +105,7 @@ class AxisAlignedBB{
 	}
 
 	/**
-	 * @param $x
-	 * @param $y
-	 * @param $z
-	 *
-	 * @return AxisAlignedBB
+	 * @deprecated
 	 */
 	public function grow($x, $y, $z){
 		return new AxisAlignedBB($this->minX - $x, $this->minY - $y, $this->minZ - $z, $this->maxX + $x, $this->maxY + $y, $this->maxZ + $z);
@@ -113,6 +129,13 @@ class AxisAlignedBB{
 		$this->maxZ += $z;
 
 		return $this;
+	}
+
+	/**
+	 * Returns an expanded clone of this AxisAlignedBB.
+	 */
+	public function expandedCopy(float $x, float $y, float $z) : AxisAlignedBB{
+		return (clone $this)->expand($x, $y, $z);
 	}
 
 	/**
@@ -149,11 +172,7 @@ class AxisAlignedBB{
 	}
 
 	/**
-	 * @param $x
-	 * @param $y
-	 * @param $z
-	 *
-	 * @return AxisAlignedBB
+	 * @deprecated
 	 */
 	public function shrink($x, $y, $z){
 		return new AxisAlignedBB($this->minX + $x, $this->minY + $y, $this->minZ + $z, $this->maxX - $x, $this->maxY - $y, $this->maxZ - $z);
@@ -180,6 +199,19 @@ class AxisAlignedBB{
 	}
 
 	/**
+	 * Returns a contracted clone of this AxisAlignedBB.
+	 *
+	 * @param float $x
+	 * @param float $y
+	 * @param float $z
+	 *
+	 * @return AxisAlignedBB
+	 */
+	public function contractedCopy(float $x, float $y, float $z) : AxisAlignedBB{
+		return (clone $this)->contract($x, $y, $z);
+	}
+
+	/**
 	 * @param AxisAlignedBB $bb
 	 *
 	 * @return $this
@@ -189,11 +221,7 @@ class AxisAlignedBB{
 	}
 
 	/**
-	 * @param $x
-	 * @param $y
-	 * @param $z
-	 *
-	 * @return AxisAlignedBB
+	 * @deprecated
 	 */
 	public function getOffsetBoundingBox($x, $y, $z){
 		return new AxisAlignedBB($this->minX + $x, $this->minY + $y, $this->minZ + $z, $this->maxX + $x, $this->maxY + $y, $this->maxZ + $z);
@@ -336,12 +364,16 @@ class AxisAlignedBB{
 	}
 
 	/**
+	 * Performs a ray-trace and calculates the point on the AABB's edge nearest the start position that the ray-trace
+	 * collided with. Returns a RayTraceResult with colliding vector closest to the start position.
+	 * Returns null if no colliding point was found.
+	 * 
 	 * @param Vector3 $pos1
 	 * @param Vector3 $pos2
 	 *
-	 * @return MovingObjectPosition
+	 * @return RayTraceResult|null
 	 */
-	public function calculateIntercept(Vector3 $pos1, Vector3 $pos2){
+	public function calculateIntercept(Vector3 $pos1, Vector3 $pos2) : ?RayTraceResult{
 		$v1 = $pos1->getIntermediateWithXValue($pos2, $this->minX);
 		$v2 = $pos1->getIntermediateWithXValue($pos2, $this->maxX);
 		$v3 = $pos1->getIntermediateWithYValue($pos2, $this->minY);
@@ -420,10 +452,10 @@ class AxisAlignedBB{
 			$f = 3;
 		}
 
-		return MovingObjectPosition::fromBlock(0, 0, 0, $f, $vector);
+		return new RayTraceResult($this, $f, $vector);
 	}
 
 	public function __toString(){
-		return "AxisAlignedBB({$this->minX}, {$this->minY}, {$this->minZ}, {$this->maxX}, {$this->maxY}, {$this->maxZ})";
+		return "AxisAlignedBB($this->minX, $this->minY, $this->minZ, $this->maxX, $this->maxY, $this->maxZ)";
 	}
 }

@@ -1,26 +1,26 @@
 <?php
 
-/*
- *
- *  _____            _               _____           
- * / ____|          (_)             |  __ \          
- *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
- *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
- *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
- * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
- *                         __/ |                    
- *                        |___/                     
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author GenisysPro
- * @link https://github.com/GenisysPro/GenisysPro
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
@@ -52,7 +52,7 @@ interface BlockIds {
 	const WOOD = 17;
 	const TRUNK = 17;
 	const LEAVES = 18;
-	const SPONGE = 19;
+	const SPONGE = 19, WET_SPONGE = 19;
 	const GLASS = 20;
 	const LAPIS_ORE = 21;
 	const LAPIS_BLOCK = 22;
@@ -304,7 +304,7 @@ interface BlockIds {
 	const FROSTED_ICE = 207;
 	const END_ROD = 208;
 
-	const SHULKER_BOX = 218;
+	const SHULKER_BOX = 218, UNDYED_SHULKER_BOX = 218;
 	const PURPLE_GLAZED_TERRACOTTA = 219;
 	const WHITE_GLAZED_TERRACOTTA = 220;
 	const ORANGE_GLAZED_TERRACOTTA = 221;

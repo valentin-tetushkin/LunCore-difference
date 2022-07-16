@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -34,7 +26,7 @@ class SummonCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.summon.description",
-			"%commands.summon.usage"
+			"/summon [сущность] [<x> <y> <z>] [Имя]"
 		);
 		$this->setPermission("pocketmine.command.summon");
 	}
@@ -142,8 +134,11 @@ class SummonCommand extends VanillaCommand {
 			]),
 		]);
 		if(count($args) == 5 and $args[4][0] == "{"){//Tags are found
-			$nbtExtra = JsonNBTParser::parseJSON($args[4]);
-			$nbt = NBT::combineCompoundTags($nbt, $nbtExtra, true);
+            try {
+                $nbtExtra = JsonNBTParser::parseJSON($args[4]);
+            } catch (\Exception $e) {
+            }
+            $nbt = NBT::combineCompoundTags($nbt, $nbtExtra, true);
 		}
 
 		$entity = Entity::createEntity($type, $level, $nbt);

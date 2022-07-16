@@ -1,23 +1,26 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
@@ -50,16 +53,16 @@ class PrimedTNT extends Entity implements Explosive {
 
 	private $dropItem = true;
 
+	public $arsonist;
+
 	/**
 	 * PrimedTNT constructor.
 	 *
-	 * @param Level       $level
-	 * @param CompoundTag $nbt
-	 * @param bool        $dropItem
-	 */
-	public function __construct(Level $level, CompoundTag $nbt, bool $dropItem = true){
+     */
+	public function __construct(Level $level, CompoundTag $nbt, bool $dropItem = true, Player $arsonist = null){
 		parent::__construct($level, $nbt);
 		$this->dropItem = $dropItem;
+		$this->arsonist = $arsonist;
 	}
 
 
@@ -84,7 +87,7 @@ class PrimedTNT extends Entity implements Explosive {
 			$this->fuse = 80;
 		}
 
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_IGNITED, true);
+		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_IGNITED);
 		$this->setDataProperty(self::DATA_FUSE_LENGTH, self::DATA_TYPE_INT, $this->fuse);
 	}
 
@@ -104,68 +107,38 @@ class PrimedTNT extends Entity implements Explosive {
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
-
-		$this->timings->startTiming();
-
-		$tickDiff = $currentTick - $this->lastUpdate;
-		if($tickDiff <= 0 and !$this->justCreated){
-			return true;
-		}
+		
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if($this->fuse % 5 === 0){ //don't spam it every tick, it's not necessary
 			$this->setDataProperty(self::DATA_FUSE_LENGTH, self::DATA_TYPE_INT, $this->fuse);
 		}
 
-		$this->lastUpdate = $currentTick;
-
-		$hasUpdate = $this->entityBaseTick($tickDiff);
-
 		if($this->isAlive()){
-
-			$this->motionY -= $this->gravity;
-
-			$this->move($this->motionX, $this->motionY, $this->motionZ);
-
-			$friction = 1 - $this->drag;
-
-			$this->motionX *= $friction;
-			$this->motionY *= $friction;
-			$this->motionZ *= $friction;
-
-			$this->updateMovement();
-
-			if($this->onGround){
-				$this->motionY *= -0.5;
-				$this->motionX *= 0.7;
-				$this->motionZ *= 0.7;
-			}
-
 			$this->fuse -= $tickDiff;
 
 			if($this->fuse <= 0){
 				$this->kill();
 				$this->explode();
 			}
-
 		}
 
 
-		return $hasUpdate or $this->fuse >= 0 or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+		return $hasUpdate or $this->fuse >= 0;
 	}
 
 	public function explode(){
 		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 4, $this->dropItem));
-
 		if(!$ev->isCancelled()){
-			$explosion = new Explosion(Position::fromObject($this->add(0, $this->height / 2, 0), $this->level), $ev->getForce(), $this, $ev->dropItem());
+			$explosion = new Explosion(Position::fromObject($this->add(0, $this->height / 2), $this->level), $ev->getForce(), $this, $ev->dropItem(), $this->arsonist);
 			if($ev->isBlockBreaking()){
 				$explosion->explodeA();
 			}

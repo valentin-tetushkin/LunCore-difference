@@ -1,12 +1,17 @@
 <?php
 
+
 /*
-# ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
-# ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
-# ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
-# ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
-# ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
-# ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ *
 */
 
 namespace pocketmine\tile;
@@ -96,14 +101,17 @@ abstract class Tile extends Position {
 		return null;
 	}
 
-	/**
-	 * @param $className
-	 *
-	 * @return bool
-	 */
+    /**
+     * @param string $className
+     *
+     * @return bool
+     */
 	public static function registerTile(string $className){
-		$class = new \ReflectionClass($className);
-		if(is_a($className, Tile::class, true) and !$class->isAbstract()){
+        try {
+            $class = new \ReflectionClass($className);
+        } catch (\ReflectionException $e) {
+        }
+        if(is_a($className, Tile::class, true) and !$class->isAbstract()){
 			self::$knownTiles[$class->getShortName()] = $className;
 			self::$shortNames[$className] = $class->getShortName();
 			return true;
@@ -193,7 +201,7 @@ abstract class Tile extends Position {
 
 			if($this->isValid()){
 				$this->level->removeTile($this);
-				$this->setLevel(null);
+				$this->setLevel();
 			}
 
 			$this->namedtag = null;

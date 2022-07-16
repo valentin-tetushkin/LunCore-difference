@@ -1,30 +1,43 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 declare(strict_types=1);
 
 namespace pocketmine\level\utils;
 
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\format\Chunk;
 use pocketmine\level\format\EmptySubChunk;
 use pocketmine\level\format\SubChunk;
 
 class SubChunkIteratorManager{
-	/** @var ChunkManager */
 	public $level;
-
-	/** @var Chunk|null */
 	public $currentChunk;
-	/** @var SubChunk|null */
 	public $currentSubChunk;
-
-	/** @var int */
 	protected $currentX;
-	/** @var int */
 	protected $currentY;
-	/** @var int */
 	protected $currentZ;
-	/** @var bool */
 	protected $allocateEmptySubs = true;
 
 	public function __construct(ChunkManager $level, bool $allocateEmptySubs = true){

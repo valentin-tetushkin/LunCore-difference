@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ * Автор биома - http://vk.com/KlainYT
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\normal\biome;
 
 
-class SmallMountainsBiome extends MountainsBiome {
+class SmallMountainsBiome extends MountainsBiome { //
 
 	/**
 	 * SmallMountainsBiome constructor.
@@ -11,7 +33,7 @@ class SmallMountainsBiome extends MountainsBiome {
 	public function __construct(){
 		parent::__construct();
 
-		$this->setElevation(63, 97);
+        $this->setElevation(62, 65);
 	}
 
 	/**

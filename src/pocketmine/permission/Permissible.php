@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\permission;
 
 use pocketmine\plugin\Plugin;
@@ -7,7 +29,7 @@ use pocketmine\plugin\Plugin;
 interface Permissible extends ServerOperator {
 
 	/**
-	 * Checks if this instance has a permission overridden
+     * Проверяет, есть ли у этого экземпляра переопределенное разрешение
 	 *
 	 * @param string|Permission $name
 	 *
@@ -16,7 +38,7 @@ interface Permissible extends ServerOperator {
 	public function isPermissionSet($name);
 
 	/**
-	 * Returns the permission value if overridden, or the default value if not
+     * Возвращает значение разрешения, если оно переопределено, или значение по умолчанию, если нет
 	 *
 	 * @param string|Permission $name
 	 *

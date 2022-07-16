@@ -1,8 +1,30 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ * Автор биома - http://vk.com/KlainYT
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\normal\biome;
 
-use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Flower as FlowerBlock;
 use pocketmine\level\generator\populator\Flower;
 use pocketmine\level\generator\populator\LilyPad;
@@ -29,14 +51,14 @@ class PlainBiome extends GrassyBiome {
 
 		$flower = new Flower();
 		$flower->setBaseAmount(2);
-		$flower->addType([Block::DANDELION, 0]);
-		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_POPPY]);
-		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_AZURE_BLUET]);
-		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_RED_TULIP]);
-		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_ORANGE_TULIP]);
-		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_WHITE_TULIP]);
-		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_PINK_TULIP]);
-		$flower->addType([Block::RED_FLOWER, FlowerBlock::TYPE_OXEYE_DAISY]);
+		$flower->addType([BlockIds::DANDELION, 0]);
+		$flower->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_POPPY]);
+		$flower->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_AZURE_BLUET]);
+		$flower->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_RED_TULIP]);
+		$flower->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_ORANGE_TULIP]);
+		$flower->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_WHITE_TULIP]);
+		$flower->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_PINK_TULIP]);
+		$flower->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_OXEYE_DAISY]);
 
 		$this->addPopulator($sugarcane);
 		$this->addPopulator($tallGrass);
@@ -44,7 +66,7 @@ class PlainBiome extends GrassyBiome {
 		$this->addPopulator($waterPit);
 		$this->addPopulator($lilyPad);
 
-		$this->setElevation(63, 68);
+        $this->setElevation(62, 65);
 
 		$this->temperature = 0.8;
 		$this->rainfall = 0.4;

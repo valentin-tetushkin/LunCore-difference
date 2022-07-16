@@ -1,19 +1,37 @@
 <?php
-/*
+
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
-use pocketmine\event\entity\{EntityDamageByEntityEvent, EntityDamageEvent};
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item as ItemItem;
-use pocketmine\network\mcpe\protocol\{AddEntityPacket, MobEquipmentPacket, AnimatePacket};
+use pocketmine\item\ItemIds;
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
+use pocketmine\network\mcpe\protocol\AnimatePacket;
 use pocketmine\Player;
 use pocketmine\math\Vector3;
 use pocketmine\level\Level;
@@ -83,13 +101,13 @@ class PigZombie extends Monster {
 				if(mt_rand(1, 200) <= (5 + 2 * $lootingL)){
 					$rnd = mt_rand(0, 1);
 					if($rnd == 0){
-						$drops[] = ItemItem::get(ItemItem::GOLD_INGOT, 0, 1);
+						$drops[] = ItemItem::get(ItemIds::GOLD_INGOT);
 					}elseif($rnd == 1){
-						$drops[] = ItemItem::get(ItemItem::DRAGONS_BREATH, 0, 1);
+						$drops[] = ItemItem::get(ItemIds::DRAGONS_BREATH);
 					}
 				}
-				$drops[] = ItemItem::get(ItemItem::GOLD_NUGGET, 0, mt_rand(0, 1 + $lootingL));
-				$drops[] = ItemItem::get(ItemItem::ROTTEN_FLESH, 0, mt_rand(0, 1 + $lootingL));
+				$drops[] = ItemItem::get(ItemIds::GOLD_NUGGET, 0, mt_rand(0, 1 + $lootingL));
+				$drops[] = ItemItem::get(ItemIds::ROTTEN_FLESH, 0, mt_rand(0, 1 + $lootingL));
 
 				return $drops;
 			}
@@ -98,14 +116,12 @@ class PigZombie extends Monster {
 		return [];
 	}
 	
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->isClosed() or !$this->isAlive()){
-			return parent::onUpdate($currentTick);
+			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
         if ($this->getLevel() !== null) {
             $block = $this->getLevel()->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
         }else{
@@ -135,7 +151,7 @@ class PigZombie extends Monster {
 								$this->farest = $viewer;
 							}
 							
-							if($this->farest != $viewer){
+							if($this->farest !== $viewer){
 								if($this->distance($viewer) < $this->distance($this->farest)){
 									$this->farest = $viewer;
 								}
@@ -230,8 +246,6 @@ class PigZombie extends Monster {
 		if((($x != 0)or($y != 0)or($z != 0))and($this->motionVector != null)){
 			$this->setMotion(new Vector3($x, $y, $z));
 		}
-		
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

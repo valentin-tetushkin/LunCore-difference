@@ -1,13 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 /**
  * All Block classes are in here
@@ -19,9 +32,9 @@ use pocketmine\entity\Entity;
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\level\Level;
-use pocketmine\level\MovingObjectPosition;
 use pocketmine\level\Position;
 use pocketmine\math\AxisAlignedBB;
+use pocketmine\math\RayTraceResult;
 use pocketmine\math\Vector3;
 use pocketmine\metadata\Metadatable;
 use pocketmine\metadata\MetadataValue;
@@ -352,13 +365,13 @@ class Block extends Position implements BlockIds, Metadatable{
 		return self::$fullList !== null;
 	}
 
-	/**
-	 * @param int      $id
-	 * @param int      $meta
-	 * @param Position $pos
-	 *
-	 * @return Block
-	 */
+    /**
+     * @param int $id
+     * @param int $meta
+     * @param Position|null $pos
+     *
+     * @return Block
+     */
 	public static function get(int $id, int $meta = 0, Position $pos = null){
 		if($id > 0xff){
 			trigger_error("BlockID cannot be higher than 255, defaulting to 0", E_USER_NOTICE);
@@ -395,20 +408,20 @@ class Block extends Position implements BlockIds, Metadatable{
 	}
 
 	/**
-	 * Places the Block, using block space and block target, and side. Returns if the block has been placed.
-	 *
-	 * @param Item   $item
-	 * @param Block  $block
-	 * @param Block  $target
-	 * @param int    $face
-	 * @param float  $fx
-	 * @param float  $fy
-	 * @param float  $fz
-	 * @param Player $player = null
-	 *
-	 * @return bool
-	 */
-	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
+     * Places the Block, using block space and block target, and side. Returns if the block has been placed.
+     *
+     * @param Item $item
+     * @param Block $block
+     * @param Block $target
+     * @param int $face
+     * @param float $fx
+     * @param float $fy
+     * @param float $fz
+     * @param Player|null $player = null
+     *
+     * @return bool
+     */
+    public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
 		return $this->getLevel()->setBlock($this, $this, true, true);
 	}
 
@@ -439,33 +452,33 @@ class Block extends Position implements BlockIds, Metadatable{
 	 *
 	 * @param int $type
 	 *
-	 * @return void
+	 * @return bool|int
 	 */
 	public function onUpdate($type){
-
-	}
-
-	/**
-	 * Do actions when activated by Item. Returns if it has done anything
-	 *
-	 * @param Item   $item
-	 * @param Player $player
-	 *
-	 * @return bool
-	 */
-	public function onActivate(Item $item, Player $player = null){
 		return false;
 	}
 
 	/**
-	 * @return int
+     * Do actions when activated by Item. Returns if it has done anything
+     *
+     * @param Item $item
+     * @param Player|null $player
+     *
+     * @return bool
+     */
+    public function onActivate(Item $item, Player $player = null){
+		return false;
+	}
+
+	/**
+	 * @return float
 	 */
 	public function getHardness(){
 		return 10;
 	}
 
 	/**
-	 * @return int
+	 * @return float
 	 */
 	public function getResistance(){
 		return $this->getHardness() * 5;
@@ -507,6 +520,22 @@ class Block extends Position implements BlockIds, Metadatable{
 			}
 		}
 		return false;
+	}
+
+	public function isLightedByAround(){
+
+	}
+
+	public function lightAround(){
+
+	}
+
+	public function turnOn(){
+
+	}
+
+	public function turnOff(){
+
 	}
 
 	/**
@@ -599,15 +628,6 @@ class Block extends Position implements BlockIds, Metadatable{
 		return false;
 	}
 
-	/**
-	 * AKA: Block->isActivable
-	 *
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return false;
-	}
-
 	public function activate(){
 		return false;
 	}
@@ -691,9 +711,9 @@ class Block extends Position implements BlockIds, Metadatable{
 	 * @param Position $v
 	 */
 	final public function position(Position $v){
-		$this->x = (int) $v->x;
-		$this->y = (int) $v->y;
-		$this->z = (int) $v->z;
+		$this->x = $v->x;
+		$this->y = $v->y;
+		$this->z = $v->z;
 		$this->level = $v->level;
 		$this->boundingBox = null;
 	}
@@ -778,7 +798,7 @@ class Block extends Position implements BlockIds, Metadatable{
 			return $this->getLevel()->getBlock(Vector3::getSide($side, $step));
 		}
 
-		return Block::get(Item::AIR, 0, Position::fromObject(Vector3::getSide($side, $step)));
+		return Block::get(BlockIds::AIR, 0, Position::fromObject(Vector3::getSide($side, $step)));
 	}
 
 	/**
@@ -808,6 +828,16 @@ class Block extends Position implements BlockIds, Metadatable{
 			],
 			$this->getHorizontalSides()
 		);
+	}
+
+	/**
+	 * Returns a list of blocks that this block is part of. In most cases, only contains the block itself, but in cases
+	 * such as double plants, beds and doors, will contain both halves.
+	 *
+	 * @return Block[]
+	 */
+	public function getAffectedBlocks() : array{
+		return [$this];
 	}
 
 	/**
@@ -900,9 +930,9 @@ class Block extends Position implements BlockIds, Metadatable{
 	 * @param Vector3 $pos1
 	 * @param Vector3 $pos2
 	 *
-	 * @return MovingObjectPosition
+	 * @return RayTraceResult|null
 	 */
-	public function calculateIntercept(Vector3 $pos1, Vector3 $pos2){
+	public function calculateIntercept(Vector3 $pos1, Vector3 $pos2) : ?RayTraceResult{
 		$bbs = $this->getCollisionBoxes();
 		if(count($bbs) === 0){
 			return null;

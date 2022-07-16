@@ -1,25 +1,26 @@
 <?php
 
+
 /*
  *
- *    _______                                _
- *   |__   __|                              | |
- *      | | ___  ___ ___  ___ _ __ __ _  ___| |_
- *      | |/ _ \/ __/ __|/ _ \  __/ _` |/ __| __|
- *      | |  __/\__ \__ \  __/ | | (_| | (__| |_
- *      |_|\___||___/___/\___|_|  \__,_|\___|\__|
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
  *
- * @author Tessetact Team
- * @link http://www.github.com/TesseractTeam/Tesseract
- * 
  *
- */
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\network\mcpe\protocol;
 
@@ -76,9 +77,11 @@ class BossEventPacket extends DataPacket {
 			case self::TYPE_SHOW:
 				$this->title = $this->getString();
 				$this->healthPercent = $this->getLFloat();
-			case self::TYPE_UNKNOWN_6:
+                break;
+            case self::TYPE_UNKNOWN_6:
 				$this->unknownShort = $this->getLShort();
-			case self::TYPE_TEXTURE:
+                break;
+            case self::TYPE_TEXTURE:
 				$this->color = $this->getUnsignedVarInt();
 				$this->overlay = $this->getUnsignedVarInt();
 				break;
@@ -108,9 +111,11 @@ class BossEventPacket extends DataPacket {
 			case self::TYPE_SHOW:
 				$this->putString($this->title);
 				$this->putLFloat($this->healthPercent);
-			case self::TYPE_UNKNOWN_6:
+                break;
+            case self::TYPE_UNKNOWN_6:
 				$this->putLShort($this->unknownShort);
-			case self::TYPE_TEXTURE:
+                break;
+            case self::TYPE_TEXTURE:
 				$this->putUnsignedVarInt($this->color);
 				$this->putUnsignedVarInt($this->overlay);
 				break;

@@ -1,11 +1,25 @@
 <?php
+
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 */
 
 namespace pocketmine;
@@ -18,12 +32,9 @@ use pocketmine\plugin\Plugin;
 
 class OfflinePlayer implements IPlayer, Metadatable {
 
-	/** @var string */
-	private $name;
-	/** @var Server */
-	private $server;
-	/** @var CompoundTag|null */
-	private $namedtag = null;
+	private $name; // TODO @var string
+	private $server;// TODO @var Server
+	private $namedtag = null; // TODO @var CompoundTag|null
 
 	/**
 	 * @param Server $server
@@ -92,7 +103,7 @@ class OfflinePlayer implements IPlayer, Metadatable {
 	 */
 	public function setBanned($value){
 		if($value){
-			$this->server->getNameBans()->addBan($this->getName(), null, null, null);
+			$this->server->getNameBans()->addBan($this->getName());
 		}else{
 			$this->server->getNameBans()->remove($this->getName());
 		}

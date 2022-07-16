@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\event\entity;
 
 use pocketmine\entity\Effect;
@@ -10,6 +32,9 @@ use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
 use pocketmine\Player;
 
+/**
+ * Called when an entity takes damage.
+ */
 class EntityDamageEvent extends EntityEvent implements Cancellable {
 	public static $handlerList = null;
 
@@ -75,6 +100,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable {
 			throw new \InvalidArgumentException("BASE Damage modifier missing");
 		}
 
+		//For DAMAGE_RESISTANCE
 		if($cause !== self::CAUSE_VOID and $cause !== self::CAUSE_SUICIDE){
 			if($entity->hasEffect(Effect::DAMAGE_RESISTANCE)){
 				$RES_level = 1 - 0.20 * ($entity->getEffect(Effect::DAMAGE_RESISTANCE)->getEffectLevel());
@@ -106,6 +132,7 @@ class EntityDamageEvent extends EntityEvent implements Cancellable {
 					if($points !== 0){
 						$this->setRateDamage(1 - 0.04 * $points, self::MODIFIER_ARMOR);
 					}
+					//For Protection
 					$spe_Prote = null;
 					switch($cause){
 						case self::CAUSE_ENTITY_EXPLOSION:
@@ -137,11 +164,12 @@ class EntityDamageEvent extends EntityEvent implements Cancellable {
 					}
 					break;
 				case self::CAUSE_FALL:
+					//Feather Falling
 					$i = $entity->getInventory()->getBoots();
 					if($i->isArmor()){
 						$this->EPF += $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_PROTECTION);
 						$this->EPF += 3 * $i->getEnchantmentLevel(Enchantment::TYPE_ARMOR_FALL_PROTECTION);
-}
+					}
 					break;
 				case self::CAUSE_FIRE_TICK:
 				case self::CAUSE_SUFFOCATION:
@@ -149,15 +177,15 @@ class EntityDamageEvent extends EntityEvent implements Cancellable {
 				case self::CAUSE_VOID:
 				case self::CAUSE_SUICIDE:
 				case self::CAUSE_MAGIC:
-				case self::CAUSE_CUSTOM:
-				case self::CAUSE_STARVATION:
+                case self::CAUSE_CUSTOM:
 					break;
-				default:
+                case self::CAUSE_STARVATION:
+                default:
 					break;
 			}
 			if($this->EPF !== 0){
 				$this->EPF = min(20, ceil($this->EPF * mt_rand(50, 100) / 100));
-				$this->setRateDamage(0 - 0.00* $this->EPF, self::MODIFIER_PROTECTION);
+				$this->setRateDamage(1 - 0.04 * $this->EPF, self::MODIFIER_PROTECTION);
 			}
 		}
 	}
@@ -217,6 +245,10 @@ class EntityDamageEvent extends EntityEvent implements Cancellable {
 	/**
 	 * @param float $damage
 	 * @param int   $type
+	 *
+	 * Notice:If you want to add/reduce the damage without reducing by Armor or effect. set a new Damage using setDamage
+	 * Notice:If you want to add/reduce the damage within reducing by Armor of effect. Plz change the MODIFIER_BASE
+	 * Notice:If you want to add/reduce the damage by multiplying. Plz use this function.
 	 */
 	public function setRateDamage($damage, $type = self::MODIFIER_BASE){
 		$this->rateModifiers[$type] = $damage;
@@ -287,7 +319,8 @@ class EntityDamageEvent extends EntityEvent implements Cancellable {
 			$this->thornsArmor = array_rand($this->thornsLevel);
 			$thornsL = $this->thornsLevel[$this->thornsArmor];
 			if(mt_rand(1, 100) < $thornsL * 15){
-				$this->thornsDamage = 0;
+				//$this->thornsDamage = mt_rand(1, 4); 
+				$this->thornsDamage = 0; //Delete When #321 Is Fixed And Add In The Normal Damage
 			}
 		}
 	}

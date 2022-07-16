@@ -1,5 +1,19 @@
 <?php
 
+
+/*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ *
+*/
+
 namespace pocketmine\network\query;
 
 use pocketmine\network\AdvancedSourceInterface;
@@ -12,14 +26,24 @@ class QueryHandler {
 	const HANDSHAKE = 9;
 	const STATISTICS = 0;
 
-	/**
-	 * QueryHandler constructor.
-	 */
+    /**
+     * Конструктор QueryHandler.
+     */
 	public function __construct(){
 		$this->server = Server::getInstance();
 		$this->server->getLogger()->info($this->server->getLanguage()->translateString("pocketmine.server.query.start"));
 		$addr = ($ip = $this->server->getIp()) != "" ? $ip : "0.0.0.0";
 		$port = $this->server->getPort();
+		$this->server->getLogger()->info($this->server->getLanguage()->translateString("pocketmine.server.query.info", [$port]));
+        /*
+        Протокол запросов построен поверх существующего сетевого стека Minecraft PE UDP.
+        Поскольку пакет 0xFE не существует в протоколе MCPE,
+        мы можем идентифицировать пакеты запросов и удалять их из очереди пакетов.
+
+        Затем класс Query самостоятельно отправляет пакеты в необработанном виде, потому что
+        пакеты могут конфликтовать с пакетами MCPE.
+        */
+
 		$this->regenerateToken();
 		$this->lastToken = $this->token;
 		$this->server->getLogger()->info($this->server->getLanguage()->translateString("pocketmine.server.query.running", [$addr, $port]));
@@ -44,8 +68,11 @@ class QueryHandler {
 	 */
 	public function regenerateToken(){
 		$this->lastToken = $this->token;
-		$this->token = random_bytes(16);
-	}
+        try {
+            $this->token = random_bytes(16);
+        } catch (\Exception $e) {
+        }
+    }
 
 	/**
 	 * @param $token

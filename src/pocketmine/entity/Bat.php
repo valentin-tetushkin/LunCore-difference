@@ -1,9 +1,32 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\entity;
 
 use pocketmine\level\Level;
-use pocketmine\nbt\tag\{ByteTag, CompoundTag};
+use pocketmine\nbt\tag\ByteTag;
+use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -62,15 +85,14 @@ class Bat extends FlyingAnimal {
 	}
 
 	/**
-	 * @param $currentTick
-	 *
+     *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->age > 20 * 60 * 10){
 			$this->kill();
 		}
-		return parent::onUpdate($currentTick);
+		return parent::entityBaseTick($tickDiff, $EnchantL);
 	}
 
 	/**

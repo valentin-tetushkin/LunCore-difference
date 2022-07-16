@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -29,7 +21,7 @@ class WeatherCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.weather.description",
-			"%pocketmine.command.weather.usage"
+			"/weather <мир> (0,1,2,3)"
 		);
 		$this->setPermission("pocketmine.command.weather");
 	}

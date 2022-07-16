@@ -1,5 +1,30 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
+/**
+ * Классы, связанные с разрешениями
+ */
 namespace pocketmine\permission;
 
 use pocketmine\Server;
@@ -67,9 +92,9 @@ class Permission {
 	/** @var string */
 	private $defaultValue;
 
-	/**
-	 * Creates a new Permission object to be attached to Permissible objects
-	 *
+    /**
+     * Создает новый объект Разрешения, который будет прикреплен к объектам Разрешения
+     *
 	 * @param string       $name
 	 * @param string       $description
 	 * @param string       $defaultValue
@@ -180,8 +205,11 @@ class Permission {
 	public static function loadPermissions(array $data, $default = self::DEFAULT_OP){
 		$result = [];
 		foreach($data as $key => $entry){
-			$result[] = self::loadPermission($key, $entry, $default, $result);
-		}
+            try {
+                $result[] = self::loadPermission($key, $entry, $default, $result);
+            } catch (\Throwable $e) {
+            }
+        }
 
 		return $result;
 	}

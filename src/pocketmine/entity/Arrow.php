@@ -1,13 +1,38 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\entity;
 
 use pocketmine\item\Potion;
 use pocketmine\level\Level;
-use pocketmine\level\particle\{CriticalParticle, MobSpellParticle};
-use pocketmine\nbt\tag\{CompoundTag, ShortTag};
+use pocketmine\level\particle\CriticalParticle;
+use pocketmine\level\particle\MobSpellParticle;
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ShortTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
+use pocketmine\item\Bow;
 
 class Arrow extends Projectile {
 	const NETWORK_ID = 80;
@@ -23,21 +48,29 @@ class Arrow extends Projectile {
 
 	protected $potionId;
 
+	protected $bow;
+
 	/**
 	 * Arrow constructor.
 	 *
-	 * @param Level       $level
-	 * @param CompoundTag $nbt
-	 * @param Entity|null $shootingEntity
-	 * @param bool        $critical
-	 */
-	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false){
+     * @param Entity|null $shootingEntity
+     */
+	public function __construct(Level $level, CompoundTag $nbt, Entity $shootingEntity = null, bool $critical = false, Bow $bow = null){
 		if(!isset($nbt->Potion)){
 			$nbt->Potion = new ShortTag("Potion", 0);
 		}
 		parent::__construct($level, $nbt, $shootingEntity);
 		$this->potionId = $this->namedtag["Potion"];
 		$this->setCritical($critical);
+		$this->bow = $bow;
+	}
+
+	public function getBow() : ?Bow{
+		return $this->bow;
+	}
+
+	public function setBow(?Bow $bow){
+		$this->bow = $bow;
 	}
 
 	/**
@@ -47,10 +80,7 @@ class Arrow extends Projectile {
 		return $this->getDataFlag(self::DATA_FLAGS, self::DATA_FLAG_CRITICAL);
 	}
 
-	/**
-	 * @return void
-	 */
-	public function setCritical(bool $value = true) : void{
+    public function setCritical(bool $value = true) : void{
 		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_CRITICAL, $value);
 	}
 
@@ -74,25 +104,23 @@ class Arrow extends Projectile {
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1) {
 		if($this->closed){
 			return false;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if($this->onGround or $this->hadCollision){
 			$this->setCritical(false);
 		}
 
 		if($this->potionId != 0){
-			if(!$this->onGround or ($this->onGround and ($currentTick % 4) == 0)){
+			if(!$this->onGround or ($this->onGround and ($tickDiff % 4) == 0)){
 				$color = Potion::getColor($this->potionId - 1);
 				$this->level->addParticle(new MobSpellParticle($this->add(
 					$this->width / 2 + mt_rand(-100, 100) / 500,
@@ -106,8 +134,6 @@ class Arrow extends Projectile {
 			$this->close();
 			$hasUpdate = true;
 		}
-
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

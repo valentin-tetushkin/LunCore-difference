@@ -1,23 +1,27 @@
 <?php
 
+
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
  *
 */
+
 
 namespace pocketmine\scheduler;
 
@@ -120,10 +124,7 @@ class AsyncPool{
 		$this->workerLastUsed[$worker] = time();
 	}
 
-	/**
-	 * @param AsyncTask $task
-	 */
-	public function submitTask(AsyncTask $task) : int{
+    public function submitTask(AsyncTask $task) : int{
 		if(isset($this->tasks[$task->getTaskId()]) or $task->isGarbage()){
 			return -1;
 		}
@@ -193,9 +194,9 @@ class AsyncPool{
 		$this->collectWorkers();
 	}
 
-	/**
-	 * Collects garbage from running workers.
-	 */
+    /**
+     * Собирает мусор с запущенных воркеров.
+     */
 	private function collectWorkers() : void{
 		foreach($this->workers as $worker){
 			$worker->collect();
@@ -207,17 +208,17 @@ class AsyncPool{
 
 		foreach($this->tasks as $task){
 			$task->checkProgressUpdates($this->server);
-			if($task->isFinished() and !$task->isRunning() and !$task->isCrashed()){
+			if($task->isGarbage() and !$task->isRunning() and !$task->isCrashed()){
 				if(!$task->hasCancelledRun()){
-					/*
-					 * It's possible for a task to submit a progress update and then finish before the progress
-					 * update is detected by the parent thread, so here we consume any missed updates.
-					 *
-					 * When this happens, it's possible for a progress update to arrive between the previous
-					 * checkProgressUpdates() call and the next isGarbage() call, causing progress updates to be
-					 * lost. Thus, it's necessary to do one last check here to make sure all progress updates have
-					 * been consumed before completing.
-					 */
+                    /*
+                    * Задача может отправить обновление о ходе выполнения, а затем завершиться до его выполнения.
+                    * обновление обнаруживается родительским потоком, поэтому здесь мы используем все пропущенные обновления.
+                    *
+                    * Когда это происходит, обновление прогресса может появиться между предыдущим
+                    * вызов checkProgressUpdates() и следующий вызов isGarbage(), в результате чего обновления прогресса
+                    * потерял. Таким образом, здесь необходимо сделать последнюю проверку, чтобы убедиться, что все обновления прогресса
+                    * было израсходовано до завершения.
+                    */
 					$task->checkProgressUpdates($this->server);
 					$task->onCompletion($this->server);
 				}
@@ -234,12 +235,12 @@ class AsyncPool{
 		Timings::$schedulerAsyncTimer->stopTiming();
 	}
 
-	/**
-	 * Returns an array of worker ID => task queue size
-	 *
-	 * @return int[]
-	 * @phpstan-return array<int, int>
-	 */
+    /**
+     * Возвращает массив worker ID => размер очереди задач
+     *
+     * @возврат []
+     * @phpstan-return array<int, int>
+     */
 	public function getTaskQueueSizes() : array{
 		return $this->workerUsage;
 	}
@@ -258,9 +259,9 @@ class AsyncPool{
 		return $ret;
 	}
 
-	/**
-	 * Cancels all pending tasks and shuts down all the workers in the pool.
-	 */
+    /**
+     * Отменяет все ожидающие задачи и закрывает всех рабочих в пуле.
+     */
 	public function shutdown() : void{
 		$this->collectTasks();
 		$this->removeTasks();

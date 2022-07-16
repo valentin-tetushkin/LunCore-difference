@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -27,7 +19,7 @@ class BanCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.ban.player.description",
-			"%commands.ban.usage"
+			"/lban <ИмяИгрока> [причина ...] [время(день)"
 		);
 		$this->setPermission("pocketmine.command.ban.player");
 	}

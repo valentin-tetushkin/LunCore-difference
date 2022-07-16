@@ -1,21 +1,24 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
@@ -50,7 +53,7 @@ class ActiveRedstoneLamp extends Solid implements ElectricalAppliance, SolidLigh
 
 	public function getDrops(Item $item) : array {
 		return [
-			[Item::INACTIVE_REDSTONE_LAMP, 0 ,1],
+			[BlockIds::INACTIVE_REDSTONE_LAMP, 0 ,1],
 		];
 	}
 

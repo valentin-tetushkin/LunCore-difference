@@ -1,27 +1,31 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\item\Tool;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\NBT;
@@ -84,13 +88,6 @@ class BrewingStand extends Transparent {
 			return true;
 		}
 		return false;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
 	}
 
 	/**
@@ -161,7 +158,7 @@ class BrewingStand extends Transparent {
 	public function getDrops(Item $item) : array{
 		$drops = [];
 		if($item->isPickaxe() >= Tool::TIER_WOODEN){
-			$drops[] = [Item::BREWING_STAND, 0, 1];
+			$drops[] = [ItemIds::BREWING_STAND, 0, 1];
 		}
 		return $drops;
 	}

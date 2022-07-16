@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\BlockIds;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class Cactus extends Populator {
@@ -47,7 +69,7 @@ class Cactus extends Populator {
 			if($y !== -1){
 				for(; $y < 127 and $y < $yMax; $y++){
 					if($this->canCactusStay($x, $y, $z)){
-						$this->level->setBlockIdAt($x, $y, $z, Block::CACTUS);
+						$this->level->setBlockIdAt($x, $y, $z, BlockIds::CACTUS);
 						$this->level->setBlockDataAt($x, $y, $z, 1);
 					}
 				}
@@ -66,9 +88,9 @@ class Cactus extends Populator {
 		$b = $this->level->getBlockIdAt($x, $y, $z);
 		$below = $this->level->getBlockIdAt($x, $y - 1, $z);
 		foreach([$this->level->getBlockIdAt($x + 1, $y, $z), $this->level->getBlockIdAt($x - 1, $y, $z), $this->level->getBlockIdAt($x, $y, $z + 1), $this->level->getBlockIdAt($x, $y, $z - 1)] as $adjacent){
-			if($adjacent !== Block::AIR) return false;
+			if($adjacent !== BlockIds::AIR) return false;
 		}
-		return ($b === Block::AIR) and ($below === Block::SAND or $below === Block::CACTUS);
+		return ($b === BlockIds::AIR) and ($below === BlockIds::SAND or $below === BlockIds::CACTUS);
 	}
 
 	/**
@@ -80,7 +102,7 @@ class Cactus extends Populator {
 	private function getHighestWorkableBlock($x, $z){
 		for($y = 127; $y >= 0; --$y){
 			$b = $this->level->getBlockIdAt($x, $y, $z);
-			if($b !== Block::AIR and $b !== Block::LEAVES and $b !== Block::LEAVES2 and $b !== Block::SNOW_LAYER){
+			if($b !== BlockIds::AIR and $b !== BlockIds::LEAVES and $b !== BlockIds::LEAVES2 and $b !== BlockIds::SNOW_LAYER){
 				break;
 			}
 		}

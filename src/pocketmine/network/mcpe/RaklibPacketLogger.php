@@ -1,5 +1,6 @@
 <?php
 
+
 namespace pocketmine\network\mcpe;
 
 use Generator;

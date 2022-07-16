@@ -1,10 +1,31 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ * Автор биома - http://vk.com/KlainYT
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\level\generator\normal\biome;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\level\generator\populator\Sugarcane;
 use pocketmine\level\generator\populator\TallGrass;
 
@@ -15,11 +36,11 @@ class OceanBiome extends NormalBiome{
 	 */
 	public function __construct(){
 		$this->setGroundCover([
-			Block::get(Block::CLAY_BLOCK),
-			Block::get(Block::CLAY_BLOCK),
-			Block::get(Block::SAND),
-			Block::get(Block::SAND),
-			Block::get(Block::SAND)
+			Block::get(BlockIds::GRAVEL),
+			Block::get(BlockIds::GRAVEL),
+			Block::get(BlockIds::GRAVEL),
+			Block::get(BlockIds::GRAVEL),
+			Block::get(BlockIds::GRAVEL)
 		]);
 
 		$sugarcane = new Sugarcane();

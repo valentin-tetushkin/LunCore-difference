@@ -1,32 +1,36 @@
 <?php
 
+
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
 */
 
 namespace pocketmine\level\generator\hell;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Gravel;
 use pocketmine\block\Lava;
 use pocketmine\block\NetherQuartzOre;
 use pocketmine\block\SoulSand;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\noise\Simplex;
@@ -140,16 +144,16 @@ class Nether extends Generator {
 
 				for($y = 0; $y < 128; ++$y){
 					if($y === 0 or $y === 127){
-						$chunk->setBlockId($x, $y, $z, Block::BEDROCK);
+						$chunk->setBlockId($x, $y, $z, BlockIds::BEDROCK);
 						continue;
 					}
 					$noiseValue = (abs($this->emptyHeight - $y) / $this->emptyHeight) * $this->emptyAmplitude - $noise[$x][$z][$y];
 					$noiseValue -= 1 - $this->density;
 
 					if($noiseValue > 0){
-						$chunk->setBlockId($x, $y, $z, Block::NETHERRACK);
+						$chunk->setBlockId($x, $y, $z, BlockIds::NETHERRACK);
 					}elseif($y <= $this->waterHeight){
-						$chunk->setBlockId($x, $y, $z, Block::STILL_LAVA);
+						$chunk->setBlockId($x, $y, $z, BlockIds::STILL_LAVA);
 						$chunk->setBlockLight($x, $y + 1, $z, 15);
 					}
 				}

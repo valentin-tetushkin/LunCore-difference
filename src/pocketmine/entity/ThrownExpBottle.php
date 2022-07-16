@@ -1,21 +1,24 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
@@ -55,8 +58,8 @@ class ThrownExpBottle extends Projectile {
 			$this->hasSplashed = true;
 			$this->getLevel()->addParticle(new SpellParticle($this, 46, 82, 153));
 			if($this->getLevel()->getServer()->expEnabled){
-				$this->getLevel()->spawnXPOrb($this->add(0, -0.2, 0), mt_rand(1, 4));
-				$this->getLevel()->spawnXPOrb($this->add(-0.1, -0.2, 0), mt_rand(1, 4));
+				$this->getLevel()->spawnXPOrb($this->add(0, -0.2), mt_rand(1, 4));
+				$this->getLevel()->spawnXPOrb($this->add(-0.1, -0.2), mt_rand(1, 4));
 				$this->getLevel()->spawnXPOrb($this->add(0, -0.2, -0.1), mt_rand(1, 4));
 			}
 
@@ -65,18 +68,16 @@ class ThrownExpBottle extends Projectile {
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		$this->age++;
 
@@ -84,8 +85,6 @@ class ThrownExpBottle extends Projectile {
 			$this->splash();
 			$hasUpdate = true;
 		}
-
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

@@ -1,23 +1,26 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\command;
 
@@ -72,7 +75,7 @@ class FormattedCommandAlias extends Command {
 			$result |= Server::getInstance()->dispatchCommand($sender, $command);
 		}
 
-		return (bool) $result;
+		return $result;
 	}
 
 	/**
@@ -86,14 +89,14 @@ class FormattedCommandAlias extends Command {
 		$index = strpos($formatString, '$');
 		while($index !== false){
 			$start = $index;
-			if($index > 0 and $formatString{$start - 1} === "\\"){
+			if($index > 0 and $formatString[$start - 1] === "\\"){
 				$formatString = substr($formatString, 0, $start - 1) . substr($formatString, $start);
 				$index = strpos($formatString, '$', $index);
 				continue;
 			}
 
 			$required = false;
-			if($formatString{$index + 1} == '$'){
+			if($formatString[$index + 1] == '$'){
 				$required = true;
 
 				++$index;
@@ -103,7 +106,7 @@ class FormattedCommandAlias extends Command {
 
 			$argStart = $index;
 
-			while($index < strlen($formatString) and self::inRange(ord($formatString{$index}) - 48, 0, 9)){
+			while($index < strlen($formatString) and self::inRange(ord($formatString[$index]) - 48, 0, 9)){
 				++$index;
 			}
 
@@ -121,7 +124,7 @@ class FormattedCommandAlias extends Command {
 
 			$rest = false;
 
-			if($index < strlen($formatString) and $formatString{$index} === "-"){
+			if($index < strlen($formatString) and $formatString[$index] === "-"){
 				$rest = true;
 				++$index;
 			}

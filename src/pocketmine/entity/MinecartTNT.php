@@ -1,17 +1,32 @@
 <?php
-/*
+
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\{CompoundTag};
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
@@ -91,17 +106,15 @@ class MinecartTNT extends Animal {
 			}
 		}
 
-		return [ItemItem::get(ItemItem::MINECART, 0, 1)];
+		return [ItemItem::get(ItemIds::MINECART)];
 	}
 	
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->closed){
 			return false;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
         if ($this->getLevel() !== null) {
             $block = $this->getLevel()->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
         }else{
@@ -182,8 +195,6 @@ class MinecartTNT extends Animal {
 		if((($x != 0)or($y != 0)or($z != 0))and($this->owner != null)){
 			$this->setMotion(new Vector3($x, $y, $z));
 		}
-		
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

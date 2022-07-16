@@ -1,32 +1,32 @@
 <?php
 
+
 /*
  *
- *  _____            _               _____           
- * / ____|          (_)             |  __ \          
- *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
- *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
- *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
- * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
- *                         __/ |                    
- *                        |___/                     
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
  *
 */
 
 namespace pocketmine\tile;
 
+use pocketmine\block\BlockIds;
 use pocketmine\inventory\BeaconInventory;
 use pocketmine\inventory\InventoryHolder;
-use pocketmine\block\Block;
 use pocketmine\entity\Effect;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
@@ -59,20 +59,16 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder {
 		$this->scheduleUpdate();
 	}
 
-	public function saveNBT(){
-		parent::saveNBT();
-	}
-
-	/**
+    /**
 	 * @return CompoundTag
 	 */
 	public function getSpawnCompound(){
 		$c = new CompoundTag("", [
 			new StringTag("id", Tile::BEACON),
-			new ByteTag("isMovable", (bool) true),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z),
+			new ByteTag("isMovable", true),
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z),
 			new IntTag("primary", $this->namedtag["primary"]),
 			new IntTag("secondary", $this->namedtag["secondary"])
 		]);
@@ -185,10 +181,10 @@ class Beacon extends Spawnable implements Nameable, InventoryHolder {
 				for($queryZ = $tileZ - $powerLevel; $queryZ <= $tileZ + $powerLevel; $queryZ++){
 					$testBlockId = $this->level->getBlockIdAt($queryX, $queryY, $queryZ);
 					if(
-						$testBlockId != Block::IRON_BLOCK &&
-						$testBlockId != Block::GOLD_BLOCK &&
-						$testBlockId != Block::EMERALD_BLOCK &&
-						$testBlockId != Block::DIAMOND_BLOCK
+						$testBlockId != BlockIds::IRON_BLOCK &&
+						$testBlockId != BlockIds::GOLD_BLOCK &&
+						$testBlockId != BlockIds::EMERALD_BLOCK &&
+						$testBlockId != BlockIds::DIAMOND_BLOCK
 					){
 						return $powerLevel - 1;
 					}

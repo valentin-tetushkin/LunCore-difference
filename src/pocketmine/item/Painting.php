@@ -1,13 +1,30 @@
 <?php
-/*
- * This file is translated from the Nukkit Project
- * which is written by MagicDroidX
- * @link https://github.com/Nukkit/Nukkit
-*/
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\item;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\entity\Painting as PaintingEntity;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
@@ -27,13 +44,6 @@ class Painting extends Item {
 	 */
 	public function __construct($meta = 0, $count = 1){
 		parent::__construct(self::PAINTING, $meta, $count, "Painting");
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
 	}
 
 	/**
@@ -142,7 +152,7 @@ class Painting extends Item {
 				$item = $player->getInventory()->getItemInHand();
 				$count = $item->getCount();
 				if(--$count <= 0){
-					$player->getInventory()->setItemInHand(Item::get(Item::AIR));
+					$player->getInventory()->setItemInHand(Item::get(BlockIds::AIR));
 					return true;
 				}
 

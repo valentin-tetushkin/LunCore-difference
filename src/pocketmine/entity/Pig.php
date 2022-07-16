@@ -1,30 +1,33 @@
 <?php
 
-/*
- * _      _ _        _____               
- *| |    (_) |      / ____|              
- *| |     _| |_ ___| |     ___  _ __ ___ 
- *| |    | | __/ _ \ |    / _ \| '__/ _ \
- *| |____| | ||  __/ |___| (_) | | |  __/
- *|______|_|\__\___|\_____\___/|_|  \___|
+
+/* @author LunCore team
  *
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author genisyspromcpe
- * @link https://github.com/LiteCoreTeam/LiteCore
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\math\Vector3;
@@ -78,27 +81,23 @@ class Pig extends Animal {
 			$damager = $cause->getDamager();
 			if($damager instanceof Player){
 				$lootingL = $damager->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
-				$drops = [ItemItem::get(ItemItem::RAW_PORKCHOP, 0, mt_rand(1, 3 + $lootingL))];
-
-				return $drops;
+                return [ItemItem::get(ItemIds::RAW_PORKCHOP, 0, mt_rand(1, 3 + $lootingL))];
 			}
 		}
 
 		return [];
 	}
 	
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->isClosed() or !$this->isAlive()){
-			return parent::onUpdate($currentTick);
+			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
 		
 		if($this->isMorph){
 			return true;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
 		if ($this->getLevel() !== null) {
 			$block = $this->getLevel()->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
 		}else{
@@ -183,8 +182,6 @@ class Pig extends Animal {
 		if((($x != 0)or($y != 0)or($z != 0))and($this->motionVector != null)){
 			$this->setMotion(new Vector3($x, $y, $z));
 		}
-		
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

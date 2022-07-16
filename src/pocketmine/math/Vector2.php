@@ -1,20 +1,23 @@
 <?php
 
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
  * 
  *
 */
@@ -164,9 +167,9 @@ class Vector2{
 		return sqrt($this->lengthSquared());
 	}
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return float
+     */
 	public function lengthSquared() : float{
 		return $this->x * $this->x + $this->y * $this->y;
 	}
@@ -183,11 +186,11 @@ class Vector2{
 		return new Vector2(0, 0);
 	}
 
-	/**
-	 * @param Vector2 $v
-	 *
-	 * @return int
-	 */
+    /**
+     * @param Vector2 $v
+     *
+     * @return float
+     */
 	public function dot(Vector2 $v) : float{
 		return $this->x * $v->x + $this->y * $v->y;
 	}

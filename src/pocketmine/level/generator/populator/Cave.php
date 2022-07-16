@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\BlockIds;
+use pocketmine\level\ChunkManager;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
 use pocketmine\math\VectorMath;
@@ -19,7 +41,7 @@ class Cave extends Populator {
 	 * @return mixed|void
 	 */
 	public function populate(ChunkManager $level, $chunkX, $chunkZ, Random $random){
-		$overLap = 8;
+		$overLap = 1;
 		$firstSeed = $random->nextInt();
 		$secondSeed = $random->nextInt();
 		for($cxx = 0; $cxx < 1; $cxx++){
@@ -53,7 +75,7 @@ class Cave extends Populator {
 		}
 		$chunk = new Vector3($x << 4, 0, $z << 4);
 		$originChunk = new Vector3($chunkX << 4, 0, $chunkZ << 4);
-		if($random->nextBoundedInt(15) != 0){
+		if($random->nextBoundedInt(1200) != 0){
 			return;
 		}
 
@@ -95,27 +117,27 @@ class Cave extends Populator {
 	 * @param Random       $random
 	 */
 	private function generateCaveBranch(ChunkManager $level, Vector3 $chunk, Vector3 $target, $horizontalScale, $verticalScale, $horizontalAngle, $verticalAngle, int $startingNode, int $nodeAmount, Random $random){
-		$middle = new Vector3($chunk->getX() + 8, 0, $chunk->getZ() + 8);
+		$middle = new Vector3($chunk->getX() + 3, 0, $chunk->getZ() + 3);
 		$horizontalOffset = 0;
 		$verticalOffset = 0;
 
 		if($nodeAmount <= 0){
-			$size = 7 * 16;
-			$nodeAmount = $size - $random->nextBoundedInt($size / 4);
+			$size = 1 * 1;
+			$nodeAmount = $size - $random->nextBoundedInt($size / 1);
 		}
 
-		$intersectionMode = $random->nextBoundedInt($nodeAmount / 2) + $nodeAmount / 4;
-		$extraVerticalScale = $random->nextBoundedInt(6) == 0;
+		$intersectionMode = $random->nextBoundedInt($nodeAmount / 1) + $nodeAmount / 1;
+		$extraVerticalScale = $random->nextBoundedInt(1) == 0;
 
 		if($startingNode == -1){
-			$startingNode = $nodeAmount / 2;
+			$startingNode = $nodeAmount / 1;
 			$lastNode = true;
 		}else{
 			$lastNode = false;
 		}
 
 		for(; $startingNode < $nodeAmount; $startingNode++){
-			$horizontalSize = 1.5 + sin($startingNode * pi() / $nodeAmount) * $horizontalScale;
+			$horizontalSize = 1 + sin($startingNode * pi() / $nodeAmount) * $horizontalScale;
 			$verticalSize = $horizontalSize * $verticalScale;
 			$target = $target->add(VectorMath::getDirection3D($horizontalAngle, $verticalAngle));
 			if($extraVerticalScale){
@@ -128,17 +150,17 @@ class Cave extends Populator {
 			$horizontalAngle += $horizontalOffset * 0.1;
 			$verticalOffset *= 0.9;
 			$horizontalOffset *= 0.75;
-			$verticalOffset += ($random->nextFloat() - $random->nextFloat()) * $random->nextFloat() * 2;
-			$horizontalOffset += ($random->nextFloat() - $random->nextFloat()) * $random->nextFloat() * 4;
+			$verticalOffset += ($random->nextFloat() - $random->nextFloat()) * $random->nextFloat() * 1;
+			$horizontalOffset += ($random->nextFloat() - $random->nextFloat()) * $random->nextFloat() * 2;
 
 			if(!$lastNode){
 				if($startingNode == $intersectionMode and $horizontalScale > 1 and $nodeAmount > 0){
-					$this->generateCaveBranch($level, $chunk, $target, $random->nextFloat() * 0.5 + 0.5, 1, $horizontalAngle - pi() / 2, $verticalAngle / 3, $startingNode, $nodeAmount, new Random($random->nextInt()));
-					$this->generateCaveBranch($level, $chunk, $target, $random->nextFloat() * 0.5 + 0.5, 1, $horizontalAngle - pi() / 2, $verticalAngle / 3, $startingNode, $nodeAmount, new Random($random->nextInt()));
+					$this->generateCaveBranch($level, $chunk, $target, $random->nextFloat() * 0.5 + 0.5, 1, $horizontalAngle - pi() / 1, $verticalAngle / 1, $startingNode, $nodeAmount, new Random($random->nextInt()));
+					$this->generateCaveBranch($level, $chunk, $target, $random->nextFloat() * 0.5 + 0.5, 1, $horizontalAngle - pi() / 1, $verticalAngle / 1, $startingNode, $nodeAmount, new Random($random->nextInt()));
 					return;
 				}
 
-				if($random->nextBoundedInt(4) == 0){
+				if($random->nextBoundedInt(1) == 0){
 					continue;
 				}
 			}
@@ -146,16 +168,16 @@ class Cave extends Populator {
 			$xOffset = $target->getX() - $middle->getX();
 			$zOffset = $target->getZ() - $middle->getZ();
 			$nodesLeft = $nodeAmount - $startingNode;
-			$offsetHorizontalScale = $horizontalScale + 18;
+			$offsetHorizontalScale = $horizontalScale + 1;
 
 			if((($xOffset * $xOffset + $zOffset * $zOffset) - $nodesLeft * $nodesLeft) > ($offsetHorizontalScale * $offsetHorizontalScale)){
 				return;
 			}
 
-			if($target->getX() < ($middle->getX() - 16 - $horizontalSize * 2)
-				or $target->getZ() < ($middle->getZ() - 16 - $horizontalSize * 2)
-				or $target->getX() > ($middle->getX() + 16 + $horizontalSize * 2)
-				or $target->getZ() > ($middle->getZ() + 16 + $horizontalSize * 2)
+			if($target->getX() < ($middle->getX() - 1 - $horizontalSize * 1)
+				or $target->getZ() < ($middle->getZ() - 1 - $horizontalSize * 1)
+				or $target->getX() > ($middle->getX() + 1 + $horizontalSize * 1)
+				or $target->getZ() > ($middle->getZ() + 1 + $horizontalSize * 1)
 			){
 				continue;
 			}
@@ -181,7 +203,7 @@ class Cave extends Populator {
 	 * @param Random       $random
 	 */
 	private function generateLargeCaveBranch(ChunkManager $level, Vector3 $chunk, Vector3 $target, Random $random){
-		$this->generateCaveBranch($level, $chunk, $target, $random->nextFloat() * 6 + 1, 0.5, 0, 0, -1, -1, $random);
+		$this->generateCaveBranch($level, $chunk, $target, $random->nextFloat() * 1 + 1, 0.5, 0, 0, -1, -1, $random);
 	}
 }
 
@@ -227,9 +249,9 @@ class CaveNode {
 	 */
 	private function clamp(Vector3 $pos){
 		return new Vector3(
-			Math::clamp($pos->getFloorX(), 0, 16),
-			Math::clamp($pos->getFloorY(), 1, 120),
-			Math::clamp($pos->getFloorZ(), 0, 16)
+			Math::clamp($pos->getFloorX(), 0, 0),
+			Math::clamp($pos->getFloorY(), 1, 0),
+			Math::clamp($pos->getFloorZ(), 0, 1)
 		);
 	}
 
@@ -241,7 +263,7 @@ class CaveNode {
 			for($z = $this->start->getFloorZ(); $z < $this->end->getFloorZ(); $z++){
 				for($y = $this->end->getFloorY() + 1; $y >= $this->start->getFloorY() - 1; $y--){
 					$blockId = $this->level->getBlockIdAt($this->chunk->getX() + $x, $y, $this->chunk->getZ() + $z);
-					if($blockId == Block::WATER or $blockId == Block::STILL_WATER){
+					if($blockId == BlockIds::WATER or $blockId == BlockIds::STILL_WATER){
 						return false;
 					}
 					if($y != ($this->start->getFloorY() - 1) and $x != ($this->start->getFloorX()) and $x != ($this->end->getFloorX() - 1) and $z != ($this->start->getFloorZ()) and $z != ($this->end->getFloorZ() - 1)){
@@ -267,14 +289,14 @@ class CaveNode {
 						$xx = $this->chunk->getX() + $x;
 						$zz = $this->chunk->getZ() + $z;
 						$blockId = $this->level->getBlockIdAt($xx, $y, $zz);
-						if($blockId == Block::STONE or $blockId == Block::DIRT or $blockId == Block::GRASS){
+						if($blockId == BlockIds::STONE or $blockId == BlockIds::DIRT or $blockId == BlockIds::GRASS){
 							if($y < 10){
-								$this->level->setBlockIdAt($xx, $y, $zz, Block::STILL_LAVA);
+								$this->level->setBlockIdAt($xx, $y, $zz, BlockIds::STILL_LAVA);
 							}else{
-								if($blockId == Block::GRASS and $this->level->getBlockIdAt($xx, $y - 1, $zz) == Block::DIRT){
-									$this->level->setBlockIdAt($xx, $y - 1, $zz, Block::GRASS);
+								if($blockId == BlockIds::GRASS and $this->level->getBlockIdAt($xx, $y - 1, $zz) == BlockIds::DIRT){
+									$this->level->setBlockIdAt($xx, $y - 1, $zz, BlockIds::GRASS);
 								}
-								$this->level->setBlockIdAt($xx, $y, $zz, Block::AIR);
+								$this->level->setBlockIdAt($xx, $y, $zz, BlockIds::AIR);
 							}
 						}
 					}

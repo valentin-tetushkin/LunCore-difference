@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -51,7 +43,7 @@ class BiomeCommand extends VanillaCommand {
 
 		if($sender instanceof Player){
 			if($args[0] == "set"){
-				$biome = isset($args[1]) ? $args[1] : 1;//默认改成草原
+				$biome = $args[1] ?? 1;//默认改成草原
 				if(isset($sender->selectedPos[0]) and isset($sender->selectedPos[1])){
 					if(is_numeric($biome) === false){
 						$sender->sendMessage(TextFormat::RED . new TranslationContainer("pocketmine.command.biome.wrongBio"));

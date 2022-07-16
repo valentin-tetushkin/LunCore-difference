@@ -1,11 +1,25 @@
 <?php
+
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 */
 
 namespace pocketmine;
@@ -66,7 +80,7 @@ class MemoryManager {
 
 		$defaultMemory = 1024;
 
-		if(preg_match("/([0-9]+)([KMGkmg])/", $this->server->getConfigString("memory-limit", ""), $matches) > 0){
+		if(preg_match("/([0-9]+)([KMGkmg])/", $this->server->getConfigString("memory-limit"), $matches) > 0){
 			$m = (int) $matches[1];
 			if($m <= 0){
 				$defaultMemory = 0;
@@ -75,13 +89,11 @@ class MemoryManager {
 					case "K":
 						$defaultMemory = $m / 1024;
 						break;
-					case "M":
-						$defaultMemory = $m;
-						break;
-					case "G":
+                    case "G":
 						$defaultMemory = $m * 1024;
 						break;
-					default:
+                    case "M":
+                    default:
 						$defaultMemory = $m;
 						break;
 				}
@@ -239,7 +251,7 @@ class MemoryManager {
 	 */
 	public function addObjectWatcher($object){
 		if(!is_object($object)){
-			throw new \InvalidArgumentException("Not an object!");
+			throw new \InvalidArgumentException("Не объект!");
 		}
 
 
@@ -334,7 +346,7 @@ class MemoryManager {
 	 */
 	public function dumpServerMemory($outputFolder, $maxNesting, $maxStringSize){
 		$hardLimit = ini_get('memory_limit');
-		if($hardLimit === false) throw new \Error("memory_limit INI directive should always exist");
+		if($hardLimit === false) throw new \Error("INI-директива memory_limit всегда должна существовать");
 		ini_set('memory_limit', '-1');
 		gc_disable();
 

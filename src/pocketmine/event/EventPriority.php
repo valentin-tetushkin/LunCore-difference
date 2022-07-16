@@ -1,7 +1,38 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\event;
 
+
+/**
+ * List of event priorities
+ *
+ * Events will be called in this order:
+ * LOWEST -> LOW -> NORMAL -> HIGH -> HIGHEST -> MONITOR
+ *
+ * MONITOR events should not change the event outcome or contents
+ */
 abstract class EventPriority {
 	public const ALL = [
 		self::LOWEST,
@@ -12,10 +43,19 @@ abstract class EventPriority {
 		self::MONITOR
 	];
 
+	/**
+	 * Event call is of very low importance and should be ran first, to allow
+	 * other plugins to further customise the outcome
+	 */
 	const LOWEST = 5;
-
+	/**
+	 * Event call is of low importance
+	 */
 	const LOW = 4;
-	
+	/**
+	 * Event call is neither important or unimportant, and may be ran normally.
+	 * This is the default priority.
+	 */
 	const NORMAL = 3;
 	/**
 	 * Event call is of high importance

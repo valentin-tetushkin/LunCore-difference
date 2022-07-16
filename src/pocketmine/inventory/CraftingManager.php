@@ -1,17 +1,31 @@
 <?php
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\inventory;
 
 use pocketmine\event\Timings;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\item\Potion;
 use pocketmine\network\mcpe\protocol\BatchPacket;
 use pocketmine\network\mcpe\protocol\CraftingDataPacket;
@@ -65,9 +79,12 @@ class CraftingManager {
 				case 1:
 					// TODO: handle multiple result items
 					$first = $recipe["output"][0];
-					$result = new ShapedRecipe(Item::get($first["id"], $first["damage"], $first["count"], $first["nbt"]), $recipe["height"], $recipe["width"]);
+                    try {
+                        $result = new ShapedRecipe(Item::get($first["id"], $first["damage"], $first["count"], $first["nbt"]), $recipe["height"], $recipe["width"]);
+                    } catch (\Exception $e) {
+                    }
 
-					$shape = array_chunk($recipe["input"], $recipe["width"]);
+                    $shape = array_chunk($recipe["input"], $recipe["width"]);
 					foreach($shape as $y => $row){
 						foreach($row as $x => $ingredient){
 							$result->addIngredient($x, $y, Item::get($ingredient["id"], ($ingredient["damage"] < 0 ? -1 : $ingredient["damage"]), $ingredient["count"], $ingredient["nbt"]));
@@ -79,7 +96,7 @@ class CraftingManager {
 				case 3:
 					$result = $recipe["output"];
 					$resultItem = Item::get($result["id"], $result["damage"], $result["count"], $result["nbt"]);
-					$this->registerRecipe(new FurnaceRecipe($resultItem, Item::get($recipe["inputId"], $recipe["inputDamage"] ?? -1, 1)));
+					$this->registerRecipe(new FurnaceRecipe($resultItem, Item::get($recipe["inputId"], $recipe["inputDamage"] ?? -1)));
 					break;
 				default:
 					break;
@@ -137,139 +154,139 @@ class CraftingManager {
 	protected function registerBrewingStand(){
 		//Potion
 		//WATER_BOTTLE
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::AWKWARD, 1), Item::get(Item::NETHER_WART, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::THICK, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE_EXTENDED, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::WEAKNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::AWKWARD), Item::get(ItemIds::NETHER_WART), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::THICK), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE_EXTENDED), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::WEAKNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE, 1), Item::get(Item::GHAST_TEAR, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE, 1), Item::get(Item::GLISTERING_MELON, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE, 1), Item::get(Item::BLAZE_POWDER, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE, 1), Item::get(Item::MAGMA_CREAM, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE, 1), Item::get(Item::SUGAR, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE, 1), Item::get(Item::SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::MUNDANE, 1), Item::get(Item::RABBIT_FOOT, 0, 1), Item::get(Item::POTION, Potion::WATER_BOTTLE, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE), Item::get(ItemIds::GHAST_TEAR), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE), Item::get(ItemIds::GLISTERING_MELON), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE), Item::get(ItemIds::BLAZE_POWDER), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE), Item::get(ItemIds::MAGMA_CREAM), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE), Item::get(ItemIds::SUGAR), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE), Item::get(ItemIds::SPIDER_EYE), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::MUNDANE), Item::get(ItemIds::RABBIT_FOOT), Item::get(ItemIds::POTION, Potion::WATER_BOTTLE)));
 		//To WEAKNESS
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::WEAKNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::MUNDANE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::WEAKNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::THICK, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::WEAKNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::MUNDANE_EXTENDED, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::WEAKNESS_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::WEAKNESS, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::WEAKNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::MUNDANE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::WEAKNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::THICK)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::WEAKNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::MUNDANE_EXTENDED)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::WEAKNESS_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::WEAKNESS)));
 		//GHAST_TEAR and BLAZE_POWDER
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::REGENERATION, 1), Item::get(Item::GHAST_TEAR, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::REGENERATION_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::REGENERATION, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::REGENERATION_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::REGENERATION, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::REGENERATION), Item::get(ItemIds::GHAST_TEAR), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::REGENERATION_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::REGENERATION)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::REGENERATION_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::REGENERATION)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::STRENGTH, 1), Item::get(Item::BLAZE_POWDER, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::STRENGTH_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::STRENGTH, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::STRENGTH_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::STRENGTH, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::STRENGTH), Item::get(ItemIds::BLAZE_POWDER), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::STRENGTH_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::STRENGTH)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::STRENGTH_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::STRENGTH)));
 		//SPIDER_EYE GLISTERING_MELON and PUFFERFISH
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::POISON, 1), Item::get(Item::SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::POISON_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::POISON, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::POISON_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::POISON, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HEALING, 1), Item::get(Item::GLISTERING_MELON, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HEALING_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::HEALING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::WATER_BREATHING, 1), Item::get(Item::PUFFER_FISH, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::WATER_BREATHING_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::WATER_BREATHING, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::POISON), Item::get(ItemIds::SPIDER_EYE), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::POISON_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::POISON)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::POISON_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::POISON)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HEALING), Item::get(ItemIds::GLISTERING_MELON), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HEALING_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::HEALING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::WATER_BREATHING), Item::get(ItemIds::PUFFER_FISH), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::WATER_BREATHING_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::WATER_BREATHING)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HARMING, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::WATER_BREATHING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HARMING, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::HEALING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HARMING, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::POISON, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HARMING_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::HARMING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HARMING_TWO, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::HEALING_TWO, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::HARMING_TWO, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::POISON_T, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HARMING), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::WATER_BREATHING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HARMING), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::HEALING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HARMING), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::POISON)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HARMING_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::HARMING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HARMING_TWO), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::HEALING_TWO)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::HARMING_TWO), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::POISON_T)));
 		//SUGAR MAGMA_CREAM and RABBIT_FOOT
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SWIFTNESS, 1), Item::get(Item::SUGAR, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SWIFTNESS_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::SWIFTNESS, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SWIFTNESS_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::SWIFTNESS, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::FIRE_RESISTANCE, 1), Item::get(Item::MAGMA_CREAM, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::FIRE_RESISTANCE_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::FIRE_RESISTANCE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::LEAPING, 1), Item::get(Item::RABBIT_FOOT, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::LEAPING_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::LEAPING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::LEAPING_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::LEAPING, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SWIFTNESS), Item::get(ItemIds::SUGAR), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SWIFTNESS_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::SWIFTNESS)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SWIFTNESS_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::SWIFTNESS)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::FIRE_RESISTANCE), Item::get(ItemIds::MAGMA_CREAM), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::FIRE_RESISTANCE_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::FIRE_RESISTANCE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::LEAPING), Item::get(ItemIds::RABBIT_FOOT), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::LEAPING_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::LEAPING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::LEAPING_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::POTION, Potion::LEAPING)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SLOWNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::FIRE_RESISTANCE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SLOWNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::SWIFTNESS, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SLOWNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::LEAPING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SLOWNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::FIRE_RESISTANCE_T, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SLOWNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::LEAPING_T, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SLOWNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::SWIFTNESS_T, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::SLOWNESS_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::SLOWNESS, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SLOWNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::FIRE_RESISTANCE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SLOWNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::SWIFTNESS)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SLOWNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::LEAPING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SLOWNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::FIRE_RESISTANCE_T)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SLOWNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::LEAPING_T)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SLOWNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::SWIFTNESS_T)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::SLOWNESS_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::SLOWNESS)));
 		//GOLDEN_CARROT
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::NIGHT_VISION, 1), Item::get(Item::GOLDEN_CARROT, 0, 1), Item::get(Item::POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::NIGHT_VISION_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::NIGHT_VISION, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::INVISIBILITY, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::NIGHT_VISION, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::INVISIBILITY_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::POTION, Potion::INVISIBILITY, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::POTION, Potion::INVISIBILITY_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::POTION, Potion::NIGHT_VISION_T, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::NIGHT_VISION), Item::get(ItemIds::GOLDEN_CARROT), Item::get(ItemIds::POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::NIGHT_VISION_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::NIGHT_VISION)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::INVISIBILITY), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::NIGHT_VISION)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::INVISIBILITY_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::POTION, Potion::INVISIBILITY)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::POTION, Potion::INVISIBILITY_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::POTION, Potion::NIGHT_VISION_T)));
 		//===================================================================分隔符=======================================================================
 		//SPLASH_POTION
 		//WATER_BOTTLE
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1), Item::get(Item::NETHER_WART, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::THICK, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE_EXTENDED, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::WEAKNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD), Item::get(ItemIds::NETHER_WART), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::THICK), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE_EXTENDED), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::WEAKNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1), Item::get(Item::GHAST_TEAR, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1), Item::get(Item::GLISTERING_MELON, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1), Item::get(Item::BLAZE_POWDER, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1), Item::get(Item::MAGMA_CREAM, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1), Item::get(Item::SUGAR, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1), Item::get(Item::SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1), Item::get(Item::RABBIT_FOOT, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BOTTLE, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE), Item::get(ItemIds::GHAST_TEAR), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE), Item::get(ItemIds::GLISTERING_MELON), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE), Item::get(ItemIds::BLAZE_POWDER), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE), Item::get(ItemIds::MAGMA_CREAM), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE), Item::get(ItemIds::SUGAR), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE), Item::get(ItemIds::SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE), Item::get(ItemIds::RABBIT_FOOT), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BOTTLE)));
 		//To WEAKNESS
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::WEAKNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::MUNDANE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::WEAKNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::THICK, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::WEAKNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::MUNDANE_EXTENDED, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::WEAKNESS_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WEAKNESS, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::WEAKNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::WEAKNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::THICK)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::WEAKNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::MUNDANE_EXTENDED)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::WEAKNESS_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::WEAKNESS)));
 		//GHAST_TEAR and BLAZE_POWDER
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::REGENERATION, 1), Item::get(Item::GHAST_TEAR, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::REGENERATION_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::REGENERATION, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::REGENERATION_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::REGENERATION, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::REGENERATION), Item::get(ItemIds::GHAST_TEAR), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::REGENERATION_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::REGENERATION)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::REGENERATION_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::REGENERATION)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::STRENGTH, 1), Item::get(Item::BLAZE_POWDER, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::STRENGTH_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::STRENGTH, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::STRENGTH_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::STRENGTH, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::STRENGTH), Item::get(ItemIds::BLAZE_POWDER), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::STRENGTH_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::STRENGTH)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::STRENGTH_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::STRENGTH)));
 		//SPIDER_EYE GLISTERING_MELON and PUFFERFISH
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::POISON, 1), Item::get(Item::SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::POISON_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::POISON, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::POISON_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::POISON, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HEALING, 1), Item::get(Item::GLISTERING_MELON, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HEALING_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::HEALING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::WATER_BREATHING, 1), Item::get(Item::PUFFER_FISH, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::WATER_BREATHING_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BREATHING, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::POISON), Item::get(ItemIds::SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::POISON_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::POISON)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::POISON_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::POISON)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HEALING), Item::get(ItemIds::GLISTERING_MELON), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HEALING_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::HEALING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BREATHING), Item::get(ItemIds::PUFFER_FISH), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BREATHING_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BREATHING)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HARMING, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::WATER_BREATHING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HARMING, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::HEALING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HARMING, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::POISON, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HARMING_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::HARMING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HARMING_TWO, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::HEALING_TWO, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::HARMING_TWO, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::POISON_T, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HARMING), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::WATER_BREATHING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HARMING), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::HEALING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HARMING), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::POISON)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HARMING_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::HARMING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HARMING_TWO), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::HEALING_TWO)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::HARMING_TWO), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::POISON_T)));
 		//SUGAR MAGMA_CREAM and RABBIT_FOOT
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SWIFTNESS, 1), Item::get(Item::SUGAR, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SWIFTNESS_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::SWIFTNESS, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SWIFTNESS_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::SWIFTNESS, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::FIRE_RESISTANCE, 1), Item::get(Item::MAGMA_CREAM, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::FIRE_RESISTANCE_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::FIRE_RESISTANCE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::LEAPING, 1), Item::get(Item::RABBIT_FOOT, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::LEAPING_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::LEAPING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::LEAPING_TWO, 1), Item::get(Item::GLOWSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::LEAPING, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SWIFTNESS), Item::get(ItemIds::SUGAR), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SWIFTNESS_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::SWIFTNESS)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SWIFTNESS_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::SWIFTNESS)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::FIRE_RESISTANCE), Item::get(ItemIds::MAGMA_CREAM), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::FIRE_RESISTANCE_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::FIRE_RESISTANCE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::LEAPING), Item::get(ItemIds::RABBIT_FOOT), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::LEAPING_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::LEAPING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::LEAPING_TWO), Item::get(ItemIds::GLOWSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::LEAPING)));
 
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SLOWNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::FIRE_RESISTANCE, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SLOWNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::SWIFTNESS, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SLOWNESS, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::LEAPING, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SLOWNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::FIRE_RESISTANCE_T, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SLOWNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::LEAPING_T, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SLOWNESS_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::SWIFTNESS_T, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::SLOWNESS_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::SLOWNESS, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::FIRE_RESISTANCE)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::SWIFTNESS)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::LEAPING)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::FIRE_RESISTANCE_T)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::LEAPING_T)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::SWIFTNESS_T)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::SLOWNESS)));
 		//GOLDEN_CARROT
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::NIGHT_VISION, 1), Item::get(Item::GOLDEN_CARROT, 0, 1), Item::get(Item::SPLASH_POTION, Potion::AWKWARD, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::NIGHT_VISION_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::NIGHT_VISION, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::INVISIBILITY, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::NIGHT_VISION, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::INVISIBILITY_T, 1), Item::get(Item::REDSTONE_DUST, 0, 1), Item::get(Item::SPLASH_POTION, Potion::INVISIBILITY, 1)));
-		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, Potion::INVISIBILITY_T, 1), Item::get(Item::FERMENTED_SPIDER_EYE, 0, 1), Item::get(Item::SPLASH_POTION, Potion::NIGHT_VISION_T, 1)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::NIGHT_VISION), Item::get(ItemIds::GOLDEN_CARROT), Item::get(ItemIds::SPLASH_POTION, Potion::AWKWARD)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::NIGHT_VISION_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::NIGHT_VISION)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::INVISIBILITY), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::NIGHT_VISION)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::INVISIBILITY_T), Item::get(ItemIds::REDSTONE_DUST), Item::get(ItemIds::SPLASH_POTION, Potion::INVISIBILITY)));
+		$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, Potion::INVISIBILITY_T), Item::get(ItemIds::FERMENTED_SPIDER_EYE), Item::get(ItemIds::SPLASH_POTION, Potion::NIGHT_VISION_T)));
 		//===================================================================分隔符=======================================================================
 		//普通药水升级成喷溅
 		foreach(Potion::POTIONS as $potion => $effect){
-			$this->registerBrewingRecipe(new BrewingRecipe(Item::get(Item::SPLASH_POTION, $potion, 1), Item::get(Item::GUNPOWDER, 0, 1), Item::get(Item::POTION, $potion, 1)));
+			$this->registerBrewingRecipe(new BrewingRecipe(Item::get(ItemIds::SPLASH_POTION, $potion), Item::get(ItemIds::GUNPOWDER), Item::get(ItemIds::POTION, $potion)));
 		}
 	}
 

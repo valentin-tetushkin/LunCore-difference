@@ -1,10 +1,26 @@
 <?php
-# ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
-# ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
-# ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
-# ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
-# ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
-# ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\nbt\tag;
 
@@ -55,7 +71,7 @@ class LongTag extends NamedTag {
 	 */
 	public function setValue($value) : void{
 		if(!is_int($value)){
-			throw new \TypeError("LongTag value must be of type int, " . gettype($value) . " given");
+            throw new \TypeError("Значение LongTag должно быть типа int, " .gettype($value) . " задано");
 		}
 		parent::setValue($value);
 	}

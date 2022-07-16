@@ -1,21 +1,16 @@
 <?php
 
+
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
 */
 
@@ -54,9 +49,9 @@ abstract class PluginBase implements Plugin {
 	/** @var PluginLogger */
 	private $logger;
 
-	/**
-	 * Called when the plugin is loaded, before calling onEnable()
-	 */
+    /**
+     * Вызывается при загрузке плагина перед вызовом onEnable()
+     */
 	public function onLoad(){
 
 	}
@@ -124,8 +119,8 @@ abstract class PluginBase implements Plugin {
 			$this->loader = $loader;
 			$this->server = $server;
 			$this->description = $description;
-			$this->dataFolder = rtrim($dataFolder, "\\/") . "/";
-			$this->file = rtrim($file, "\\/") . "/";
+		    $this->dataFolder = rtrim($dataFolder, "/" . DIRECTORY_SEPARATOR) . "/";
+		    $this->file = rtrim($file, "/" . DIRECTORY_SEPARATOR) . "/";
 			$this->configFile = $this->dataFolder . "config.yml";
 			$this->logger = new PluginLogger($this);
 		}
@@ -182,16 +177,16 @@ abstract class PluginBase implements Plugin {
 		return substr($this->file, 0, 7) === "phar://";
 	}
 
-	/**
-	 * Gets an embedded resource on the plugin file.
-	 * WARNING: You must close the resource given using fclose()
-	 *
-	 * @param string $filename
-	 *
-	 * @return resource Resource data, or null
-	 */
+    /**
+     * Получает встроенный ресурс в файле плагина.
+     * ПРЕДУПРЕЖДЕНИЕ: Вы должны закрыть ресурс, указанный с помощью fclose()
+     *
+     * @param строка $filename
+     *
+     * @return resource Данные о ресурсах или null
+     */
 	public function getResource($filename){
-		$filename = rtrim(str_replace("\\", "/", $filename), "/");
+		$filename = rtrim(str_replace(DIRECTORY_SEPARATOR, "/", $filename), "/");
 		if(file_exists($this->file . "resources/" . $filename)){
 			return fopen($this->file . "resources/" . $filename, "rb");
 		}
@@ -229,9 +224,9 @@ abstract class PluginBase implements Plugin {
 		return $ret;
 	}
 
-	/**
-	 * Returns all the resources packaged with the plugin
-	 *
+    /**
+     * Возвращает все ресурсы, упакованные с плагином
+     *
 	 * @return string[]
 	 */
 	public function getResources(){
@@ -272,7 +267,7 @@ abstract class PluginBase implements Plugin {
 	 */
 	public function saveDefaultConfig(){
 		if(!file_exists($this->configFile)){
-			$this->saveResource("config.yml", false);
+			$this->saveResource("config.yml");
 		}
 	}
 

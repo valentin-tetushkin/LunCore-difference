@@ -1,9 +1,33 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
+use pocketmine\block\BlockIds;
 use pocketmine\block\Wool;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
@@ -107,12 +131,11 @@ class Sheep extends Animal implements Colorable {
 	 * @return array
 	 */
 	public function getDrops(){
-		$drops = [
-			ItemItem::get(ItemItem::WOOL, $this->getColor(), 1)
-		];
-		return $drops;
+        return [
+            ItemItem::get(BlockIds::WOOL, $this->getColor()),
+            ItemItem::get(ItemIds::RAW_MUTTON, 0, mt_rand(0, 3))];
 	}
-	
+
 	public function onUpdate($currentTick){
 		if($this->isClosed() or !$this->isAlive()){
 			return parent::onUpdate($currentTick);

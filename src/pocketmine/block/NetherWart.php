@@ -1,21 +1,24 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
@@ -24,6 +27,7 @@ namespace pocketmine\block;
 use pocketmine\event\block\BlockGrowEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -109,10 +113,10 @@ class NetherWart extends Flowable {
 		$drops = [];
 		if($this->meta >= 0x03){
 			$fortunel = $item->getEnchantmentLevel(Enchantment::TYPE_MINING_FORTUNE);
-			$fortunel = $fortunel > 3 ? 3 : $fortunel;
-			$drops[] = [Item::NETHER_WART, 0, mt_rand(2, 4 + $fortunel)];
+			$fortunel = min($fortunel, 3);
+			$drops[] = [ItemIds::NETHER_WART, 0, mt_rand(2, 4 + $fortunel)];
 		}else{
-			$drops[] = [Item::NETHER_WART, 0, 1];
+			$drops[] = [ItemIds::NETHER_WART, 0, 1];
 		}
 		return $drops;
 	}

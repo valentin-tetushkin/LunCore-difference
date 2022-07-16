@@ -1,47 +1,41 @@
 <?php
 
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\light;
 
 use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\Level;
 use pocketmine\level\utils\SubChunkIteratorManager;
 
 abstract class LightUpdate{
 
-    /** @var ChunkManager */
     protected $level;
-
-    /**
-     * @var int[][] blockhash => [x, y, z, new light level]
-     * @phpstan-var array<int, array{int, int, int, int}>
-     */
     protected $updateNodes = [];
-
-    /**
-     * @var \SplQueue
-     * @phpstan-var \SplQueue<array{int, int, int}>
-     */
     protected $spreadQueue;
-
-    /**
-     * @var true[]
-     * @phpstan-var array<int, true>
-     */
     protected $spreadVisited = [];
-
-    /**
-     * @var \SplQueue
-     * @phpstan-var \SplQueue<array{int, int, int, int}>
-     */
     protected $removalQueue;
-
-    /**
-     * @var true[]
-     * @phpstan-var array<int, true>
-     */
     protected $removalVisited = [];
-    /** @var SubChunkIteratorManager */
     protected $subChunkHandler;
 
     public function __construct(ChunkManager $level){
@@ -54,14 +48,8 @@ abstract class LightUpdate{
 
     abstract protected function getLight(int $x, int $y, int $z): int;
 
-    /**
-     * @return void
-     */
     abstract protected function setLight(int $x, int $y, int $z, int $level);
 
-    /**
-     * @return void
-     */
     public function setAndUpdateLight(int $x, int $y, int $z, int $newLevel){
         $this->updateNodes[Level::blockHash($x, $y, $z)] = [$x, $y, $z, $newLevel];
     }
@@ -85,9 +73,6 @@ abstract class LightUpdate{
         }
     }
 
-    /**
-     * @return void
-     */
     public function execute(){
         $this->prepareNodes();
 
@@ -141,9 +126,6 @@ abstract class LightUpdate{
         }
     }
 
-    /**
-     * @return void
-     */
     protected function computeRemoveLight(int $x, int $y, int $z, int $oldAdjacentLevel){
         $current = $this->getLight($x, $y, $z);
 
@@ -164,9 +146,6 @@ abstract class LightUpdate{
         }
     }
 
-    /**
-     * @return void
-     */
     protected function computeSpreadLight(int $x, int $y, int $z, int $newAdjacentLevel){
         $current = $this->getLight($x, $y, $z);
         $potentialLight = $newAdjacentLevel - Block::$lightFilter[$this->subChunkHandler->currentSubChunk->getBlockId($x & 0x0f, $y & 0x0f, $z & 0x0f)];

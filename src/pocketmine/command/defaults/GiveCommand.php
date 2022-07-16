@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -33,7 +25,7 @@ class GiveCommand extends VanillaCommand{
 		parent::__construct(
 			$name,
 			"%pocketmine.command.give.description",
-			"%pocketmine.command.give.usage"
+			"/give <игрок> <предмет[:урон]> [количество] [тэги...]"
 		);
 		$this->setPermission("pocketmine.command.give");
 	}

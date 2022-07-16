@@ -1,16 +1,30 @@
 <?php
 
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\inventory;
 
+use pocketmine\block\BlockIds;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityInventoryChangeEvent;
 use pocketmine\event\inventory\InventoryOpenEvent;
@@ -122,7 +136,7 @@ abstract class BaseInventory implements Inventory {
 	 * @return Item
 	 */
 	public function getItem($index){
-		return isset($this->slots[$index]) ? clone $this->slots[$index] : Item::get(Item::AIR, 0, 0);
+		return isset($this->slots[$index]) ? clone $this->slots[$index] : Item::get(BlockIds::AIR, 0, 0);
 	}
 
 	/**
@@ -138,7 +152,7 @@ abstract class BaseInventory implements Inventory {
 			if($slot !== null){
 				$contents[$i] = clone $slot;
 			}elseif($includeEmpty){
-				$contents[$i] = $air ?? ($air = Item::get(Item::AIR, 0, 0));
+				$contents[$i] = $air ?? ($air = Item::get(BlockIds::AIR, 0, 0));
 			}
 		}
 
@@ -279,7 +293,7 @@ abstract class BaseInventory implements Inventory {
 	public function remove(Item $item, $send = true){
 		$checkDamage = !$item->hasAnyDamageValue();
 		$checkTags = $item->hasCompoundTag();
-		$checkCount = $item->getCount() === null ? false : true;
+		$checkCount = !($item->getCount() === null);
 
 		foreach($this->getContents() as $index => $i){
 			if($item->equals($i, $checkDamage, $checkTags, $checkCount)){
@@ -313,7 +327,7 @@ abstract class BaseInventory implements Inventory {
 	 */
 	public function firstEmpty(){
 		for($i = 0; $i < $this->size; ++$i){
-			if($this->getItem($i)->getId() === Item::AIR){
+			if($this->getItem($i)->getId() === BlockIds::AIR){
 				return $i;
 			}
 		}
@@ -330,7 +344,7 @@ abstract class BaseInventory implements Inventory {
 	 */
 	public function firstOccupied(){
 		for($i = 0; $i < $this->size; $i++){
-			if(($item = $this->getItem($i))->getId() !== Item::AIR and $item->getCount() > 0){
+			if(($item = $this->getItem($i))->getId() !== BlockIds::AIR and $item->getCount() > 0){
 				return $i;
 			}
 		}
@@ -350,7 +364,7 @@ abstract class BaseInventory implements Inventory {
 				if(($diff = $slot->getMaxStackSize() - $slot->getCount()) > 0){
 					$item->setCount($item->getCount() - $diff);
 				}
-			}elseif($slot->getId() === Item::AIR){
+			}elseif($slot->getId() === BlockIds::AIR){
 				$item->setCount($item->getCount() - $this->getMaxStackSize());
 			}
 
@@ -384,7 +398,7 @@ abstract class BaseInventory implements Inventory {
 
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$item = $this->getItem($i);
-			if($item->getId() === Item::AIR or $item->getCount() <= 0){
+			if($item->getId() === BlockIds::AIR or $item->getCount() <= 0){
 				$emptySlots[] = $i;
 			}
 
@@ -447,7 +461,7 @@ abstract class BaseInventory implements Inventory {
 
 		for($i = 0; $i < $this->getSize(); ++$i){
 			$item = $this->getItem($i);
-			if($item->getId() === Item::AIR or $item->getCount() <= 0){
+			if($item->getId() === BlockIds::AIR or $item->getCount() <= 0){
 				continue;
 			}
 
@@ -479,7 +493,7 @@ abstract class BaseInventory implements Inventory {
 	 */
 	public function clear($index, $send = true){
 		if(isset($this->slots[$index])){
-			$item = Item::get(Item::AIR, 0, 0);
+			$item = Item::get(BlockIds::AIR, 0, 0);
 			$old = $this->slots[$index];
 			$holder = $this->getHolder();
 			if($holder instanceof Entity){
@@ -490,7 +504,7 @@ abstract class BaseInventory implements Inventory {
 				}
 				$item = $ev->getNewItem();
 			}
-			if($item->getId() !== Item::AIR){
+			if($item->getId() !== BlockIds::AIR){
 				$this->slots[$index] = clone $item;
 			}else{
 				unset($this->slots[$index]);

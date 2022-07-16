@@ -1,10 +1,26 @@
 <?php
-# ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
-# ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
-# ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
-# ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
-# ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
-# ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\nbt\tag;
 
@@ -17,7 +33,7 @@ abstract class NamedTag extends Tag implements JsonSerializable{
 
 	/**
 	 * @param string                                                                  $name
-	 * @param bool|float|double|int|ByteTag|ShortTag|array|CompoundTag|ListTag|string $value
+	 * @param bool|float|int|ByteTag|ShortTag|array|CompoundTag|ListTag|string $value
 	 */
 	public function __construct($name = "", $value = null){
 		$this->__name = ($name === null or $name === false) ? "" : $name;
@@ -49,8 +65,8 @@ abstract class NamedTag extends Tag implements JsonSerializable{
     }
 
     /**
-	 * Compares this NamedTag to the given NamedTag and determines whether or not they are equal, based on name, type
-	 * and value.
+     * Сравнивает этот NamedTag с заданным NamedTag и определяет, равны ли они, на основе имени, типа
+     * и значение.
 	 *
 	 * @param NamedTag $that
 	 *
@@ -60,9 +76,9 @@ abstract class NamedTag extends Tag implements JsonSerializable{
 		return $this->__name === $that->__name and $this->equalsValue($that);
 	}
 
-	/**
-	 * Compares this NamedTag to the given NamedTag and determines whether they are equal, based on type and value only.
-	 * Complex tag types should override this to provide proper value comparison.
+    /**
+     * Сравнивает этот NamedTag с заданным NamedTag и определяет, равны ли они, основываясь только на типе и значении.
+     * Сложные типы тегов должны переопределять это, чтобы обеспечить правильное сравнение значений.
 	 *
 	 * @param NamedTag $that
 	 *

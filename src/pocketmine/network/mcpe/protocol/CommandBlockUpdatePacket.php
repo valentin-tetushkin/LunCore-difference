@@ -1,5 +1,28 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -37,7 +60,7 @@ class CommandBlockUpdatePacket extends DataPacket {
 			$this->isConditional = $this->getBool();
 		}else{
 			//Minecart with command block
-			$this->minecartEid = $this->getEntityRuntimeId();
+			$this->minecartEid = $this->getEntityId();
 		}
 
 		$this->command = $this->getString();
@@ -60,7 +83,7 @@ class CommandBlockUpdatePacket extends DataPacket {
 			$this->putBool($this->isRedstoneMode);
 			$this->putBool($this->isConditional);
 		}else{
-			$this->putEntityRuntimeId($this->minecartEid);
+			$this->putEntityId($this->minecartEid);
 		}
 
 		$this->putString($this->command);

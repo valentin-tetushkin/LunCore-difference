@@ -1,12 +1,5 @@
 <?php
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
 
 namespace pocketmine\command\defaults;
 
@@ -26,7 +19,7 @@ class BanCidByNameCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.bancidbyname.description",
-			"%commands.bancidbyname.usage"
+			"/lbancidbyname <ИмяИгрока> [причина ...] [время(день)"
 		);
 		$this->setPermission("pocketmine.command.bancidbyname");
 	}

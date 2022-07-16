@@ -1,15 +1,26 @@
-<?php 
+<?php
 
-/**
-*     ______  _     _
-*    / ____/ (_)   (_) ___    __  __
-*   / /_    / /   / / / _ \  / / / /
-*  / __/   / /   / / /  __/ / /_/ /
-* /_/     /_/ __/ /  \___/  \__, /
-*            /___/         /____/
-*   @author Fijey
-*   @link github.com/fijey000
-*/
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\item;
 
@@ -35,29 +46,12 @@ class MinecartTNT extends Item {
     }
 
     /**
-	 * @return bool
-	 */
-    public function canBeActivated() : bool {
-        return true;
-    }
-
-    /**
      * @return int
      */
     public function getMaxStackSize() : int {
         return 1;
     }
 
-    /**
-	 * @param Level  $level
-	 * @param Player $player
-	 * @param Block  $block
-	 * @param Block  $target
-	 * @param        $face
-	 * @param        $fx
-	 * @param        $fy
-	 * @param        $fz
-	 */
     public function onActivate(Level $level, Player $player, Block $block, Block $target, $face, $fx, $fy, $fz){
         if($target instanceof Rail){
             $entity = new MinecartTNTEntity($level, new CompoundTag('', [
@@ -70,5 +64,6 @@ class MinecartTNT extends Item {
                 $player->getInventory()->setItemInHand(Item::get(0));
             }
         }
+        return true;
     }
 }

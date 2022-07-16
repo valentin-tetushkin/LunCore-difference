@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -8,14 +30,15 @@ class AvailableCommandsPacket extends DataPacket {
 
 	const NETWORK_ID = ProtocolInfo::AVAILABLE_COMMANDS_PACKET;
 
-	public $commands;
+	public $commands; //JSON-encoded command data
 	public $unknown = "";
 
 	/**
 	 *
 	 */
 	public function decode(){
-
+		$this->commands = $this->getString();
+		$this->unknown = $this->getString();
 	}
 
 	/**

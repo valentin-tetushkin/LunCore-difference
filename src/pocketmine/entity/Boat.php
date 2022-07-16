@@ -1,13 +1,38 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\{CompoundTag, IntTag};
-use pocketmine\network\mcpe\protocol\{AddEntityPacket, EntityEventPacket};
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\IntTag;
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 
 class Boat extends Vehicle {
@@ -81,33 +106,22 @@ class Boat extends Vehicle {
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
-		$tickDiff = $currentTick - $this->lastUpdate;
-		if($tickDiff <= 0 and !$this->justCreated){
-			return true;
-		}
 
-		$this->lastUpdate = $currentTick;
-
-		$this->timings->startTiming();
-
-		$hasUpdate = $this->entityBaseTick($tickDiff);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if(!$this->level->getBlock(new Vector3($this->x, $this->y, $this->z))->getBoundingBox() == null or $this->isInsideOfWater()){
 			$this->motionY = 0.1;
 		}else{
 			$this->motionY = -0.08;
 		}
-
-		$this->move($this->motionX, $this->motionY, $this->motionZ);
-		$this->updateMovement();
 
 		if($this->linkedEntity == null or $this->linkedType = 0){
 			if($this->age > 1500){
@@ -120,10 +134,7 @@ class Boat extends Vehicle {
 			$this->age++;
 		}else $this->age = 0;
 
-		$this->timings->stopTiming();
-
-
-		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+		return $hasUpdate;
 	}
 
 
@@ -132,7 +143,7 @@ class Boat extends Vehicle {
 	 */
 	public function getDrops(){
 		return [
-			ItemItem::get(ItemItem::BOAT, 0, 1)
+			ItemItem::get(ItemIds::BOAT)
 		];
 	}
 

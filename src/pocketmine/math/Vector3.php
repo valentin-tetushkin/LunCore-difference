@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
 namespace pocketmine\math;
 
 use pocketmine\utils\Random;
@@ -189,14 +211,14 @@ class Vector3{
 		return new Vector3(abs($this->x), abs($this->y), abs($this->z));
 	}
 
-	/**
-	 * @param     $side
-	 * @param int $step
-	 *
-	 * @return $this|Vector3
-	 */
+    /**
+     * @param int $side
+     * @param int $step
+     *
+     * @return $this|Vector3
+     */
 	public function getSide(int $side, int $step = 1){
-		switch((int) $side){
+		switch($side){
 			case Vector3::SIDE_DOWN:
 				return new Vector3($this->x, $this->y - $step, $this->z);
 			case Vector3::SIDE_UP:

@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
 namespace pocketmine\math;
 
 use function assert;
@@ -132,7 +154,7 @@ class Matrix implements \ArrayAccess{
 		for($r = 0; $r < $this->rows; ++$r){
 			for($c = 0; $c < $this->columns; ++$c){
 				$element = $matrix->getElement($r, $c);
-				assert($element !== false, "Element should never be false when height and width are the same");
+                assert($element !== false, "Элемент никогда не должен быть ложным, если высота и ширина одинаковы");
 				$result->setElement($r, $c, $this->matrix[$r][$c] + $element);
 			}
 		}
@@ -151,7 +173,7 @@ class Matrix implements \ArrayAccess{
 		for($r = 0; $r < $this->rows; ++$r){
 			for($c = 0; $c < $this->columns; ++$c){
 				$element = $matrix->getElement($r, $c);
-				assert($element !== false, "Element should never be false when height and width are the same");
+                assert($element !== false, "Элемент никогда не должен быть ложным, если высота и ширина одинаковы");
 				$result->setElement($r, $c, $this->matrix[$r][$c] - $element);
 			}
 		}
@@ -222,7 +244,7 @@ class Matrix implements \ArrayAccess{
 				$sum = 0;
 				for($k = 0; $k < $this->columns; ++$k){
 					$element = $matrix->getElement($k, $j);
-					assert($element !== false, "Element should definitely exist here");
+                    assert($element !== false, "Здесь обязательно должен существовать элемент");
 					$sum += $this->matrix[$i][$k] * $element;
 				}
 				$result->setElement($i, $j, $sum);
@@ -263,7 +285,7 @@ class Matrix implements \ArrayAccess{
 			$s .= implode(",", $this->matrix[$r]) . ";";
 		}
 
-		return "Matrix({$this->rows}x{$this->columns};" . substr($s, 0, -1) . ")";
+		return "Matrix({$this->rows}x$this->columns;" . substr($s, 0, -1) . ")";
 	}
 
 }

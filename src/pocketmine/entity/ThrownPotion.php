@@ -1,11 +1,34 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\item\Potion;
 use pocketmine\level\Level;
 use pocketmine\level\particle\SpellParticle;
-use pocketmine\nbt\tag\{CompoundTag, ShortTag};
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ShortTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -65,18 +88,16 @@ class ThrownPotion extends Projectile {
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		$this->age++;
 
@@ -84,8 +105,6 @@ class ThrownPotion extends Projectile {
 			$this->splash();
 			$hasUpdate = true;
 		}
-
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

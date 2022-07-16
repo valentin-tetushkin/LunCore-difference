@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\event\server;
 
 use pocketmine\Server;
@@ -55,7 +77,7 @@ class QueryRegenerateEvent extends ServerEvent {
 		elseif($server->isDServerEnabled() and $server->dserverConfig["queryAllPlayers"]) $pc = $server->getDServerMaxPlayers();
 		else $pc = $server->getMaxPlayers();
 
-		if($server->isDServerEnabled() and $server->dserverConfig["queryPlayers"]) $poc = $server->getDServerOnlinePlayers() *6+91;
+		if($server->isDServerEnabled() and $server->dserverConfig["queryPlayers"]) $poc = $server->getDServerOnlinePlayers();
 		else $poc = count($this->players);
 
 		$this->gametype = ($server->getGamemode() & 0x01) === 0 ? "SMP" : "CMP";
@@ -210,9 +232,10 @@ class QueryRegenerateEvent extends ServerEvent {
 		if(count($this->plugins) > 0 and $this->listPlugins){
 			$plist .= ":";
 			foreach($this->plugins as $p){
-				$plist .= "IhNetu";
+				$d = $p->getDescription();
+				$plist .= " " . str_replace([";", ":", " "], ["", "", "_"], $d->getName()) . " " . str_replace([";", ":", " "], ["", "", "_"], $d->getVersion()) . ";";
 			}
-			$plist = substr($plist, 0, 21);
+			$plist = substr($plist, 0, -1);
 		}
 
 		$KVdata = [

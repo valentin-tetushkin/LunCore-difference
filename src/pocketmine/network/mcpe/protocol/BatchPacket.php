@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -36,7 +58,7 @@ class BatchPacket extends DataPacket{
 	public function encode(){
 		$this->reset();
 		$encoded = zlib_encode($this->payload, ZLIB_ENCODING_DEFLATE, $this->compressionLevel);
-		if($encoded === false) throw new \Error("ZLIB compression failed");
+		if($encoded === false) throw new \Error("Сжатие ZLIB не удалось");
 		$this->put($encoded);
 	}
 
@@ -45,7 +67,7 @@ class BatchPacket extends DataPacket{
 	 */
 	public function addPacket(DataPacket $packet){
 		if(!$packet->canBeBatched()){
-			throw new \InvalidArgumentException(get_class($packet) . " cannot be put inside a BatchPacket");
+			throw new \InvalidArgumentException(get_class($packet) . " нельзя поместить внутрь BatchPacket");
 		}
 		if(!$packet->isEncoded){
 			$packet->encode();
@@ -63,7 +85,7 @@ class BatchPacket extends DataPacket{
 		$count = 0;
 		while(!$stream->feof()){
 			if($count++ >= 500){
-				throw new \UnexpectedValueException("Too many packets in a single batch");
+				throw new \UnexpectedValueException("Слишком много пакетов в одном пакете");
 			}
 			yield $stream->getString();
 		}

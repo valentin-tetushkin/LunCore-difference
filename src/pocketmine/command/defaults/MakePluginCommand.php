@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -64,7 +56,7 @@ class MakePluginCommand extends VanillaCommand {
 			return true;
 		}
 
-		$pharPath = Server::getInstance()->getPluginPath() . DIRECTORY_SEPARATOR . "LunCore" . DIRECTORY_SEPARATOR . $description->getName() . "_v" . $description->getVersion() . "_" . date("Y-m-d") . ".phar";
+		$pharPath = Server::getInstance()->getPluginPath() . DIRECTORY_SEPARATOR . "LiteCore" . DIRECTORY_SEPARATOR . $description->getName() . "_v" . $description->getVersion() . "_" . date("Y-m-d") . ".phar";
 		if(file_exists($pharPath)){
 			$sender->sendMessage("Phar plugin already exists, overwriting...");
 			@unlink($pharPath);
@@ -82,14 +74,17 @@ class MakePluginCommand extends VanillaCommand {
 			"creationDate" => time()
 		]);
 		if($description->getName() === "DevTools"){
-			$phar->setStub('<?php require("phar://". __FILE__ ."/src/DevTools/ConsoleScript.php"); __HALT_COMPILER();');
+			$phar->setStub(' require("phar://". __FILE__ ."/src/DevTools/ConsoleScript.php"); __HALT_COMPILER();');
 		}else{
-			$phar->setStub('<?php echo "PocketMine-iTX plugin ' . $description->getName() . ' v' . $description->getVersion() . '\nThis file has been generated using LunCore at ' . date("r") . '\n----------------\n";if(extension_loaded("phar")){$phar = new \Phar(__FILE__);foreach($phar->getMetadata() as $key => $value){echo ucfirst($key).": ".(is_array($value) ? implode(", ", $value):$value)."\n";}} __HALT_COMPILER();');
+			$phar->setStub(' echo "PocketMine-iTX plugin ' . $description->getName() . ' v' . $description->getVersion() . '\nThis file has been generated using LiteCore at ' . date("r") . '\n----------------\n";if(extension_loaded("phar")){$phar = new \Phar(__FILE__);foreach($phar->getMetadata() as $key => $value){echo ucfirst($key).": ".(is_array($value) ? implode(", ", $value):$value)."\n";}} __HALT_COMPILER();');
 		}
 		$phar->setSignatureAlgorithm(\Phar::SHA1);
 		$reflection = new \ReflectionClass("pocketmine\\plugin\\PluginBase");
-		$file = $reflection->getProperty("file");
-		$file->setAccessible(true);
+        try {
+            $file = $reflection->getProperty("file");
+        } catch (\ReflectionException $e) {
+        }
+        $file->setAccessible(true);
 		$filePath = rtrim(str_replace("\\", "/", $file->getValue($plugin)), "/") . "/";
 		$phar->startBuffering();
 		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($filePath)) as $file){
@@ -98,7 +93,7 @@ class MakePluginCommand extends VanillaCommand {
 				continue;
 			}
 			$phar->addFile($file, $path);
-			$sender->sendMessage("[LunCore] Adding $path");
+			$sender->sendMessage("[LiteCore] Adding $path");
 		}
 
 		foreach($phar as $file => $finfo){

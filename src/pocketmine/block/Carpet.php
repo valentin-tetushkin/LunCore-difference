@@ -1,32 +1,36 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
+use pocketmine\block\utils\ColorBlockMetaHelper;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\Player;
 
-class Carpet extends Flowable {
+class Carpet extends Flowable{
 
 	protected $id = self::CARPET;
 
@@ -57,25 +61,7 @@ class Carpet extends Flowable {
 	 * @return string
 	 */
 	public function getName() : string{
-		static $names = [
-			0 => "White Carpet",
-			1 => "Orange Carpet",
-			2 => "Magenta Carpet",
-			3 => "Light Blue Carpet",
-			4 => "Yellow Carpet",
-			5 => "Lime Carpet",
-			6 => "Pink Carpet",
-			7 => "Gray Carpet",
-			8 => "Light Gray Carpet",
-			9 => "Cyan Carpet",
-			10 => "Purple Carpet",
-			11 => "Blue Carpet",
-			12 => "Brown Carpet",
-			13 => "Green Carpet",
-			14 => "Red Carpet",
-			15 => "Black Carpet",
-		];
-		return $names[$this->meta & 0x0f];
+		return ColorBlockMetaHelper::getColorFromMeta($this->meta) . " Carpet";
 	}
 
 	/**

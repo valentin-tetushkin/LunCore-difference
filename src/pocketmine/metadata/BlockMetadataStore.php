@@ -1,21 +1,24 @@
 <?php
 
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
  *
 */
 
@@ -46,7 +49,7 @@ class BlockMetadataStore extends MetadataStore {
 	 */
 	public function disambiguate(Metadatable $block, $metadataKey){
 		if(!($block instanceof Block)){
-			throw new \InvalidArgumentException("Argument must be a Block instance");
+            throw new \InvalidArgumentException("Аргумент должен быть экземпляром блока");
 		}
 
 		return $block->x . ":" . $block->y . ":" . $block->z . ":" . $metadataKey;
@@ -54,45 +57,45 @@ class BlockMetadataStore extends MetadataStore {
 
 	public function getMetadata(Metadatable $subject, string $metadataKey){
 		if(!($subject instanceof Block)){
-			throw new \InvalidArgumentException("Object must be a Block");
+            throw new \InvalidArgumentException("Объект должен быть блоком");
 		}
 		if($subject->getLevel() === $this->owningLevel){
 			return parent::getMetadata($subject, $metadataKey);
 		}else{
-			throw new \InvalidStateException("Block does not belong to world " . $this->owningLevel->getName());
+            throw new \InvalidStateException("Блок не принадлежит миру " . $this->owningLevel->getName());
 		}
 	}
 
 	public function hasMetadata(Metadatable $subject, string $metadataKey) : bool{
 		if(!($subject instanceof Block)){
-			throw new \InvalidArgumentException("Object must be a Block");
+            throw new \InvalidArgumentException("Объект должен быть блоком");
 		}
 		if($subject->getLevel() === $this->owningLevel){
 			return parent::hasMetadata($subject, $metadataKey);
 		}else{
-			throw new \InvalidStateException("Block does not belong to world " . $this->owningLevel->getName());
+            throw new \InvalidStateException("Блок не принадлежит миру " . $this->owningLevel->getName());
 		}
 	}
 
 	public function removeMetadata(Metadatable $subject, string $metadataKey, Plugin $owningPlugin){
 		if(!($subject instanceof Block)){
-			throw new \InvalidArgumentException("Object must be a Block");
+            throw new \InvalidArgumentException("Объект должен быть блоком");
 		}
 		if($subject->getLevel() === $this->owningLevel){
 			parent::removeMetadata($subject, $metadataKey, $owningPlugin);
 		}else{
-			throw new \InvalidStateException("Block does not belong to world " . $this->owningLevel->getName());
+            throw new \InvalidStateException("Блок не принадлежит миру " . $this->owningLevel->getName());
 		}
 	}
 
 	public function setMetadata(Metadatable $subject, string $metadataKey, MetadataValue $newMetadataValue){
 		if(!($subject instanceof Block)){
-			throw new \InvalidArgumentException("Object must be a Block");
+            throw new \InvalidArgumentException("Объект должен быть блоком");
 		}
 		if($subject->getLevel() === $this->owningLevel){
 			parent::setMetadata($subject, $metadataKey, $newMetadataValue);
 		}else{
-			throw new \InvalidStateException("Block does not belong to world " . $this->owningLevel->getName());
+            throw new \InvalidStateException("Блок не принадлежит миру " . $this->owningLevel->getName());
 		}
 	}
 }

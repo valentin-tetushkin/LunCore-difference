@@ -1,11 +1,34 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\network\mcpe\protocol\MobEquipmentPacket;
 use pocketmine\network\mcpe\protocol\AnimatePacket;
@@ -79,16 +102,16 @@ class WitherSkeleton extends Monster {
 			if($damager instanceof Player){
 				$lootingL = $damager->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
 				if(mt_rand(1, 200) <= (5 + 2 * $lootingL)){
-					$drops[] = ItemItem::get(ItemItem::SKULL, 1, 1);
+					$drops[] = ItemItem::get(ItemIds::SKULL, 1);
 				}
-				$drops[] = ItemItem::get(ItemItem::BONE, 0, mt_rand(0, 2));
-				$drops[] = ItemItem::get(ItemItem::COAL, 0, mt_rand(0, 1));
+				$drops[] = ItemItem::get(ItemIds::BONE, 0, mt_rand(0, 2));
+				$drops[] = ItemItem::get(ItemIds::COAL, 0, mt_rand(0, 1));
 			}elseif($damager instanceof Creeper){
 				if(($damager->isPowered()) and ($cause->getCause() == 10)){
-					$drops[] = ItemItem::get(ItemItem::SKULL, 1, 1);
+					$drops[] = ItemItem::get(ItemIds::SKULL, 1);
 				}else{
-					$drops[] = ItemItem::get(ItemItem::BONE, 0, mt_rand(0, 2));
-					$drops[] = ItemItem::get(ItemItem::COAL, 0, mt_rand(0, 1));
+					$drops[] = ItemItem::get(ItemIds::BONE, 0, mt_rand(0, 2));
+					$drops[] = ItemItem::get(ItemIds::COAL, 0, mt_rand(0, 1));
 				}
 			}
 		}
@@ -96,18 +119,16 @@ class WitherSkeleton extends Monster {
 		return $drops;
 	}
 	
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->isClosed() or !$this->isAlive()){
-			return parent::onUpdate($currentTick);
+			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
 		
 		if($this->isMorph){
 			return true;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
         if ($this->getLevel() !== null) {
             $block = $this->getLevel()->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
         }else{
@@ -133,7 +154,7 @@ class WitherSkeleton extends Monster {
 								$this->farest = $viewer;
 							}
 							
-							if($this->farest != $viewer){
+							if($this->farest !== $viewer){
 								if($this->distance($viewer) < $this->distance($this->farest)){
 									$this->farest = $viewer;
 								}
@@ -233,8 +254,6 @@ class WitherSkeleton extends Monster {
 		if((($x != 0)or($y != 0)or($z != 0))and($this->motionVector != null)){
 			$this->setMotion(new Vector3($x, $y, $z));
 		}
-		
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

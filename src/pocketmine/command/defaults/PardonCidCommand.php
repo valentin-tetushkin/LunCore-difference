@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -27,7 +19,7 @@ class PardonCidCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.unban.cid.description",
-			"%commands.unbancid.usage"
+			"/lpardoncid <НомерУстройства>"
 		);
 		$this->setPermission("pocketmine.command.pardoncid");
 	}

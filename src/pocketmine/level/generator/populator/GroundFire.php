@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\BlockIds;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class GroundFire extends Populator {
@@ -43,7 +65,7 @@ class GroundFire extends Populator {
 			$y = $this->getHighestWorkableBlock($x, $z);
 			//echo "Fire to $x, $y, $z\n";
 			if($y !== -1 and $this->canGroundFireStay($x, $y, $z)){
-				$this->level->setBlockIdAt($x, $y, $z, Block::FIRE);
+				$this->level->setBlockIdAt($x, $y, $z, BlockIds::FIRE);
 				$this->level->updateBlockLight($x, $y, $z);
 			}
 		}
@@ -58,7 +80,7 @@ class GroundFire extends Populator {
 	 */
 	private function canGroundFireStay($x, $y, $z){
 		$b = $this->level->getBlockIdAt($x, $y, $z);
-		return ($b === Block::AIR or $b === Block::SNOW_LAYER) and $this->level->getBlockIdAt($x, $y - 1, $z) === 87;
+		return ($b === BlockIds::AIR or $b === BlockIds::SNOW_LAYER) and $this->level->getBlockIdAt($x, $y - 1, $z) === 87;
 	}
 
 	/**
@@ -70,7 +92,7 @@ class GroundFire extends Populator {
 	private function getHighestWorkableBlock($x, $z){
 		for($y = 0; $y <= 127; ++$y){
 			$b = $this->level->getBlockIdAt($x, $y, $z);
-			if($b == Block::AIR){
+			if($b == BlockIds::AIR){
 				break;
 			}
 		}

@@ -1,8 +1,31 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Explosion;
 use pocketmine\level\sound\TNTPrimeSound;
 use pocketmine\level\sound\ExplodeSound;
@@ -110,16 +133,16 @@ class Creeper extends Monster implements Explosive {
 				if(mt_rand(0, 40) < (5 + 2 * $lootingL)){
 					switch(mt_rand(0, 2)){
 						case 0:
-							$drops[] = ItemItem::get(ItemItem::TOTEM, 0, 1);
+							$drops[] = ItemItem::get(ItemIds::TOTEM);
 							break;
 						case 1:
-							$drops[] = ItemItem::get(ItemItem::GOLD_NUGGET, 0, 1);
+							$drops[] = ItemItem::get(ItemIds::GOLD_NUGGET);
 							break;
 					}
 				}
 				$count = mt_rand(0, 2 + $lootingL);
 				if($count > 0){
-					$drops[] = ItemItem::get(ItemItem::GUNPOWDER, 0, $count);
+					$drops[] = ItemItem::get(ItemIds::GUNPOWDER, 0, $count);
 				}
 			}
 		}
@@ -160,7 +183,7 @@ class Creeper extends Monster implements Explosive {
 								$this->farest = $viewer;
 							}
 							
-							if($this->farest != $viewer){
+							if($this->farest !== $viewer){
 								if($this->distance($viewer) < $this->distance($this->farest)){
 									$this->farest = $viewer;
 								}

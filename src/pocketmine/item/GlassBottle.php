@@ -1,27 +1,31 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
 namespace pocketmine\item;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\event\player\PlayerGlassBottleEvent;
 use pocketmine\level\Level;
 use pocketmine\Player;
@@ -35,13 +39,6 @@ class GlassBottle extends Item {
 	 */
 	public function __construct($meta = 0, $count = 1){
 		parent::__construct(self::GLASS_BOTTLE, $meta, $count, "Glass Bottle");
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
 	}
 
 	/**
@@ -60,24 +57,24 @@ class GlassBottle extends Item {
 		if($player === null or $player->isSurvival() !== true){
 			return false;
 		}
-		if($target->getId() === Block::STILL_WATER or $target->getId() === Block::WATER){
+		if($target->getId() === BlockIds::STILL_WATER or $target->getId() === BlockIds::WATER){
 			$player->getServer()->getPluginManager()->callEvent($ev = new PlayerGlassBottleEvent($player, $target, $this));
 			if($ev->isCancelled()){
 				return false;
 			}else{
 				if($this->count <= 1){
-					$player->getInventory()->setItemInHand(Item::get(Item::POTION, 0, 1));
+					$player->getInventory()->setItemInHand(Item::get(ItemIds::POTION));
 					return true;
 				}else{
-					$this->count--;
+					$this->pop();
 					$player->getInventory()->setItemInHand($this);
 				}
-				if($player->getInventory()->canAddItem(Item::get(Item::POTION, 0, 1)) === true){
-					$player->getInventory()->AddItem(Item::get(Item::POTION, 0, 1));
+				if($player->getInventory()->canAddItem(Item::get(ItemIds::POTION)) === true){
+					$player->getInventory()->AddItem(Item::get(ItemIds::POTION));
 				}else{
 					$motion = $player->getDirectionVector()->multiply(0.4);
 					$position = clone $player->getPosition();
-					$player->getLevel()->dropItem($position->add(0, 0.5, 0), Item::get(Item::POTION, 0, 1), $motion, 40);
+					$player->getLevel()->dropItem($position->add(0, 0.5), Item::get(ItemIds::POTION), $motion, 40);
 				}
 				return true;
 			}

@@ -1,23 +1,26 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
@@ -90,9 +93,9 @@ class Pumpkin extends Solid {
 		if($player != null){
 			$level = $this->getLevel();
 			if($player->getServer()->allowSnowGolem){
-				$block0 = $level->getBlock($block->add(0, -1, 0));
-				$block1 = $level->getBlock($block->add(0, -2, 0));
-				if($block0->getId() == Item::SNOW_BLOCK and $block1->getId() == Item::SNOW_BLOCK){
+				$block0 = $level->getBlock($block->add(0, -1));
+				$block1 = $level->getBlock($block->add(0, -2));
+				if($block0->getId() == BlockIds::SNOW_BLOCK and $block1->getId() == BlockIds::SNOW_BLOCK){
 					$level->setBlock($block, new Air());
 					$level->setBlock($block0, new Air());
 					$level->setBlock($block1, new Air());
@@ -116,17 +119,17 @@ class Pumpkin extends Solid {
 				}
 			}
 			if($player->getServer()->allowIronGolem){
-				$block0 = $level->getBlock($block->add(0, -1, 0));
-				$block1 = $level->getBlock($block->add(0, -2, 0));
-				$block2 = $level->getBlock($block->add(-1, -1, 0));
-				$block3 = $level->getBlock($block->add(1, -1, 0));
+				$block0 = $level->getBlock($block->add(0, -1));
+				$block1 = $level->getBlock($block->add(0, -2));
+				$block2 = $level->getBlock($block->add(-1, -1));
+				$block3 = $level->getBlock($block->add(1, -1));
 				$block4 = $level->getBlock($block->add(0, -1, -1));
 				$block5 = $level->getBlock($block->add(0, -1, 1));
-				if($block0->getId() == Item::IRON_BLOCK and $block1->getId() == Item::IRON_BLOCK){
-					if($block2->getId() == Item::IRON_BLOCK and $block3->getId() == Item::IRON_BLOCK and $block4->getId() == Item::AIR and $block5->getId() == Item::AIR){
+				if($block0->getId() == BlockIds::IRON_BLOCK and $block1->getId() == BlockIds::IRON_BLOCK){
+					if($block2->getId() == BlockIds::IRON_BLOCK and $block3->getId() == BlockIds::IRON_BLOCK and $block4->getId() == BlockIds::AIR and $block5->getId() == BlockIds::AIR){
 						$level->setBlock($block2, new Air());
 						$level->setBlock($block3, new Air());
-					}elseif($block4->getId() == Item::IRON_BLOCK and $block5->getId() == Item::IRON_BLOCK and $block2->getId() == Item::AIR and $block3->getId() == Item::AIR){
+					}elseif($block4->getId() == BlockIds::IRON_BLOCK and $block5->getId() == BlockIds::IRON_BLOCK and $block2->getId() == BlockIds::AIR and $block3->getId() == BlockIds::AIR){
 						$level->setBlock($block4, new Air());
 						$level->setBlock($block5, new Air());
 					}else return false;

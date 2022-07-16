@@ -1,27 +1,24 @@
 <?php
 
+
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
 */
 
 namespace pocketmine\tile;
 
+use pocketmine\block\BlockIds;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
@@ -55,7 +52,7 @@ class ItemFrame extends Spawnable {
 	 * @return bool
 	 */
 	public function hasItem() : bool{
-		return $this->getItem()->getId() !== Item::AIR;
+		return $this->getItem()->getId() !== BlockIds::AIR;
 	}
 
 	/**
@@ -65,7 +62,7 @@ class ItemFrame extends Spawnable {
 		if(isset($this->namedtag->Item)){
 			return Item::nbtDeserialize($this->namedtag->Item);
 		}else{
-			return Item::get(Item::AIR);
+			return Item::get(BlockIds::AIR);
 		}
 	}
 
@@ -73,7 +70,7 @@ class ItemFrame extends Spawnable {
 	 * @param Item|null $item
 	 */
 	public function setItem(Item $item = null){
-		if($item !== null and $item->getId() !== Item::AIR){
+		if($item !== null and $item->getId() !== BlockIds::AIR){
 			$this->namedtag->Item = $item->nbtSerialize(-1, "Item");
 		}else{
 			unset($this->namedtag->Item);
@@ -133,15 +130,15 @@ class ItemFrame extends Spawnable {
 	public function getSpawnCompound(){
 		$tag = new CompoundTag("", [
 			new StringTag("id", Tile::ITEM_FRAME),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z),
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z),
 			$this->namedtag->ItemDropChance,
 			$this->namedtag->ItemRotation,
 		]);
 		if($this->hasItem()){
 			$tag->Item = $this->namedtag->Item;
-			if($this->getItem()->getId() === Item::FILLED_MAP){
+			if($this->getItem()->getId() === ItemIds::FILLED_MAP){
 				if(isset($this->namedtag->Map_UUID)){
 					$tag->Map_UUID = $this->namedtag->Map_UUID;
 				}

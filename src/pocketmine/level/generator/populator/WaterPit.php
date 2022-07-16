@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\BlockIds;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 //TODO: Remove
@@ -44,7 +66,7 @@ class WaterPit extends Populator {
 			$y = $this->getHighestWorkableBlock($x, $z);
 
 			if($y !== -1 and $this->canWaterPitStay($x, $y, $z)){
-				$this->level->setBlockIdAt($x, $y, $z, Block::STILL_WATER);
+				$this->level->setBlockIdAt($x, $y, $z, BlockIds::STILL_WATER);
 				$this->level->setBlockDataAt($x, $y, $z, 8);
 			}
 		}
@@ -59,7 +81,7 @@ class WaterPit extends Populator {
 	 */
 	private function canWaterPitStay($x, $y, $z){
 		$b = $this->level->getBlockIdAt($x, $y, $z);
-		return ($b === Block::AIR or $b === Block::GRASS) and $this->level->getBlockIdAt($x, $y, $z) === Block::DIRT;
+		return ($b === BlockIds::AIR or $b === BlockIds::GRASS) and $this->level->getBlockIdAt($x, $y, $z) === BlockIds::DIRT;
 	}
 
 	/**
@@ -71,7 +93,7 @@ class WaterPit extends Populator {
 	private function getHighestWorkableBlock($x, $z){
 		for($y = 61; $y >= 0; --$y){
 			$b = $this->level->getBlockIdAt($x, $y, $z);
-			if($b !== Block::AIR and $b !== Block::LEAVES and $b !== Block::LEAVES2 and $b !== Block::SNOW_LAYER){
+			if($b !== BlockIds::AIR and $b !== BlockIds::LEAVES and $b !== BlockIds::LEAVES2 and $b !== BlockIds::SNOW_LAYER){
 				break;
 			}
 		}

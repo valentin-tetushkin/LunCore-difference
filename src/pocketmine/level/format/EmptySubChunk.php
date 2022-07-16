@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 declare(strict_types=1);
 
 namespace pocketmine\level\format;
@@ -25,10 +47,7 @@ class EmptySubChunk implements SubChunkInterface{
 
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function isEmpty(bool $checkLight = true) : bool{
+    public function isEmpty(bool $checkLight = true) : bool{
 		return true;
 	}
 
@@ -89,15 +108,15 @@ class EmptySubChunk implements SubChunkInterface{
 		return 0;
 	}
 
-	/**
-	 * @param int  $x
-	 * @param int  $y
-	 * @param int  $z
-	 * @param null $id
-	 * @param null $data
-	 *
-	 * @return bool
-	 */
+    /**
+     * @param int $x
+     * @param int $y
+     * @param int $z
+     * @param int|null $id
+     * @param int|null $data
+     *
+     * @return bool
+     */
 	public function setBlock(int $x, int $y, int $z, ?int $id = null, ?int $data = null) : bool{
 		return false;
 	}

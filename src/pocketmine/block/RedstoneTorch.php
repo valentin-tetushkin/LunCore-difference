@@ -1,21 +1,24 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
@@ -214,7 +217,7 @@ class RedstoneTorch extends RedstoneSource {
 				if(!in_array($hash = Level::blockHash($block->x, $block->y, $block->z), $notCheck)){
 					if(!$this->checkPower($block)){
 						/** @var $block ActiveRedstoneLamp */
-						if($block->getId() == Block::LIT_REDSTONE_LAMP) $block->turnOff();
+						if($block->getId() == BlockIds::LIT_REDSTONE_LAMP) $block->turnOff();
 					}
 
 					$block = $this->getSide(Vector3::SIDE_DOWN, 2);
@@ -315,8 +318,8 @@ class RedstoneTorch extends RedstoneSource {
 		}elseif(
 			$below->isTransparent() === false or $below->getId() === self::FENCE or
 			$below->getId() === self::COBBLE_WALL or
-			$below->getId() == Block::REDSTONE_LAMP or
-			$below->getId() == Block::LIT_REDSTONE_LAMP
+			$below->getId() == BlockIds::REDSTONE_LAMP or
+			$below->getId() == BlockIds::LIT_REDSTONE_LAMP
 		){
 			$this->meta = 0;
 			$this->getLevel()->setBlock($block, $this, true, true);
@@ -334,7 +337,7 @@ class RedstoneTorch extends RedstoneSource {
 	 */
 	public function getDrops(Item $item) : array{
 		return [
-			[Item::LIT_REDSTONE_TORCH, 0, 1],
+			[BlockIds::LIT_REDSTONE_TORCH, 0, 1],
 		];
 	}
 

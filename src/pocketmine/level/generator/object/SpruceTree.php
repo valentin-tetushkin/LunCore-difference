@@ -1,11 +1,34 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\object;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Leaves;
 use pocketmine\block\Wood;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class SpruceTree extends Tree {
@@ -14,8 +37,8 @@ class SpruceTree extends Tree {
 	 * SpruceTree constructor.
 	 */
 	public function __construct(){
-		$this->trunkBlock = Block::LOG;
-		$this->leafBlock = Block::LEAVES;
+		$this->trunkBlock = BlockIds::LOG;
+		$this->leafBlock = BlockIds::LEAVES;
 		$this->leafType = Leaves::SPRUCE;
 		$this->type = Wood::SPRUCE;
 		$this->treeHeight = 10;

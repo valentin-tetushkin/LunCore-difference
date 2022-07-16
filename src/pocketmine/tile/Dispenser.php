@@ -1,32 +1,29 @@
 <?php
 
+
 /*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+*/
 
 namespace pocketmine\tile;
 
 
+use pocketmine\block\BlockIds;
 use pocketmine\entity\Entity;
 use pocketmine\entity\Item as ItemEntity;
 use pocketmine\inventory\DispenserInventory;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\level\particle\SmokeParticle;
 use pocketmine\math\Vector3;
@@ -115,7 +112,7 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	public function getItem($index){
 		$i = $this->getSlotIndex($index);
 		if($i < 0){
-			return Item::get(Item::AIR, 0, 0);
+			return Item::get(BlockIds::AIR, 0, 0);
 		}else{
 			return Item::nbtDeserialize($this->namedtag->Items[$i]);
 		}
@@ -132,7 +129,7 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		if($item->getId() === Item::AIR or $item->getCount() <= 0){
+		if($item->getId() === BlockIds::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
 			}
@@ -210,7 +207,7 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 		$itemIndex = [];
 		for($i = 0; $i < $this->getSize(); $i++){
 			$item = $this->getInventory()->getItem($i);
-			if($item->getId() != Item::AIR){
+			if($item->getId() != BlockIds::AIR){
 				$itemIndex[] = [$i, $item];
 			}
 		}
@@ -223,7 +220,7 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 			/** @var Item $item */
 			$item = $itemArr[1];
 			$item->setCount($item->getCount() - 1);
-			$this->getInventory()->setItem($itemArr[0], $item->getCount() > 0 ? $item : Item::get(Item::AIR));
+			$this->getInventory()->setItem($itemArr[0], $item->getCount() > 0 ? $item : Item::get(BlockIds::AIR));
 			$motion = $this->getMotion();
 			$needItem = Item::get($item->getId(), $item->getDamage());
 			$f = 1.5;
@@ -244,21 +241,21 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 				]),
 			]);
 			switch($needItem->getId()){
-				case Item::ARROW:
+				case ItemIds::ARROW:
 					$nbt->Fire = new ShortTag("Fire", 0);
 					$entity = Entity::createEntity("Arrow", $this->getLevel(), $nbt);
 					break;
-				case Item::SNOWBALL:
+				case ItemIds::SNOWBALL:
 					$entity = Entity::createEntity("Snowball", $this->getLevel(), $nbt);
 					break;
-				case Item::EGG:
+				case ItemIds::EGG:
 					$entity = Entity::createEntity("Egg", $this->getLevel(), $nbt);
 					break;
-				case Item::SPLASH_POTION:
+				case ItemIds::SPLASH_POTION:
 					$nbt->PotionId = new ShortTag("PotionId", $item->getDamage());
 					$entity = Entity::createEntity("ThrownPotion", $this->getLevel(), $nbt);
 					break;
-				case Item::ENCHANTING_BOTTLE:
+				case ItemIds::ENCHANTING_BOTTLE:
 					$entity = Entity::createEntity("ThrownExpBottle", $this->getLevel(), $nbt);
 					break;
 				default:
@@ -285,9 +282,9 @@ class Dispenser extends Spawnable implements InventoryHolder, Container, Nameabl
 	public function getSpawnCompound(){
 		$c = new CompoundTag("", [
 			new StringTag("id", Tile::DISPENSER),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z)
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z)
 		]);
 
 		if($this->hasName()){

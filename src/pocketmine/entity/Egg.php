@@ -1,7 +1,30 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
@@ -33,31 +56,27 @@ class Egg extends Projectile {
 
 	protected function onHit(ProjectileHitEvent $event) : void{
 		for($i = 0; $i < 6; ++$i){
-			$this->level->addParticle(new ItemBreakParticle($this, Item::get(Item::EGG)));
+			$this->level->addParticle(new ItemBreakParticle($this, Item::get(ItemIds::EGG)));
 		}
 		parent::onHit($event);
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if($this->age > 1200 or $this->isCollided){
 			$this->kill();
 			$hasUpdate = true; //Chance to spawn chicken
 		}
-
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

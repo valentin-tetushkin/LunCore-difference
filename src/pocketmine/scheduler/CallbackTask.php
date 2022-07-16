@@ -1,35 +1,30 @@
 <?php
 
+
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ * Метод устарел будем для вас что-то новое делать
 */
 
 namespace pocketmine\scheduler;
 
 /**
- * Allows the creation of simple callbacks with extra data
- * The last parameter in the callback will be this object
+ * Позволяет создавать простые обратные вызовы с дополнительными данными
+ * Последним параметром в обратном вызове будет этот объект
  *
- * If you want to do a task in a Plugin, consider extending PluginTask to your needs
+ * Если вы хотите выполнить задачу в плагине, рассмотрите возможность расширения PluginTask под свои нужды.
  *
- * @deprecated
- * Do NOT use this anymore, it was deprecated a long time ago at PocketMine
- * and will be removed at some stage in the future.
+ * @устарело
+ * НЕ используйте это больше, оно давно устарело в PocketMine.
+ * и будет удалено на каком-то этапе в будущем.
  */
 
 class CallbackTask extends Task {

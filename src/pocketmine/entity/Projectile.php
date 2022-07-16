@@ -1,13 +1,41 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 
-use pocketmine\event\entity\{EntityCombustByEntityEvent, EntityDamageByChildEntityEvent, EntityDamageByEntityEvent, EntityDamageEvent, ProjectileHitEvent};
+use pocketmine\event\entity\EntityCombustByEntityEvent;
+use pocketmine\event\entity\EntityDamageByChildEntityEvent;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\ProjectileHitEvent;
 use pocketmine\item\Potion;
-use pocketmine\level\{Level, MovingObjectPosition};
+use pocketmine\level\Level;
 use pocketmine\math\Vector3;
-use pocketmine\nbt\tag\{CompoundTag, ShortTag, DoubleTag};
+use pocketmine\nbt\tag\CompoundTag;
+use pocketmine\nbt\tag\ShortTag;
+use pocketmine\nbt\tag\DoubleTag;
 
 abstract class Projectile extends Entity{
 
@@ -145,33 +173,25 @@ abstract class Projectile extends Entity{
 		$this->namedtag->Age = new ShortTag("Age", $this->age);
 		$this->namedtag->damage = new DoubleTag("damage", $this->damage);
 	}
+	
+	protected function applyDragBeforeGravity() : bool{
+		return true;
+	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
 
-
-		$tickDiff = $currentTick - $this->lastUpdate;
-		if($tickDiff <= 0 and !$this->justCreated){
-			return true;
-		}
-		$this->lastUpdate = $currentTick;
-
-		$hasUpdate = $this->entityBaseTick($tickDiff);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if($this->isAlive()){
-
 			$movingObjectPosition = null;
-
-			if(!$this->isCollided){
-				$this->motionY -= $this->gravity;
-			}
 
 			$moveVector = new Vector3($this->x + $this->motionX, $this->y + $this->motionY, $this->z + $this->motionZ);
 
@@ -187,14 +207,14 @@ abstract class Projectile extends Entity{
 					continue;
 				}
 
-				$axisalignedbb = $entity->boundingBox->grow(0.3, 0.3, 0.3);
-				$ob = $axisalignedbb->calculateIntercept($this, $moveVector);
+				$axisalignedbb = $entity->boundingBox->expandedCopy(0.3, 0.3, 0.3);
+				$rayTraceResult = $axisalignedbb->calculateIntercept($this, $moveVector);
 
-				if($ob === null){
+				if($rayTraceResult === null){
 					continue;
 				}
 
-				$distance = $this->distanceSquared($ob->hitVector);
+				$distance = $this->distanceSquared($rayTraceResult->hitVector);
 
 				if($distance < $nearDistance){
 					$nearDistance = $distance;
@@ -203,17 +223,9 @@ abstract class Projectile extends Entity{
 			}
 
 			if($nearEntity !== null){
-				$movingObjectPosition = MovingObjectPosition::fromEntity($nearEntity);
+				$this->onCollideWithEntity($nearEntity);
+				return false;
 			}
-
-			if($movingObjectPosition !== null){
-				if($movingObjectPosition->entityHit !== null){
-					$this->onCollideWithEntity($movingObjectPosition->entityHit);
-					return false;
-				}
-			}
-
-			$this->move($this->motionX, $this->motionY, $this->motionZ);
 
 			if($this->isCollided and !$this->hadCollision){ //Collided with a block
 				$this->hadCollision = true;
@@ -224,18 +236,16 @@ abstract class Projectile extends Entity{
 
 				$this->server->getPluginManager()->callEvent(new ProjectileHitEvent($this));
 				return false;
-			}elseif(!$this->isCollided and $this->hadCollision){ //Collided with block, but block later removed
+			}elseif(!$this->isCollided and $this->hadCollision){ //Previously collided with block, but block later removed
 				$this->hadCollision = false;
 			}
 
-			if(!$this->hadCollision or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001){
+			if(!$this->hadCollision or abs($this->motionX) > self::MOTION_THRESHOLD or abs($this->motionY) > self::MOTION_THRESHOLD or abs($this->motionZ) > self::MOTION_THRESHOLD){
 				$f = sqrt(($this->motionX ** 2) + ($this->motionZ ** 2));
 				$this->yaw = (atan2($this->motionX, $this->motionZ) * 180 / M_PI);
 				$this->pitch = (atan2($this->motionY, $f) * 180 / M_PI);
 				$hasUpdate = true;
 			}
-
-			$this->updateMovement();
 		}
 
 		return $hasUpdate;

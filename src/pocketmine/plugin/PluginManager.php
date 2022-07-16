@@ -1,36 +1,21 @@
 <?php
 
+
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- *  _____            _               _____           
- * / ____|          (_)             |  __ \          
- *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
- *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
- *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
- * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
- *                         __/ |                    
- *                        |___/                     
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author GenisysPro
- * @link https://github.com/GenisysPro/GenisysPro
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
 */
 
 namespace pocketmine\plugin;
 
-use pocketmine\command\defaults\TimingsCommand;
 use pocketmine\command\PluginCommand;
 use pocketmine\command\SimpleCommandMap;
 use pocketmine\event\Event;
@@ -42,13 +27,14 @@ use pocketmine\event\TimingsHandler;
 use pocketmine\permission\Permissible;
 use pocketmine\permission\Permission;
 use pocketmine\Server;
-use pocketmine\utils\TextFormat;
+use pocketmine\utils\Utils;
 use function mb_strtoupper;
 
 /**
  * Manages all the plugins, Permissions and Permissibles
  */
-class PluginManager {
+class PluginManager{
+	private const MAX_EVENT_CALL_DEPTH = 1000;
 
 	/** @var Server */
 	private $server;
@@ -96,7 +82,8 @@ class PluginManager {
 	 */
 	protected $fileAssociations = [];
 
-	public static $useTimings = false;
+	/** @var int */
+	private $eventCallDepth = 0;
 
 	/**
 	 * @param Server           $server
@@ -180,7 +167,6 @@ class PluginManager {
 	 * @return Plugin[]
 	 */
 	public function loadPlugins($directory, $newLoaders = null){
-
 		if(is_dir($directory)){
 			$plugins = [];
 			$loadedPlugins = [];
@@ -202,6 +188,9 @@ class PluginManager {
 						continue;
 					}
 					$file = $directory . $file;
+					if(!$loader->canLoadPlugin($file)){
+						continue;
+					}
 					try{
 						$description = $loader->getPluginDescription($file);
 						if($description instanceof PluginDescription){
@@ -216,35 +205,6 @@ class PluginManager {
 							if(isset($plugins[$name]) or $this->getPlugin($name) instanceof Plugin){
 								$this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.duplicateError", [$name]));
 								continue;
-							}
-
-							$compatible = false;
-							//Check multiple dependencies
-							foreach($description->getCompatibleApis() as $version){
-								//Format: majorVersion.minorVersion.patch (3.0.0)
-								//    or: majorVersion.minorVersion.patch-devBuild (3.0.0-alpha1)
-								if($version !== $this->server->getApiVersion()){
-									$pluginApi = array_pad(explode("-", $version), 2, ""); //0 = version, 1 = suffix (optional)
-									$serverApi = array_pad(explode("-", $this->server->getApiVersion()), 2, "");
-
-									if(mb_strtoupper($pluginApi[1]) !== mb_strtoupper($serverApi[1])){ //Different release phase (alpha vs. beta) or phase build (alpha.1 vs alpha.2)
-										continue;
-									}
-
-									$pluginNumbers = array_map("intval", explode(".", $pluginApi[0]));
-									$serverNumbers = array_map("intval", explode(".", $serverApi[0]));
-
-									if($pluginNumbers[0] !== $serverNumbers[0]){ //Completely different API version
-										continue;
-									}
-
-									if($pluginNumbers[1] > $serverNumbers[1]){ //If the plugin requires new API features, being backwards compatible
-										continue;
-									}
-								}
-
-								$compatible = true;
-								break;
 							}
 
 							$compatiblegeniapi = false;
@@ -274,9 +234,9 @@ class PluginManager {
 								break;
 							}
 
-							if($compatible === false){
+							if(!$this->isCompatibleApi(...$description->getCompatibleApis())){
 								if($this->server->loadIncompatibleAPI === true){
-									$this->server->getLogger()->debug("插件{$name}的API与服务器不符,但GenisysPro仍然加载了它");
+									$this->server->getLogger()->debug("插件{$name}的API与服务器不符,但LunCore仍然加载了它");
 								}else{
 									$this->server->getLogger()->error($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.incompatibleAPI"]));
 									continue;
@@ -290,8 +250,8 @@ class PluginManager {
 
 							$plugins[$name] = $file;
 
-							$softDependencies[$name] = (array) $description->getSoftDepend();
-							$dependencies[$name] = (array) $description->getDepend();
+							$softDependencies[$name] = array_merge($softDependencies[$name] ?? [], $description->getSoftDepend());
+							$dependencies[$name] = $description->getDepend();
 
 							foreach($description->getLoadBefore() as $before){
 								if(isset($softDependencies[$before])){
@@ -310,7 +270,7 @@ class PluginManager {
 
 
 			while(count($plugins) > 0){
-				$missingDependency = true;
+				$loadedThisLoop = 0;
 				foreach($plugins as $name => $file){
 					if(isset($dependencies[$name])){
 						foreach($dependencies[$name] as $key => $dependency){
@@ -331,7 +291,14 @@ class PluginManager {
 					if(isset($softDependencies[$name])){
 						foreach($softDependencies[$name] as $key => $dependency){
 							if(isset($loadedPlugins[$dependency]) or $this->getPlugin($dependency) instanceof Plugin){
+								$this->server->getLogger()->debug("Successfully resolved soft dependency \"$dependency\" for plugin \"$name\"");
 								unset($softDependencies[$name][$key]);
+							}elseif(!isset($plugins[$dependency])){
+							    //this dependency is never going to be resolved, so don't bother trying
+							    $this->server->getLogger()->debug("Skipping resolution of missing soft dependency \"$dependency\" for plugin \"$name\"");
+							    unset($softDependencies[$name][$key]);
+						    }else{
+							    $this->server->getLogger()->debug("Deferring resolution of soft dependency \"$dependency\" for plugin \"$name\" (found but not loaded yet)");
 							}
 						}
 
@@ -342,8 +309,8 @@ class PluginManager {
 
 					if(!isset($dependencies[$name]) and !isset($softDependencies[$name])){
 						unset($plugins[$name]);
-						$missingDependency = false;
-						if($plugin = $this->loadPlugin($file, $loaders) and $plugin instanceof Plugin){
+						$loadedThisLoop++;
+					    if(($plugin = $this->loadPlugin($file, $loaders)) instanceof Plugin){
 							$loadedPlugins[$name] = $plugin;
 						}else{
 							$this->server->getLogger()->critical($this->server->getLanguage()->translateString("pocketmine.plugin.genericLoadError", [$name]));
@@ -351,38 +318,61 @@ class PluginManager {
 					}
 				}
 
-				if($missingDependency === true){
-					foreach($plugins as $name => $file){
-						if(!isset($dependencies[$name])){
-							unset($softDependencies[$name]);
-							unset($plugins[$name]);
-							$missingDependency = false;
-							if($plugin = $this->loadPlugin($file, $loaders) and $plugin instanceof Plugin){
-								$loadedPlugins[$name] = $plugin;
-							}else{
-								$this->server->getLogger()->critical($this->server->getLanguage()->translateString("pocketmine.plugin.genericLoadError", [$name]));
-							}
-						}
-					}
-
+				if($loadedThisLoop === 0){
 					//No plugins loaded :(
-					if($missingDependency === true){
-						foreach($plugins as $name => $file){
-							$this->server->getLogger()->critical($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.circularDependency"]));
-						}
-						$plugins = [];
+					foreach($plugins as $name => $file){
+					    $this->server->getLogger()->critical($this->server->getLanguage()->translateString("pocketmine.plugin.loadError", [$name, "%pocketmine.plugin.circularDependency"]));
 					}
+					$plugins = [];
 				}
 			}
 
-			TimingsCommand::$timingStart = microtime(true);
-
 			return $loadedPlugins;
 		}else{
-			TimingsCommand::$timingStart = microtime(true);
-
 			return [];
 		}
+	}
+
+    /**
+     * Returns whether a specified API version string is considered compatible with the server's API version.
+     *
+     * @param string ...$versions
+     * @return bool
+     */
+	public function isCompatibleApi(string ...$versions) : bool{
+		$serverString = $this->server->getApiVersion();
+		$serverApi = array_pad(explode("-", $serverString, 2), 2, "");
+		$serverNumbers = array_map("intval", explode(".", $serverApi[0]));
+
+		foreach($versions as $version){
+			//Format: majorVersion.minorVersion.patch (3.0.0)
+			//    or: majorVersion.minorVersion.patch-devBuild (3.0.0-alpha1)
+			if($version !== $serverString){
+				$pluginApi = array_pad(explode("-", $version, 2), 2, ""); //0 = version, 1 = suffix (optional)
+
+				if(mb_strtoupper($pluginApi[1]) !== mb_strtoupper($serverApi[1])){ //Different release phase (alpha vs. beta) or phase build (alpha.1 vs alpha.2)
+					continue;
+				}
+
+				$pluginNumbers = array_map("intval", array_pad(explode(".", $pluginApi[0]), 3, "0")); //plugins might specify API like "3.0" or "3"
+
+				if($pluginNumbers[0] !== $serverNumbers[0]){ //Completely different API version
+					continue;
+				}
+
+				if($pluginNumbers[1] > $serverNumbers[1]){ //If the plugin requires new API features, being backwards compatible
+					continue;
+				}
+
+				if($pluginNumbers[2] > $serverNumbers[2]){ //If the plugin requires bug fixes in patches, being backwards compatible
+					continue;
+				}
+			}
+
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
@@ -391,11 +381,7 @@ class PluginManager {
 	 * @return null|Permission
 	 */
 	public function getPermission($name){
-		if(isset($this->permissions[$name])){
-			return $this->permissions[$name];
-		}
-
-		return null;
+		return $this->permissions[$name] ?? null;
 	}
 
 	/**
@@ -517,23 +503,7 @@ class PluginManager {
 	 * @return Permissible[]
 	 */
 	public function getPermissionSubscriptions($permission){
-		if(isset($this->permSubs[$permission])){
-			return $this->permSubs[$permission];
-			$subs = [];
-			foreach($this->permSubs[$permission] as $k => $perm){
-				/** @var \WeakRef $perm */
-				if($perm->acquire()){
-					$subs[] = $perm->get();
-					$perm->release();
-				}else{
-					unset($this->permSubs[$permission][$k]);
-				}
-			}
-
-			return $subs;
-		}
-
-		return [];
+		return $this->permSubs[$permission] ?? [];
 	}
 
 	/**
@@ -568,29 +538,9 @@ class PluginManager {
 	public function getDefaultPermSubscriptions($op){
 		if($op === true){
 			return $this->defSubsOp;
-			foreach($this->defSubsOp as $k => $perm){
-				/** @var \WeakRef $perm */
-				if($perm->acquire()){
-					$subs[] = $perm->get();
-					$perm->release();
-				}else{
-					unset($this->defSubsOp[$k]);
-				}
-			}
-		}else{
-			return $this->defSubs;
-			foreach($this->defSubs as $k => $perm){
-				/** @var \WeakRef $perm */
-				if($perm->acquire()){
-					$subs[] = $perm->get();
-					$perm->release();
-				}else{
-					unset($this->defSubs[$k]);
-				}
-			}
 		}
 
-		return $subs;
+		return $this->defSubs;
 	}
 
 	/**
@@ -606,11 +556,7 @@ class PluginManager {
 	 * @return bool
 	 */
 	public function isPluginEnabled(Plugin $plugin){
-		if($plugin instanceof Plugin and isset($this->plugins[$plugin->getDescription()->getName()])){
-			return $plugin->isEnabled();
-		}else{
-			return false;
-		}
+		return isset($this->plugins[$plugin->getDescription()->getName()]) and $plugin->isEnabled();
 	}
 
 	/**
@@ -716,50 +662,37 @@ class PluginManager {
 	}
 
 	/**
-	 * Extracts one-line tags from the doc-comment
-	 *
-	 * @param string $docComment
-	 * @return string[] an array of tagName => tag value. If the tag has no value, an empty string is used as the value.
-	 */
-	public static function parseDocComment(string $docComment) : array{
-		preg_match_all('/^[\t ]*\* @([a-zA-Z]+)(?:[\t ]+(.+))?[\t ]*$/m', $docComment, $matches);
-		return array_combine($matches[1], array_map("trim", $matches[2]));
-	}
-
-	/**
 	 * Calls an event
 	 *
 	 * @param Event $event
 	 */
 	public function callEvent(Event $event){
+		if($this->eventCallDepth >= self::MAX_EVENT_CALL_DEPTH){
+			//this exception will be caught by the parent event call if all else fails
+			throw new \RuntimeException("Recursive event call detected (reached max depth of " . self::MAX_EVENT_CALL_DEPTH . " calls)");
+		}
+
+		++$this->eventCallDepth;
 		foreach($event->getHandlers()->getRegisteredListeners() as $registration){
 			if(!$registration->getPlugin()->isEnabled()){
 				continue;
 			}
 
-			try{
-				$registration->callEvent($event);
-			}catch(\Throwable $e){
-				$this->server->getLogger()->critical(
-					$this->server->getLanguage()->translateString("pocketmine.plugin.eventError", [
-						$event->getEventName(),
-						$registration->getPlugin()->getDescription()->getFullName(),
-						$e->getMessage(),
-						get_class($registration->getListener())
-					]));
-				$this->server->getLogger()->logException($e);
-			}
+			$registration->callEvent($event);
 		}
+		--$this->eventCallDepth;
 	}
 
-	/**
-	 * Registers all the events in the given Listener class
-	 *
-	 * @param Listener $listener
-	 * @param Plugin   $plugin
-	 *
-	 * @throws PluginException
-	 */
+    /**
+     * Registers all the events in the given Listener class
+     *
+     * @param Listener $listener
+     * @param Plugin $plugin
+     *
+     * @throws PluginException
+     * @throws \ReflectionException
+     * @throws \Throwable
+     */
 	public function registerEvents(Listener $listener, Plugin $plugin){
 		if(!$plugin->isEnabled()){
 			throw new PluginException("Plugin attempted to register " . get_class($listener) . " while not enabled");
@@ -768,7 +701,7 @@ class PluginManager {
 		$reflection = new \ReflectionClass(get_class($listener));
 		foreach($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method){
 			if(!$method->isStatic() and $method->getDeclaringClass()->implementsInterface(Listener::class)){
-				$tags = self::parseDocComment((string) $method->getDocComment());
+				$tags = Utils::parseDocComment((string) $method->getDocComment());
 				if(isset($tags["notHandler"])){
 					continue;
 				}
@@ -789,7 +722,7 @@ class PluginManager {
 					}
 				}catch(\ReflectionException $e){ //class doesn't exist
 					if(isset($tags["softDepend"]) && !isset($this->plugins[$tags["softDepend"]])){
-						$this->server->getLogger()->debug("Not registering @softDepend listener " . get_class($listener) . "::" . $method->getName() . "(" . $parameters[0]->getType()->getName() . ") because plugin \"" . $tags["softDepend"] . "\" not found");
+						$this->server->getLogger()->debug("Not registering @softDepend listener " . get_class($listener) . "::" . $method->getName() . "() because plugin \"" . $tags["softDepend"] . "\" not found");
 						continue;
 					}
 
@@ -820,21 +753,29 @@ class PluginManager {
 					}
 				}
 
-				$this->registerEvent($eventClass->getName(), $listener, $priority, new MethodEventExecutor($method->getName()), $plugin, $ignoreCancelled);
-			}
+                try {
+                    $this->registerEvent($eventClass->getName(), $listener, $priority, new MethodEventExecutor($method->getName()), $plugin, $ignoreCancelled);
+                } catch (\ReflectionException $e) {
+                } catch (\Throwable $e) {
+                }
+            }
 		}
 	}
 
-	/**
-	 * @param string        $event Class name that extends Event
-	 * @param Listener      $listener
-	 * @param int           $priority
-	 * @param EventExecutor $executor
-	 * @param Plugin        $plugin
-	 * @param bool          $ignoreCancelled
-	 *
-	 * @throws PluginException
-	 */
+    /**
+     * @param string $event Class name that extends Event
+     * @param Listener $listener
+     * @param int $priority
+     * @param EventExecutor $executor
+     * @param Plugin $plugin
+     * @param bool $ignoreCancelled
+     *
+     * @throws PluginException
+     * @throws \Throwable
+     * @throws \ReflectionException
+     * @throws \ReflectionException
+     * @throws \ReflectionException
+     */
 	public function registerEvent($event, Listener $listener, $priority, EventExecutor $executor, Plugin $plugin, $ignoreCancelled = false){
 		if(!is_subclass_of($event, Event::class)){
 			throw new PluginException($event . " is not an Event");
@@ -868,19 +809,4 @@ class PluginManager {
 
 		return $event::$handlerList;
 	}
-
-	/**
-	 * @return bool
-	 */
-	public function useTimings(){
-		return self::$useTimings;
-	}
-
-	/**
-	 * @param bool $use
-	 */
-	public function setUseTimings($use){
-		self::$useTimings = (bool) $use;
-	}
-
 }

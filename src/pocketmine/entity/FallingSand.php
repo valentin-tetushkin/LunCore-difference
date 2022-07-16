@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\block\Anvil;
@@ -81,40 +103,20 @@ class FallingSand extends Entity {
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
-
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
 
-		$this->timings->startTiming();
-
-		$tickDiff = $currentTick - $this->lastUpdate;
-		if($tickDiff <= 0 and !$this->justCreated){
-			return true;
-		}
-
-		$this->lastUpdate = $currentTick;
-
 		$height = $this->fallDistance;
 
-		$hasUpdate = $this->entityBaseTick($tickDiff);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if($this->isAlive()){
-			$this->motionY -= $this->gravity;
-
-			$this->move($this->motionX, $this->motionY, $this->motionZ);
-
-			$friction = 1 - $this->drag;
-
-			$this->motionX *= $friction;
-			$this->motionY *= 1 - $this->drag;
-			$this->motionZ *= $friction;
-
 			$pos = (new Vector3($this->x - $this->width / 2, $this->y, $this->z - $this->width / 2))->floor();
 
 			if($this->onGround){
@@ -122,7 +124,7 @@ class FallingSand extends Entity {
 				$block = $this->level->getBlock($pos);
 				if(!$block->canBeReplaced() or ($this->onGround and abs($this->y - $this->getFloorY()) > 0.001)){
 					//FIXME: anvils are supposed to destroy torches
-					$this->getLevel()->dropItem($this, ItemItem::get($this->getBlock(), $this->getDamage(), 1));
+					$this->getLevel()->dropItem($this, ItemItem::get($this->getBlock(), $this->getDamage()));
 				}else{
 					if($block instanceof SnowLayer){
 						$oldDamage = $block->getDamage();
@@ -144,7 +146,7 @@ class FallingSand extends Entity {
 								if($entity instanceof Living){
 									$damage = ($height - 1) * 2;
 									if($damage > 40) $damage = 40;
-									$ev = new EntityDamageByEntityEvent($this, $entity, EntityDamageByEntityEvent::CAUSE_FALL, $damage, 0.1);
+									$ev = new EntityDamageByEntityEvent($this, $entity, EntityDamageEvent::CAUSE_FALL, $damage, 0.1);
 									$entity->attack($damage, $ev);
 								}
 							}
@@ -154,11 +156,9 @@ class FallingSand extends Entity {
 				}
 				$hasUpdate = true;
 			}
-
-			$this->updateMovement();
 		}
 
-		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+		return $hasUpdate;
 	}
 
 	/**

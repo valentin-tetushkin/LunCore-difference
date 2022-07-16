@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -28,7 +20,7 @@ class BanIpCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.ban.ip.description",
-			"%commands.banip.usage"
+			"/lban-ip <IPадрес|имяИгрока> [причина ...]"
 		);
 		$this->setPermission("pocketmine.command.ban.ip");
 	}

@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageEvent;
@@ -19,14 +41,16 @@ abstract class FlyingAnimal extends Creature implements Ageable {
 	public $switchDirectionTicks = 300;
 
 	/**
-	 * @param $currentTick
-	 *
+     *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->closed !== false){
 			return false;
 		}
+
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
+		
 		if($this->willMove(100)){
 			if(++$this->switchDirectionTicker === $this->switchDirectionTicks){
 				$this->switchDirectionTicker = 0;
@@ -35,12 +59,7 @@ abstract class FlyingAnimal extends Creature implements Ageable {
 				}
 			}
 
-			$this->lastUpdate = $currentTick;
-
-			$this->timings->startTiming();
-
 			if($this->isAlive()){
-
 				if($this->y > $this->highestY and $this->flyDirection !== null){
 					$this->flyDirection->y = -0.5;
 				}
@@ -57,28 +76,7 @@ abstract class FlyingAnimal extends Creature implements Ageable {
 					$this->flySpeed = mt_rand(50, 100) / 500;
 					$this->setMotion($this->flyDirection);
 				}
-
-				//$expectedPos = new Vector3($this->x + $this->motionX, $this->y + $this->motionY, $this->z + $this->motionZ);
-
-				//$motion = $this->flyDirection->multiply($this->flySpeed);
-				$this->move($this->motionX, $this->motionY, $this->motionZ);
-				$this->updateMovement();
-				//$this->getLevel()->addEntityMotion($this->chunk->getX(), $this->chunk->getZ(), $this->getId(), $motion->x, $motion->y, $motion->z);
-
-				//echo "EID = {$this->getId()}, motionX = $this->motionX, motionY = $this->motionY, motionZ = $this->motionZ\n";
-				/*
-
-				if($expectedPos->distanceSquared($this) > 0){
-				    $this->flyDirection = $this->generateRandomDirection();
-				    $this->flySpeed = mt_rand(50, 100) / 500;
-				}
-
-				$friction = 1 - $this->drag;
-
-				$this->motionX *= $friction;
-				$this->motionY *= 1 - $this->drag;
-				$this->motionZ *= $friction;
-    */
+				
 				$f = sqrt(($this->motionX ** 2) + ($this->motionZ ** 2));
 				$this->yaw = (-atan2($this->motionX, $this->motionZ) * 180 / M_PI);
 				$this->pitch = (-atan2($f, $this->motionY) * 180 / M_PI);
@@ -86,15 +84,10 @@ abstract class FlyingAnimal extends Creature implements Ageable {
 				if($this->onGround and $this->flyDirection instanceof Vector3){
 					$this->flyDirection->y *= -1;
 				}
-
-
 			}
 		}
-		parent::onUpdate($currentTick);
-		//parent::entityBaseTick();
-		$this->timings->stopTiming();
 
-		return !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+		return $hasUpdate;
 	}
 
 	/**

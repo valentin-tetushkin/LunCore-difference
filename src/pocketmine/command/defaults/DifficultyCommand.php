@@ -1,13 +1,7 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
+
 
 namespace pocketmine\command\defaults;
 
@@ -29,7 +23,7 @@ class DifficultyCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.difficulty.description",
-			"%commands.difficulty.usage"
+			"/ldifficulty <сложность игры>"
 		);
 		$this->setPermission("pocketmine.command.difficulty");
 	}

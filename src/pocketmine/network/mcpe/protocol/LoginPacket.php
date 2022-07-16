@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -11,7 +33,6 @@ class LoginPacket extends DataPacket {
 	const MOJANG_PUBKEY = "MHYwEAYHKoZIzj0CAQYFK4EEACIDYgAE8ELkixyLcwlZryUQcu1TvPOmI2B7vX83ndnWRUaXm74wFfa5f/lwQNTfrLVHa2PmenpGI6JhIMUJaWZrjmMj90NoKNFSNBuKdm8rYiXsfaz3K36x/1U26HpG0ZxK/V1V";
 
 	const EDITION_POCKET = 0;
-
 
 	public $username;
 	public $protocol;
@@ -48,7 +69,7 @@ class LoginPacket extends DataPacket {
 
 		$this->gameEdition = $this->getByte();
 
-		$this->setBuffer($this->getString(), 0);
+		$this->setBuffer($this->getString());
 
 		$time = time();
 
@@ -84,13 +105,13 @@ class LoginPacket extends DataPacket {
 				unset($chainData[$index]);
 			}
 		}
-		
+
 		list($verified, $this->clientData) = $this->decodeToken($this->get($this->getLInt()), $chainKey);
-		
-		if(substr($webtoken["identityPublicKey"] , 0,3) != "MHY") $this->username = "";
+
 		$this->clientId = $this->clientData["ClientRandomId"] ?? null;
+		$this->serverAddress = $this->clientData["ServerAddress"] ?? null;
 		$this->skinId = $this->clientData["SkinId"] ?? null;
-			
+
 		if(isset($this->clientData["SkinData"])){
 			$this->skin = base64_decode($this->clientData["SkinData"]);
 		}

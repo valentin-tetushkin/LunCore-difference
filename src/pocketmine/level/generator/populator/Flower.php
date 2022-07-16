@@ -1,10 +1,32 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Flower as FlowerBlock;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class Flower extends Populator {
@@ -56,8 +78,8 @@ class Flower extends Populator {
 		$amount = $random->nextRange(0, $this->randomAmount + 1) + $this->baseAmount;
 
 		if(count($this->flowerTypes) === 0){
-			$this->addType([Block::DANDELION, 0]);
-			$this->addType([Block::RED_FLOWER, FlowerBlock::TYPE_POPPY]);
+			$this->addType([BlockIds::DANDELION, 0]);
+			$this->addType([BlockIds::RED_FLOWER, FlowerBlock::TYPE_POPPY]);
 		}
 
 		$endNum = count($this->flowerTypes) - 1;
@@ -83,7 +105,7 @@ class Flower extends Populator {
 	 */
 	private function canFlowerStay($x, $y, $z){
 		$b = $this->level->getBlockIdAt($x, $y, $z);
-		return ($b === Block::AIR or $b === Block::SNOW_LAYER) and $this->level->getBlockIdAt($x, $y - 1, $z) === Block::GRASS;
+		return ($b === BlockIds::AIR or $b === BlockIds::SNOW_LAYER) and $this->level->getBlockIdAt($x, $y - 1, $z) === BlockIds::GRASS;
 	}
 
 	/**
@@ -95,7 +117,7 @@ class Flower extends Populator {
 	private function getHighestWorkableBlock($x, $z){
 		for($y = 127; $y >= 0; --$y){
 			$b = $this->level->getBlockIdAt($x, $y, $z);
-			if($b !== Block::AIR and $b !== Block::LEAVES and $b !== Block::LEAVES2 and $b !== Block::SNOW_LAYER){
+			if($b !== BlockIds::AIR and $b !== BlockIds::LEAVES and $b !== BlockIds::LEAVES2 and $b !== BlockIds::SNOW_LAYER){
 				break;
 			}
 		}

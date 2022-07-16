@@ -1,22 +1,37 @@
 <?php
 
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\inventory;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\item\Dye;
 use pocketmine\item\EnchantedBook;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\enchantment\EnchantmentEntry;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\level\Position;
 use pocketmine\Player;
@@ -204,8 +219,7 @@ class EnchantInventory extends TemporaryInventory {
 			foreach($ent2 as $enchantment1){
 				if($enchantment->equals($enchantment1)){
 					$hasResult = true;
-					continue;
-				}
+                }
 			}
 			if(!$hasResult){
 				return false;
@@ -220,7 +234,7 @@ class EnchantInventory extends TemporaryInventory {
 	 * @param Item   $after
 	 */
 	public function onEnchant(Player $who, Item $before, Item $after){
-		$result = ($before->getId() === Item::BOOK) ? new EnchantedBook() : $before;
+		$result = ($before->getId() === ItemIds::BOOK) ? new EnchantedBook() : $before;
 		if(!$before->hasEnchantments() and $after->hasEnchantments() and $after->getId() == $result->getId() and
 			$this->levels != null and $this->entries != null
 		){
@@ -230,7 +244,7 @@ class EnchantInventory extends TemporaryInventory {
 					$lapis = $this->getItem(1);
 					$level = $who->getXpLevel();
 					$cost = $this->entries[$i]->getCost();
-					if($lapis->getId() == Item::DYE and $lapis->getDamage() == Dye::BLUE and $lapis->getCount() > $i and $level >= $cost){
+					if($lapis->getId() == ItemIds::DYE and $lapis->getDamage() == Dye::BLUE and $lapis->getCount() > $i and $level >= $cost){
 						foreach($enchantments as $enchantment){
 							$result->addEnchantment($enchantment);
 						}
@@ -255,7 +269,7 @@ class EnchantInventory extends TemporaryInventory {
 			$offsets = [[2, 0], [-2, 0], [0, 2], [0, -2], [2, 1], [2, -1], [-2, 1], [-2, 1], [1, 2], [-1, 2], [1, -2], [-1, -2]];
 			for($i = 0; $i < 3; $i++){
 				foreach($offsets as $offset){
-					if($pos->getLevel()->getBlockIdAt($pos->x + $offset[0], $pos->y + $i, $pos->z + $offset[1]) == Block::BOOKSHELF){
+					if($pos->getLevel()->getBlockIdAt($pos->x + $offset[0], $pos->y + $i, $pos->z + $offset[1]) == BlockIds::BOOKSHELF){
 						$count++;
 					}
 					if($count >= 15){
@@ -299,8 +313,7 @@ class EnchantInventory extends TemporaryInventory {
 				if(($id === Enchantment::TYPE_MINING_SILK_TOUCH and $enchantment->getId() === Enchantment::TYPE_MINING_FORTUNE) or ($id === Enchantment::TYPE_MINING_FORTUNE and $enchantment->getId() === Enchantment::TYPE_MINING_SILK_TOUCH)){
 					//Protection
 					unset($enchantments[$id]);
-					continue;
-				}
+                }
 			}
 		}
 		$result = [];

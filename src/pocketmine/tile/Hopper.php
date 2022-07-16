@@ -1,28 +1,25 @@
 <?php
 
+
 /*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+*/
 
 namespace pocketmine\tile;
 
+use pocketmine\block\BlockIds;
 use pocketmine\block\Hopper as HopperBlock;
 use pocketmine\entity\Item as DroppedItem;
+use pocketmine\inventory\ShulkerBoxInventory;
 use pocketmine\inventory\HopperInventory;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item;
@@ -114,17 +111,11 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable {
 		$area = clone $this->getBlock()->getBoundingBox(); //Area above hopper to draw items from
 		$area->maxY = ceil($area->maxY) + 1; //Account for full block above, not just 1 + 5/8
 		foreach($this->getLevel()->getChunkEntities($this->getBlock()->x >> 4, $this->getBlock()->z >> 4) as $entity){
-			if(!($entity instanceof DroppedItem) or !$entity->isAlive()){
-				continue;
-			}
-			if(!$entity->boundingBox->intersectsWith($area)){
-				continue;
-			}
+			if(!($entity instanceof DroppedItem) or !$entity->isAlive()) continue;
+			if(!$entity->boundingBox->intersectsWith($area)) continue;
 
 			$item = $entity->getItem();
-			if(!$item instanceof Item){
-				continue;
-			}
+			if(!$item instanceof Item) continue;
 			if($item->getCount() < 1){
 				$entity->kill();
 				continue;
@@ -150,10 +141,9 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable {
 			if($this->inventory->canAddItem($item)){
 				$this->inventory->addItem($item);
 				$inventory->removeItem($item);
+				$source->getInventory()->getHolder()->saveNBT();
 				$this->resetCooldownTicks();
-				if($source instanceof Hopper){
-					$source->resetCooldownTicks();
-				}
+				if($source instanceof Hopper) $source->resetCooldownTicks();
 			}
 		}
 
@@ -164,20 +154,17 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable {
 			if($target instanceof Tile and $target instanceof InventoryHolder){
 				$inv = $target->getInventory();
 				foreach($this->inventory->getContents() as $item){
-					if($item->getId() === Item::AIR or $item->getCount() < 1){
-						continue;
-					}
+					if($item->getId() === BlockIds::AIR or $item->getCount() < 1) continue;
 
                     $targetItem = clone $item;
 					$targetItem->setCount(1);
-
+					if($item->getId() === 218 and $inv instanceof ShulkerBoxInventory) return;
 					if($inv->canAddItem($targetItem)){
                         $this->inventory->removeItem($targetItem);
 						$inv->addItem($targetItem);
+						$target->getInventory()->getHolder()->saveNBT();
 						$this->resetCooldownTicks();
-						if($target instanceof Hopper){
-							$target->resetCooldownTicks();
-						}
+						if($target instanceof Hopper) $target->resetCooldownTicks();
 						break;
 					}
 
@@ -212,7 +199,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable {
 	public function getItem($index){
 		$i = $this->getSlotIndex($index);
 		if($i < 0){
-			return Item::get(Item::AIR, 0, 0);
+			return Item::get(BlockIds::AIR, 0, 0);
 		}else{
 			return Item::nbtDeserialize($this->namedtag->Items[$i]);
 		}
@@ -229,7 +216,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable {
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		if($item->getId() === Item::AIR or $item->getCount() <= 0){
+		if($item->getId() === BlockIds::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
 			}
@@ -240,9 +227,7 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable {
 				}
 			}
 			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
-		}else{
-			$this->namedtag->Items[$i] = $item->nbtSerialize($index);
-		}
+		}else $this->namedtag->Items[$i] = $item->nbtSerialize($index);
 
 		return true;
 	}
@@ -329,9 +314,9 @@ class Hopper extends Spawnable implements InventoryHolder, Container, Nameable {
 	public function getSpawnCompound(){
 		$c = new CompoundTag("", [
 			new StringTag("id", Tile::HOPPER),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z)
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z)
 		]);
 
 		if($this->hasName()){

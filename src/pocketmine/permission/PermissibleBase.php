@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\permission;
 
 use pocketmine\event\Timings;
@@ -108,9 +130,7 @@ class PermissibleBase implements Permissible {
 	 * @throws PluginException
 	 */
 	public function addAttachment(Plugin $plugin, $name = null, $value = null){
-		if($plugin === null){
-			throw new PluginException("Plugin cannot be null");
-		}elseif(!$plugin->isEnabled()){
+		if(!$plugin->isEnabled()){
 			throw new PluginException("Plugin " . $plugin->getDescription()->getName() . " is disabled");
 		}
 
@@ -127,14 +147,8 @@ class PermissibleBase implements Permissible {
 
 	/**
 	 * @param PermissionAttachment $attachment
-	 *
-	 * @throws \Throwable
 	 */
 	public function removeAttachment(PermissionAttachment $attachment){
-		if($attachment === null){
-			throw new \InvalidStateException("Attachment cannot be null");
-		}
-
 		if(isset($this->attachments[spl_object_hash($attachment)])){
 			unset($this->attachments[spl_object_hash($attachment)]);
 			if(($ex = $attachment->getRemovalCallback()) !== null){
@@ -169,9 +183,7 @@ class PermissibleBase implements Permissible {
 	}
 
 	public function clearPermissions(){
-		foreach(array_keys($this->permissions) as $name){
-			Server::getInstance()->getPluginManager()->unsubscribeFromPermission($name, $this->parent !== null ? $this->parent : $this);
-		}
+		Server::getInstance()->getPluginManager()->unsubscribeFromAllPermissions($this->parent ?? $this);
 
 		Server::getInstance()->getPluginManager()->unsubscribeFromDefaultPerms(false, $this->parent !== null ? $this->parent : $this);
 		Server::getInstance()->getPluginManager()->unsubscribeFromDefaultPerms(true, $this->parent !== null ? $this->parent : $this);

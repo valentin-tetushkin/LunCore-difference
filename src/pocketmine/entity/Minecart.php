@@ -1,8 +1,31 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Rail;
 use pocketmine\math\Math;
 use pocketmine\math\Vector3;
@@ -59,23 +82,14 @@ class Minecart extends Vehicle {
     }
 
     /**
-     * @param $currentTick
+     * @param $tickDiff
      *
      * @return bool
      */
-    public function onUpdate($currentTick){
+    public function entityBaseTick($tickDiff = 1){
         if ($this->closed !== false) {
             return false;
         }
-
-        $tickDiff = $currentTick - $this->lastUpdate;
-        if ($tickDiff <= 1) {
-            return false;
-        }
-
-        $this->lastUpdate = $currentTick;
-
-        $this->timings->startTiming();
 
         $hasUpdate = false;
 
@@ -90,9 +104,8 @@ class Minecart extends Vehicle {
                 }
             }
         }
-        $this->timings->stopTiming();
 
-        return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+        return $hasUpdate;
     }
 
 
@@ -120,7 +133,7 @@ class Minecart extends Vehicle {
      * @return bool
      */
     private function isRail(Block $rail){
-        return ($rail !== null and in_array($rail->getId(), [Block::RAIL, Block::ACTIVATOR_RAIL, Block::DETECTOR_RAIL, Block::POWERED_RAIL]));
+        return ($rail !== null and in_array($rail->getId(), [BlockIds::RAIL, BlockIds::ACTIVATOR_RAIL, BlockIds::DETECTOR_RAIL, BlockIds::POWERED_RAIL]));
     }
 
     /**
@@ -414,7 +427,7 @@ class Minecart extends Vehicle {
         $nextMoveVector = $nextMoveVector->multiply($this->moveSpeed);
         $newVector = $this->add($nextMoveVector->x, $nextMoveVector->y, $nextMoveVector->z);
         $possibleRail = $this->getCurrentRail();
-        if (in_array($possibleRail->getId(), [Block::RAIL, Block::ACTIVATOR_RAIL, Block::DETECTOR_RAIL, Block::POWERED_RAIL])) {
+        if (in_array($possibleRail->getId(), [BlockIds::RAIL, BlockIds::ACTIVATOR_RAIL, BlockIds::DETECTOR_RAIL, BlockIds::POWERED_RAIL])) {
             $this->moveUsingVector($newVector);
             return true;
         }
@@ -453,7 +466,7 @@ class Minecart extends Vehicle {
             for ($x = $minX; $x <= $maxX; ++$x) {
                 for ($y = $minY; $y <= $maxY; ++$y) {
                     $block = $this->level->getBlock($this->temporalVector->setComponents($x, $y, $z));
-                    if (in_array($block->getId(), [Block::RAIL, Block::ACTIVATOR_RAIL, Block::DETECTOR_RAIL, Block::POWERED_RAIL])) $rails[] = $block;
+                    if (in_array($block->getId(), [BlockIds::RAIL, BlockIds::ACTIVATOR_RAIL, BlockIds::DETECTOR_RAIL, BlockIds::POWERED_RAIL])) $rails[] = $block;
                 }
             }
         }

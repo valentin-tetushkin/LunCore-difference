@@ -1,13 +1,26 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\command\defaults;
 
@@ -28,7 +41,7 @@ class DeopCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.deop.description",
-			"%commands.deop.usage"
+			"/deop <player>"
 		);
 		$this->setPermission("pocketmine.command.op.take");
 	}
@@ -56,7 +69,7 @@ class DeopCommand extends VanillaCommand {
 		$player = $sender->getServer()->getOfflinePlayer($name);
 		$player->setOp(false);
 		if($player instanceof Player){
-			$player->sendMessage(TextFormat::GRAY . "§l§5You are no longer op!");
+			$player->sendMessage(TextFormat::GRAY . "You are no longer op!");
 		}
 		Command::broadcastCommandMessage($sender, new TranslationContainer("commands.deop.success", [$player->getName()]));
 

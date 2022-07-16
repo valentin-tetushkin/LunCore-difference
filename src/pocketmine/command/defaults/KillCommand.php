@@ -1,13 +1,6 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
 
 namespace pocketmine\command\defaults;
 
@@ -29,7 +22,7 @@ class KillCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.kill.description",
-			"%pocketmine.command.kill.usage",
+			"/lkill [игрок]",
 			["suicide"]
 		);
 		$this->setPermission("pocketmine.command.kill.self;pocketmine.command.kill.other");

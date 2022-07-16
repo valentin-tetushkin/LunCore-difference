@@ -1,8 +1,32 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
+
 namespace pocketmine\entity;
 
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\nbt\tag\{CompoundTag};
@@ -56,7 +80,7 @@ class Skeleton extends Monster{
 
 		$pk = new MobEquipmentPacket();
 		$pk->eid = $this->getId();
-		$pk->item = new ItemItem(ItemItem::BOW);
+		$pk->item = new ItemItem(ItemIds::BOW);
 		$pk->slot = 0;
 		$pk->selectedSlot = 0;
 
@@ -68,16 +92,16 @@ class Skeleton extends Monster{
 	 */
 	public function getDrops(){
 		$drops = [
-			ItemItem::get(ItemItem::ARROW, 0, mt_rand(0, 2))
+			ItemItem::get(ItemIds::ARROW, 0, mt_rand(0, 2))
 		];
-		$drops[] = ItemItem::get(ItemItem::BONE, 0, mt_rand(0, 2));
+		$drops[] = ItemItem::get(ItemIds::BONE, 0, mt_rand(0, 2));
 
 		return $drops;
 	}
 	
 	public function getArrowNBT() : CompoundTag{
 	     return Entity::createBaseNBT(
-	        $this->add(0, $this->getEyeHeight(), 0),
+	        $this->add(0, $this->getEyeHeight()),
             new Vector3(
                 -sin($this->yaw / 180 * M_PI) * cos($this->pitch / 180 * M_PI),
                 -sin($this->pitch / 180 * M_PI),
@@ -88,18 +112,16 @@ class Skeleton extends Monster{
         );
 	}
 	
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->isClosed() or !$this->isAlive()){
-			return parent::onUpdate($currentTick);
+			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
 		
 		if($this->isMorph){
 			return true;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
         if ($this->getLevel() !== null) {
             $block = $this->getLevel()->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
         }else{
@@ -130,7 +152,7 @@ class Skeleton extends Monster{
 								$this->farest = $viewer;
 							}
 							
-							if($this->farest != $viewer){
+							if($this->farest !== $viewer){
 								if($this->distance($viewer) < $this->distance($this->farest)){
 									$this->farest = $viewer;
 								}
@@ -151,7 +173,7 @@ class Skeleton extends Monster{
 						if($this->distance($this->farest) < 5){
 							if($this->shoot == 0){
 								$f = 1.5;
-								$arrow = new Arrow($this->getLevel(), $this->getArrowNBT(), $this, $f == 2 ? true : false);
+								$arrow = new Arrow($this->getLevel(), $this->getArrowNBT(), $this, $f == 2);
 								$arrow->spawnToAll();
 								$this->shoot = 30;
 							}
@@ -240,8 +262,6 @@ class Skeleton extends Monster{
 				$this->setMotion(new Vector3($x, $y, $z));
 			}
 		}
-		
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

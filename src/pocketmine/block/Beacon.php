@@ -1,13 +1,24 @@
 <?php
 
-/*
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+
+/* @author LunCore team
  *
- * @author SuperXingKong
- * 
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
@@ -33,13 +44,6 @@ class Beacon extends Transparent {
 	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
 	}
 
 	/**
@@ -86,7 +90,7 @@ class Beacon extends Transparent {
 		$this->getLevel()->setBlock($this, $this, true, true);
 		$nbt = new CompoundTag("", [
 			new StringTag("id", Tile::BEACON),
-			new ByteTag("isMovable", (bool) false),
+			new ByteTag("isMovable", false),
 			new IntTag("primary", 0),
 			new IntTag("secondary", 0),
 			new IntTag("x", $block->x),
@@ -117,7 +121,7 @@ class Beacon extends Transparent {
 			}else{
 				$nbt = new CompoundTag("", [
 					new StringTag("id", Tile::BEACON),
-					new ByteTag("isMovable", (bool) false),
+					new ByteTag("isMovable", false),
 					new IntTag("primary", 0),
 					new IntTag("secondary", 0),
 					new IntTag("x", $this->x),

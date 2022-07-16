@@ -1,13 +1,7 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
+
 
 namespace pocketmine\command\defaults;
 
@@ -27,7 +21,7 @@ class MeCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.me.description",
-			"%commands.me.usage"
+			"/me <действие ...>"
 		);
 		$this->setPermission("pocketmine.command.me");
 	}

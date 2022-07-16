@@ -1,13 +1,6 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
 
 namespace pocketmine\command\defaults;
 
@@ -28,7 +21,7 @@ class KickCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.kick.description",
-			"%commands.kick.usage"
+			"/lkick <игрок> [причина ...]"
 		);
 		$this->setPermission("pocketmine.command.kick");
 	}

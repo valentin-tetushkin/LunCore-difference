@@ -1,23 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
@@ -79,27 +82,27 @@ class Lava extends Liquid {
 
 		if($colliding !== null){
 			if($this->getDamage() === 0){
-				$this->liquidCollide($colliding, Block::get(Block::OBSIDIAN));
+				$this->liquidCollide($colliding, Block::get(BlockIds::OBSIDIAN));
 			}elseif($this->getDamage() <= 4){
-				$this->liquidCollide($colliding, Block::get(Block::COBBLESTONE));
+				$this->liquidCollide($colliding, Block::get(BlockIds::COBBLESTONE));
 			}
 		}
 	}
 
 	protected function flowIntoBlock(Block $block, int $newFlowDecay) : void{
 		if($block instanceof Water){
-			$block->liquidCollide($this, Block::get(Block::STONE));
+			$block->liquidCollide($this, Block::get(BlockIds::STONE));
 		}else{
 			parent::flowIntoBlock($block, $newFlowDecay);
 		}
 	}
 
 	public function getStillForm() : Block{
-		return Block::get(Block::STILL_LAVA, $this->meta);
+		return Block::get(BlockIds::STILL_LAVA, $this->meta);
 	}
 
 	public function getFlowingForm() : Block{
-		return Block::get(Block::LAVA, $this->meta);
+		return Block::get(BlockIds::LAVA, $this->meta);
 	}
 
 	public function getBucketFillSound() : int{

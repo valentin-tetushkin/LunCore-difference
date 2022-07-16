@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -29,7 +21,7 @@ class TeleportCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.tp.description",
-			"%commands.tp.usage"
+			"/ltp [целевой игрок] <назначенный игрок> или /tp [целевой игрок] <x> <y> <z> [<y-rot> <x-rot>]"
 		);
 		$this->setPermission("pocketmine.command.teleport");
 	}

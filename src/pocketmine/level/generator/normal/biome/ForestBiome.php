@@ -1,6 +1,26 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ * Автор биома - http://vk.com/KlainYT
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\level\generator\normal\biome;
 
@@ -34,13 +54,13 @@ class ForestBiome extends GrassyBiome {
 
 		$this->addPopulator($tallGrass);
 
-		$this->setElevation(63, 81);
+        $this->setElevation(62, 65);
 
 		if($type === self::TYPE_BIRCH){
-			$this->temperature = 2;
+			$this->temperature = 0.6;
 			$this->rainfall = 0.5;
 		}else{
-			$this->temperature = 3;
+			$this->temperature = 0.7;
 			$this->rainfall = 0.8;
 		}
 	}

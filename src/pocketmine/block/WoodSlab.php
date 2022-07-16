@@ -1,32 +1,36 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
 use pocketmine\item\Tool;
 use pocketmine\math\AxisAlignedBB;
+use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-class WoodSlab extends Transparent {
+class WoodSlab extends Transparent{
 
 	protected $id = self::WOOD_SLAB;
 
@@ -56,11 +60,13 @@ class WoodSlab extends Transparent {
 			2 => "Birch",
 			3 => "Jungle",
 			4 => "Acacia",
-			5 => "Dark Oak",
-			6 => "",
-			7 => ""
+			5 => "Dark Oak"
 		];
-		return (($this->meta & 0x08) === 0x08 ? "Upper " : "") . $names[$this->meta & 0x07] . " Wooden Slab";
+		return (($this->meta & 0x08) === 0x08 ? "Upper " : "") . ($names[$this->meta & 0x07] ?? "") . " Wooden Slab";
+	}
+
+	public function getVariantBitmask() : int{
+		return 0x07;
 	}
 
 	/**
@@ -89,6 +95,23 @@ class WoodSlab extends Transparent {
 		}
 	}
 
+	public function canBePlacedAt(Block $blockReplace, Vector3 $clickVector, int $face, bool $isClickedBlock) : bool{
+		if(parent::canBePlacedAt($blockReplace, $clickVector, $face, $isClickedBlock)){
+			return true;
+		}
+
+		if($blockReplace->getId() === $this->getId() and $blockReplace->getVariant() === $this->getVariant()){
+			if(($blockReplace->getDamage() & 0x08) !== 0){ //Trying to combine with top slab
+				return $clickVector->y <= 0.5 or (!$isClickedBlock and $face === Vector3::SIDE_UP);
+			}else{
+				return $clickVector->y >= 0.5 or (!$isClickedBlock and $face === Vector3::SIDE_DOWN);
+			}
+		}
+
+		return false;
+	}
+
+
 	/**
 	 * @param Item        $item
 	 * @param Block       $block
@@ -105,11 +128,11 @@ class WoodSlab extends Transparent {
 		$this->meta &= 0x07;
 		if($face === 0){
 			if($target->getId() === self::WOOD_SLAB and ($target->getDamage() & 0x08) === 0x08 and ($target->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($target, Block::get(Item::DOUBLE_WOOD_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($target, Block::get(BlockIds::DOUBLE_WOOD_SLAB, $this->meta), true);
 
 				return true;
 			}elseif($block->getId() === self::WOOD_SLAB and ($block->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($block, Block::get(Item::DOUBLE_WOOD_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($block, Block::get(BlockIds::DOUBLE_WOOD_SLAB, $this->meta), true);
 
 				return true;
 			}else{
@@ -117,18 +140,18 @@ class WoodSlab extends Transparent {
 			}
 		}elseif($face === 1){
 			if($target->getId() === self::WOOD_SLAB and ($target->getDamage() & 0x08) === 0 and ($target->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($target, Block::get(Item::DOUBLE_WOOD_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($target, Block::get(BlockIds::DOUBLE_WOOD_SLAB, $this->meta), true);
 
 				return true;
 			}elseif($block->getId() === self::WOOD_SLAB and ($block->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($block, Block::get(Item::DOUBLE_WOOD_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($block, Block::get(BlockIds::DOUBLE_WOOD_SLAB, $this->meta), true);
 
 				return true;
 			}
 		}else{ //TODO: collision
 			if($block->getId() === self::WOOD_SLAB){
 				if(($block->getDamage() & 0x07) === ($this->meta & 0x07)){
-					$this->getLevel()->setBlock($block, Block::get(Item::DOUBLE_WOOD_SLAB, $this->meta), true);
+					$this->getLevel()->setBlock($block, Block::get(BlockIds::DOUBLE_WOOD_SLAB, $this->meta), true);
 
 					return true;
 				}

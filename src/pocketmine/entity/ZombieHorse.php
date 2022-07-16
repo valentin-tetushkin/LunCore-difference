@@ -1,9 +1,35 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 
 class ZombieHorse extends Animal {
 	const NETWORK_ID = 27;
@@ -26,9 +52,20 @@ class ZombieHorse extends Animal {
 		parent::initEntity();
 	}
 
+    public function getDrops(){
+        $lootingL = 0;
+        $cause = $this->lastDamageCause;
+        if($cause instanceof EntityDamageByEntityEvent and $cause->getDamager() instanceof Player){
+            $lootingL = $cause->getDamager()->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
+        }
+        $drops[] = ItemItem::get(ItemIds::ROTTEN_FLESH, 0, mt_rand(0, 3 + $lootingL));
+        return $drops;
+    }
+
 	/**
 	 * @param Player $player
 	 */
+
 	public function spawnTo(Player $player){
 		$pk = new AddEntityPacket();
 		$pk->eid = $this->getId();

@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ * Автор биома - http://vk.com/KlainYT
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\normal\biome;
 
 use pocketmine\level\generator\populator\TallGrass;
@@ -24,9 +46,9 @@ class MountainsBiome extends GrassyBiome {
 
 		//TODO: add emerald
 
-		$this->setElevation(63, 127);
+        $this->setElevation(62, 65);
 
-		$this->temperature = 0.6;
+		$this->temperature = 0.4;
 		$this->rainfall = 0.5;
 	}
 

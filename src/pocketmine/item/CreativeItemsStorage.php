@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\item;
 
 final class CreativeItemsStorage{
@@ -56,11 +78,11 @@ final class CreativeItemsStorage{
     }
 
     /**
-     * @param $index
+     * @param int $index
      *
      * @return Item|null
      */
     public function getItemByIndex(int $index) : ?Item{
-        return isset($this->items[$index]) ? $this->items[$index] : null;
+        return $this->items[$index] ?? null;
     }
 }

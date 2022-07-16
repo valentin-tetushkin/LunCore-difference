@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\item;
 
 use pocketmine\block\Liquid;
@@ -28,7 +50,6 @@ class ChorusFruit extends Food{
 
 	public function onConsume(Entity $consumer){
 		$level = $consumer->getLevel();
-		$sender = $consumer->getPlayer();
 		assert($level !== null);
 
 		$minX = $consumer->getFloorX() - 8;
@@ -57,9 +78,9 @@ class ChorusFruit extends Food{
 				continue;
 			}
 
+			//Sounds are broadcasted at both source and destination
 			$level->addSound(new EndermanTeleportSound($consumer->asVector3()));
 			$consumer->teleport(new Vector3($x + 0.5, $y + 1, $z + 0.5));
-			$sender->setHealth(20);
 			$level->addSound(new EndermanTeleportSound($consumer->asVector3()));
 
 			break;

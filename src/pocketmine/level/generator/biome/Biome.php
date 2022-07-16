@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
 namespace pocketmine\level\generator\biome;
 
 use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\hell\HellBiome;
 use pocketmine\level\generator\normal\biome\MesaBiome;
 use pocketmine\level\generator\normal\biome\BeachBiome;
@@ -11,12 +33,15 @@ use pocketmine\level\generator\normal\biome\DesertBiome;
 use pocketmine\level\generator\normal\biome\ForestBiome;
 use pocketmine\level\generator\normal\biome\IcePlainsBiome;
 use pocketmine\level\generator\normal\biome\MountainsBiome;
+use pocketmine\level\generator\normal\biome\SandyBiome;
+use pocketmine\level\generator\normal\biome\SavannaBiome;
 use pocketmine\level\generator\normal\biome\OceanBiome;
 use pocketmine\level\generator\normal\biome\PlainBiome;
 use pocketmine\level\generator\normal\biome\RiverBiome;
 use pocketmine\level\generator\normal\biome\SmallMountainsBiome;
 use pocketmine\level\generator\normal\biome\SwampBiome;
 use pocketmine\level\generator\normal\biome\TaigaBiome;
+use pocketmine\level\generator\normal\biome\JungleBiome;
 use pocketmine\level\generator\populator\Flower;
 use pocketmine\level\generator\populator\Populator;
 use pocketmine\utils\Random;
@@ -57,25 +82,33 @@ abstract class Biome {
 	const MESA = 37;
 	const MESA_PLATEAU_F = 38;
 	const MESA_PLATEAU = 39;
+    const JUNGLE = 40;
+    const SANDY = 41;
 
 	const VOID = 127;
 
-	const MAX_BIOMES = 256;
+	public const MAX_BIOMES = 256;
 
-	/** @var Biome[] */
-	private static $biomes = [];
+	/** @var Biome[]|\SplFixedArray */
+	private static $biomes;
 
+	/** @var int */
 	private $id;
+	/** @var bool */
 	private $registered = false;
 	/** @var Populator[] */
 	private $populators = [];
 
+	/** @var int */
 	private $minElevation;
+	/** @var int */
 	private $maxElevation;
-
+	/** @var Block[] */
 	private $groundCover = [];
 
+	/** @var float */
 	protected $rainfall = 0.5;
+	/** @var float */
 	protected $temperature = 0.5;
 
 	/**
@@ -102,6 +135,8 @@ abstract class Biome {
 	}
 
 	public static function init(){
+		self::$biomes = new \SplFixedArray(self::MAX_BIOMES);
+
 		self::register(self::OCEAN, new OceanBiome());
 		self::register(self::PLAINS, new PlainBiome());
 		self::register(self::DESERT, new DesertBiome());
@@ -110,9 +145,11 @@ abstract class Biome {
 		self::register(self::TAIGA, new TaigaBiome());
 		self::register(self::SWAMP, new SwampBiome());
 		self::register(self::RIVER, new RiverBiome());
+		self::register(self::SAVANNA, new SavannaBiome());
+        self::register(self::MESA, new MesaBiome());
+        self::register(self::JUNGLE, new JungleBiome());
 
 		self::register(self::BEACH, new BeachBiome());
-		self::register(self::MESA, new MesaBiome());
 
 		self::register(self::ICE_PLAINS, new IcePlainsBiome());
 

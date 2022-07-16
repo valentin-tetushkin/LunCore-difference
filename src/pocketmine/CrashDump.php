@@ -1,11 +1,25 @@
 <?php
+
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 */
 
 namespace pocketmine;
@@ -13,61 +27,122 @@ namespace pocketmine;
 use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\plugin\PluginBase;
 use pocketmine\plugin\PluginLoadOrder;
+use pocketmine\plugin\PluginManager;
+use pocketmine\utils\AssumptionFailedError;
 use pocketmine\utils\Utils;
 use raklib\RakLib;
-use pocketmine\plugin\PluginManager;
+use function base64_encode;
+use function date;
+use function error_get_last;
+use function fclose;
+use function file;
+use function file_exists;
+use function file_get_contents;
+use function fopen;
+use function fwrite;
+use function get_loaded_extensions;
+use function implode;
+use function is_dir;
+use function is_resource;
+use function json_encode;
+use function json_last_error_msg;
+use function max;
+use function mkdir;
+use function ob_end_clean;
+use function ob_get_contents;
+use function ob_start;
+use function php_uname;
+use function phpinfo;
+use function phpversion;
+use function preg_replace;
+use function str_split;
+use function strpos;
+use function substr;
+use function time;
+use function zend_version;
+use function zlib_encode;
+use const E_COMPILE_ERROR;
+use const E_COMPILE_WARNING;
+use const E_CORE_ERROR;
+use const E_CORE_WARNING;
+use const E_DEPRECATED;
+use const E_ERROR;
+use const E_NOTICE;
+use const E_PARSE;
+use const E_RECOVERABLE_ERROR;
+use const E_STRICT;
+use const E_USER_DEPRECATED;
+use const E_USER_ERROR;
+use const E_USER_NOTICE;
+use const E_USER_WARNING;
+use const E_WARNING;
+use const FILE_IGNORE_NEW_LINES;
+use const JSON_UNESCAPED_SLASHES;
+use const PHP_EOL;
+use const PHP_OS;
 
-class CrashDump {
+class CrashDump{
+
+	/**
+	 * Crashdump data format version, used by the crash archive to decide how to decode the crashdump
+	 * This should be incremented when backwards incompatible changes are introduced, such as fields being removed or
+	 * having their content changed, version format changing, etc.
+	 * It is not necessary to increase this when adding new fields.
+	 */
+	private const FORMAT_VERSION = 2;
+
+	private const PLUGIN_INVOLVEMENT_NONE = "none";
+	private const PLUGIN_INVOLVEMENT_DIRECT = "direct";
+	private const PLUGIN_INVOLVEMENT_INDIRECT = "indirect";
 
 	/** @var Server */
 	private $server;
+	/** @var resource */
 	private $fp;
+	/** @var float */
 	private $time;
+	/**
+	 * @var array
+	 * @phpstan-var array<string, mixed>
+	 */
 	private $data = [];
 	/** @var string */
 	private $encodedData = "";
 	/** @var string */
 	private $path;
 
-	/**
-	 * CrashDump constructor.
-	 *
-	 * @param Server $server
-	 */
 	public function __construct(Server $server){
-		$this->time = time();
+		$this->time = microtime(true);
 		$this->server = $server;
-		$this->path = $this->server->getCrashPath() . "CrDump_" . date("D_M_j-h.i.s-T_Y", $this->time) . ".log";
-		$this->fp = @fopen($this->path, "wb");
-		if(!is_resource($this->fp)){
-			throw new \RuntimeException("Could not create Crash Dump");
+		if(!is_dir($this->server->getDataPath() . "crashdumps")){
+			mkdir($this->server->getDataPath() . "crashdumps");
 		}
+		$this->path = $this->server->getCrashPath() . "CrashDump_" . date("D_M_j-H.i.s-T_Y", (int) $this->time) . ".log";
+		$fp = @fopen($this->path, "wb");
+		if(!is_resource($fp)){
+			throw new \RuntimeException("Не удалось создать аварийный дамп");
+		}
+		$this->fp = $fp;
+		$this->data["format_version"] = self::FORMAT_VERSION;
 		$this->data["time"] = $this->time;
-		$this->addLine($this->server->getName() . " Crash Dump " . date("D M j h:i:s T Y", $this->time));
+		$this->data["uptime"] = $this->time - \pocketmine\START_TIME;
+		$this->addLine($this->server->getName() . " Crash Dump " . date("D M j H:i:s T Y", (int) $this->time));
 		$this->addLine();
-		try{
-			$this->baseCrash();
-		}catch(\Exception $e){
-			//Attempt to fix incomplete crashdumps
-			$this->addLine("CrashDump crashed while generating base crash data");
-			$this->addLine();
-		}
-
+		$this->baseCrash();
 		$this->generalData();
 		$this->pluginsData();
 
 		$this->extraData();
 
-		//$this->encodeData();
+		$this->encodeData();
+
+		fclose($this->fp);
 	}
 
 	public function getPath() : string{
 		return $this->path;
 	}
 
-	/**
-	 * @return null
-	 */
 	public function getEncodedData(){
 		return $this->encodedData;
 	}
@@ -76,12 +151,32 @@ class CrashDump {
 		return $this->data;
 	}
 
-	private function pluginsData(){
+	private function encodeData() : void{
+		$this->addLine();
+		$this->addLine("----------------------СООБЩИТЕ ДАННЫЕ НИЖЕ ЭТОЙ СТРОКИ-----------------------");
+		$this->addLine();
+		$this->addLine("===НАЧАТЬ АВАРИЙНЫЙ ДАМП===");
+		$json = json_encode($this->data, JSON_UNESCAPED_SLASHES);
+		if($json === false){
+			throw new \RuntimeException("Не удалось закодировать аварийный дамп JSON.: " . json_last_error_msg());
+		}
+		$zlibEncoded = zlib_encode($json, ZLIB_ENCODING_DEFLATE, 9);
+		if($zlibEncoded === false) throw new AssumptionFailedError("Сжатие ZLIB не удалось");
+		$this->encodedData = $zlibEncoded;
+		foreach(str_split(base64_encode($this->encodedData), 76) as $line){
+			$this->addLine($line);
+		}
+		$this->addLine("===КОНЕЦ АВАРИЙНОГО ДАМПА===");
+	}
+
+	private function pluginsData() : void{
 		if($this->server->getPluginManager() instanceof PluginManager){
 			$this->addLine();
 			$this->addLine("Loaded plugins:");
 			$this->data["plugins"] = [];
-			foreach($this->server->getPluginManager()->getPlugins() as $p){
+			$plugins = $this->server->getPluginManager()->getPlugins();
+			ksort($plugins, SORT_STRING);
+			foreach($plugins as $p){
 				$d = $p->getDescription();
 				$this->data["plugins"][$d->getName()] = [
 					"name" => $d->getName(),
@@ -100,11 +195,11 @@ class CrashDump {
 		}
 	}
 
-	private function extraData(){
-		global $arguments;
+	private function extraData() : void{
+		global $argv;
 
-		if($this->server->getProperty("auto-report.send-settings", true) !== false){
-			$this->data["parameters"] = (array) $arguments;
+		if($this->server->getProperty("auto-report.send-settings", false) !== false){
+			$this->data["parameters"] = $argv;
 			if(($serverDotProperties = @file_get_contents($this->server->getDataPath() . "server.properties")) !== false){
 				$this->data["server.properties"] = preg_replace("#^rcon\\.password=(.*)$#m", "rcon.password=******", $serverDotProperties);
 			}else{
@@ -134,14 +229,17 @@ class CrashDump {
 		}
 	}
 
-	private function baseCrash(){
+	private function baseCrash() : void{
 		global $lastExceptionError, $lastError;
 
 		if(isset($lastExceptionError)){
 			$error = $lastExceptionError;
 		}else{
-			$error = (array) error_get_last();
-			$error["trace"] = Utils::getTrace(3); //Skipping CrashDump->baseCrash, CrashDump->construct, Server->crashDump
+			$error = error_get_last();
+			if($error === null){
+				throw new \RuntimeException("Отсутствует информация об ошибке сбоя - что-то использовало exit ()?");
+			}
+			$error["trace"] = Utils::currentTrace(3); //Пропуск CrashDump->baseCrash, CrashDump->construct, Server->crashDump
 			$errorConversion = [
 				E_ERROR => "E_ERROR",
 				E_WARNING => "E_WARNING",
@@ -161,13 +259,16 @@ class CrashDump {
 			];
 			$error["fullFile"] = $error["file"];
 			$error["file"] = Utils::cleanPath($error["file"]);
-			$error["type"] = isset($errorConversion[$error["type"]]) ? $errorConversion[$error["type"]] : $error["type"];
+			$error["type"] = $errorConversion[$error["type"]] ?? $error["type"];
 			if(($pos = strpos($error["message"], "\n")) !== false){
 				$error["message"] = substr($error["message"], 0, $pos);
 			}
 		}
 
 		if(isset($lastError)){
+			if(isset($lastError["trace"])){
+				$lastError["trace"] = Utils::printableTrace($lastError["trace"]);
+			}
 			$this->data["lastError"] = $lastError;
 		}
 
@@ -179,59 +280,85 @@ class CrashDump {
 		$this->addLine("Line: " . $error["line"]);
 		$this->addLine("Type: " . $error["type"]);
 
-		if(strpos($error["file"], "src/pocketmine/") === false and strpos($error["file"], "src/raklib/") === false and file_exists($error["fullFile"])){
-			$this->addLine();
-			$this->addLine("THIS CRASH WAS CAUSED BY A PLUGIN");
-			$this->data["plugin"] = true;
-
-			$reflection = new \ReflectionClass(PluginBase::class);
-			$file = $reflection->getProperty("file");
-			$file->setAccessible(true);
-			foreach($this->server->getPluginManager()->getPlugins() as $plugin){
-				$filePath = Utils::cleanPath($file->getValue($plugin));
-				if(strpos($error["file"], $filePath) === 0){
-					$this->data["plugin"] = $plugin->getName();
-					$this->addLine("BAD PLUGIN : " . $plugin->getDescription()->getFullName());
+		$this->data["plugin_involvement"] = self::PLUGIN_INVOLVEMENT_NONE;
+		if(!$this->determinePluginFromFile($error["fullFile"], true)){ //фатальные ошибки не оставят трассировки стека
+			foreach($error["trace"] as $frame){
+				if(!isset($frame["file"])){
+					continue; //PHP core
+				}
+				if($this->determinePluginFromFile($frame["file"], false)){
 					break;
 				}
 			}
-		}else{
-			$this->data["plugin"] = false;
 		}
 
 		$this->addLine();
 		$this->addLine("Code:");
 		$this->data["code"] = [];
 
-		if($this->server->getProperty("auto-report.send-code", true) !== false){
+		if($this->server->getProperty("auto-report.send-code", false) !== false and file_exists($error["fullFile"])){
 			$file = @file($error["fullFile"], FILE_IGNORE_NEW_LINES);
-			for($l = max(0, $error["line"] - 10); $l < $error["line"] + 10; ++$l){
-				$this->addLine("[" . ($l + 1) . "] " . @$file[$l]);
-				$this->data["code"][$l + 1] = @$file[$l];
+			if($file !== false){
+				for($l = max(0, $error["line"] - 10); $l < $error["line"] + 10 and isset($file[$l]); ++$l){
+					$this->addLine("[" . ($l + 1) . "] " . $file[$l]);
+					$this->data["code"][$l + 1] = $file[$l];
+				}
 			}
 		}
 
 		$this->addLine();
 		$this->addLine("Backtrace:");
-		foreach(($this->data["trace"] = $error["trace"]) as $line){
+		foreach(($this->data["trace"] = Utils::printableTrace($error["trace"])) as $line){
 			$this->addLine($line);
 		}
 		$this->addLine();
 	}
 
-	private function generalData(){
+	private function determinePluginFromFile(string $filePath, bool $crashFrame) : bool{
+		$frameCleanPath = Utils::cleanPath($filePath);
+		if(strpos($frameCleanPath, Utils::CLEAN_PATH_SRC_PREFIX) !== 0){
+			$this->addLine();
+			if($crashFrame){
+				$this->addLine("ЭТОТ СБОЙ БЫЛ ВЫЗВАН ПЛАГИНОМ");
+				$this->data["plugin_involvement"] = self::PLUGIN_INVOLVEMENT_DIRECT;
+			}else{
+				$this->addLine("ПЛАГИН БЫЛ УЧАСТНИКОМ ЭТОЙ АВАРИИ");
+				$this->data["plugin_involvement"] = self::PLUGIN_INVOLVEMENT_INDIRECT;
+			}
+
+			if(file_exists($filePath)){
+				$reflection = new \ReflectionClass(PluginBase::class);
+				$file = $reflection->getProperty("file");
+				$file->setAccessible(true);
+				foreach($this->server->getPluginManager()->getPlugins() as $plugin){
+					$filePath = Utils::cleanPath($file->getValue($plugin));
+					if(strpos($frameCleanPath, $filePath) === 0){
+						$this->data["plugin"] = $plugin->getName();
+						$this->addLine("ПЛОХОЙ ПЛАГИН: " . $plugin->getDescription()->getFullName());
+						break;
+					}
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	private function generalData() : void{
 		$this->data["general"] = [];
+		$this->data["general"]["name"] = $this->server->getName();
 		$this->data["general"]["protocol"] = ProtocolInfo::CURRENT_PROTOCOL;
 		$this->data["general"]["api"] = \pocketmine\API_VERSION;
 		$this->data["general"]["git"] = \pocketmine\GIT_COMMIT;
 		$this->data["general"]["raklib"] = RakLib::VERSION;
-		$this->data["general"]["uname"] = php_uname("a");
+		$this->data["general"]["uname"] = php_uname();
 		$this->data["general"]["php"] = phpversion();
 		$this->data["general"]["zend"] = zend_version();
 		$this->data["general"]["php_os"] = PHP_OS;
 		$this->data["general"]["os"] = Utils::getOS();
 		$this->addLine($this->server->getName(). " version: " . \pocketmine\GIT_COMMIT . " [Protocol " . ProtocolInfo::CURRENT_PROTOCOL . "; API " . API_VERSION . "]");
-		$this->addLine("uname -a: " . php_uname("a"));
+		$this->addLine("Git commit: " . \pocketmine\GIT_COMMIT);
+		$this->addLine("uname -a: " . php_uname());
 		$this->addLine("PHP version: " . phpversion());
 		$this->addLine("Zend version: " . zend_version());
 		$this->addLine("OS : " . PHP_OS . ", " . Utils::getOS());
@@ -254,5 +381,4 @@ class CrashDump {
 	public function add($str){
 		fwrite($this->fp, $str);
 	}
-
 }

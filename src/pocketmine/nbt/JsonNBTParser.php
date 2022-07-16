@@ -1,11 +1,17 @@
 <?php
+
+
 /*
-# ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
-# ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
-# ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
-# ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
-# ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
-# ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ *
 */
 
 namespace pocketmine\nbt;
@@ -16,9 +22,9 @@ use pocketmine\nbt\tag\NamedTag;
 
 class JsonNBTParser{
 
-	/**
-	 * Parses JSON-formatted NBT into a CompoundTag and returns it. Used for parsing tags supplied with the /give command.
-	 *
+    /**
+     * Разбирает NBT в формате JSON в CompoundTag и возвращает его. Используется для разбора тегов, переданных с помощью команды /give.
+     *
 	 * @param string $data
 	 * @param int    &$offset
 	 *
@@ -29,14 +35,14 @@ class JsonNBTParser{
 	public static function parseJSON(string $data, int &$offset = 0){
 		$len = strlen($data);
 		for(; $offset < $len; ++$offset){
-			$c = $data{$offset};
+			$c = $data[$offset];
 			if($c === "{"){
 				++$offset;
 				$data = self::parseCompound($data, $offset);
 
 				return new CompoundTag("", $data);
 			}elseif($c !== " " and $c !== "\r" and $c !== "\n" and $c !== "\t"){
-				throw new \Exception("Syntax error: unexpected '$c' at offset $offset");
+                throw new \Exception("Синтаксическая ошибка: неожиданная "$c" по смещению $offset");
 			}
 		}
 
@@ -58,16 +64,19 @@ class JsonNBTParser{
 		$data = [];
 
 		for(; $offset < $len; ++$offset){
-			if($str{$offset - 1} === "]"){
+			if($str[$offset - 1] === "]"){
 				break;
-			}elseif($str{$offset} === "]"){
+			}elseif($str[$offset] === "]"){
 				++$offset;
 				break;
 			}
 
-			$value = self::readValue($str, $offset, $type);
+            try {
+                $value = self::readValue($str, $offset, $type);
+            } catch (\Exception $e) {
+            }
 
-			$tag = NBT::createTag($type);
+            $tag = NBT::createTag($type);
 			if($tag instanceof NamedTag){
 				$tag->setValue($value);
 				$data[$key] = $tag;
@@ -91,17 +100,23 @@ class JsonNBTParser{
 		$data = [];
 
 		for(; $offset < $len; ++$offset){
-			if($str{$offset - 1} === "}"){
+			if($str[$offset - 1] === "}"){
 				break;
-			}elseif($str{$offset} === "}"){
+			}elseif($str[$offset] === "}"){
 				++$offset;
 				break;
 			}
 
-			$key = self::readKey($str, $offset);
-			$value = self::readValue($str, $offset, $type);
+            try {
+                $key = self::readKey($str, $offset);
+            } catch (\Exception $e) {
+            }
+            try {
+                $value = self::readValue($str, $offset, $type);
+            } catch (\Exception $e) {
+            }
 
-			$tag = NBT::createTag($type);
+            $tag = NBT::createTag($type);
 			if($tag instanceof NamedTag){
 				$tag->setName($key);
 				$tag->setValue($value);
@@ -127,7 +142,7 @@ class JsonNBTParser{
 
 		$len = strlen($data);
 		for(; $offset < $len; ++$offset){
-			$c = $data{$offset};
+			$c = $data[$offset];
 
 			if(!$inQuotes and ($c === " " or $c === "\r" or $c === "\n" or $c === "\t" or $c === "," or $c === "}" or $c === "]")){
 				if($c === "," or $c === "}" or $c === "]"){
@@ -138,14 +153,14 @@ class JsonNBTParser{
 				if($type === null){
 					$type = NBT::TAG_String;
 				}elseif($inQuotes){
-					throw new \Exception("Syntax error: invalid quote at offset $offset");
+                    throw new \Exception("Синтаксическая ошибка: неверная кавычка по смещению $offset");
 				}
 			}elseif($c === "\\"){
-				$value .= $data{$offset + 1} ?? "";
+				$value .= $data[$offset + 1] ?? "";
 				++$offset;
 			}elseif($c === "{" and !$inQuotes){
 				if($value !== ""){
-					throw new \Exception("Syntax error: invalid compound start at offset $offset");
+                    throw new \Exception("Синтаксическая ошибка: неверный составной старт со смещением $offset");
 				}
 				++$offset;
 				$value = self::parseCompound($data, $offset);
@@ -153,7 +168,7 @@ class JsonNBTParser{
 				break;
 			}elseif($c === "[" and !$inQuotes){
 				if($value !== ""){
-					throw new \Exception("Syntax error: invalid list start at offset $offset");
+                    throw new \Exception("Синтаксическая ошибка: неверный список начинается со смещения $offset");
 				}
 				++$offset;
 				$value = self::parseList($data, $offset);
@@ -165,7 +180,7 @@ class JsonNBTParser{
 		}
 
 		if($value === ""){
-			throw new \Exception("Syntax error: invalid empty value at offset $offset");
+            throw new \Exception("Синтаксическая ошибка: недопустимое пустое значение по смещению $offset");
 		}
 
 		if($type === null and strlen($value) > 0){
@@ -228,7 +243,7 @@ class JsonNBTParser{
 
 		$len = strlen($data);
 		for(; $offset < $len; ++$offset){
-			$c = $data{$offset};
+			$c = $data[$offset];
 
 			if($c === ":"){
 				++$offset;
@@ -239,7 +254,7 @@ class JsonNBTParser{
 		}
 
 		if($key === ""){
-			throw new \Exception("Syntax error: invalid empty key at offset $offset");
+            throw new \Exception("Синтаксическая ошибка: неверный пустой ключ по смещению $offset");
 		}
 
 		return $key;

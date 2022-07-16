@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\noise;
 
 use pocketmine\utils\Random;
@@ -151,25 +173,23 @@ class Simplex extends Perlin {
 			}
 			// Z X Y order
 		}else{ // x0<y0
-			if($y0 < $z0){
-				$i1 = 0;
-				$j1 = 0;
+            $i1 = 0;
+            if($y0 < $z0){
+                $j1 = 0;
 				$k1 = 1;
 				$i2 = 0;
 				$j2 = 1;
 				$k2 = 1;
 			} // Z Y X order
 			elseif($x0 < $z0){
-				$i1 = 0;
-				$j1 = 1;
+                $j1 = 1;
 				$k1 = 0;
 				$i2 = 0;
 				$j2 = 1;
 				$k2 = 1;
 			} // Y Z X order
 			else{
-				$i1 = 0;
-				$j1 = 1;
+                $j1 = 1;
 				$k1 = 0;
 				$i2 = 1;
 				$j2 = 1;

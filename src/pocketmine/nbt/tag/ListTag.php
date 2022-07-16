@@ -1,12 +1,25 @@
 <?php
 
+
 /*
-# ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
-# ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
-# ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
-# ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
-# ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
-# ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 */
 
 namespace pocketmine\nbt\tag;
@@ -142,9 +155,9 @@ class ListTag extends NamedTag implements ArrayAccess, Countable{
 		return NBT::TAG_List;
 	}
 
-	/**
-	 * @param $type
-	 */
+    /**
+     * @param int $type
+     */
 	public function setTagType(int $type){
 		$this->tagType = $type;
 	}

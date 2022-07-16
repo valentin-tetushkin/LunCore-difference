@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -19,7 +41,8 @@ class CraftingDataPacket extends DataPacket {
 	const ENTRY_SHAPED = 1;
 	const ENTRY_FURNACE = 2;
 	const ENTRY_FURNACE_DATA = 3;
-	const ENTRY_MULTI = 4;
+	const ENTRY_MULTI = 4; //TODO
+	const ENTRY_SHULKER_BOX = 5; //TODO
 
 	/** @var object[] */
 	public $entries = [];
@@ -38,7 +61,6 @@ class CraftingDataPacket extends DataPacket {
 	 *
 	 */
 	public function decode(){
-		$entries = [];
 		$recipeCount = $this->getUnsignedVarInt();
 		for($i = 0; $i < $recipeCount && !$this->feof(); ++$i){
 			$entry = [];
@@ -46,6 +68,7 @@ class CraftingDataPacket extends DataPacket {
 
 			switch($recipeType){
 				case self::ENTRY_SHAPELESS:
+				case self::ENTRY_SHULKER_BOX:
 					$ingredientCount = $this->getUnsignedVarInt();
 					/** @var Item */
 					$entry["input"] = [];
@@ -89,7 +112,6 @@ class CraftingDataPacket extends DataPacket {
 				default:
 					throw new \UnexpectedValueException("Unhandled recipe type $recipeType!"); //do not continue attempting to decode
 			}
-			$entries[] = $entry;
 		}
 		$this->getBool(); //cleanRecipes
 	}
@@ -165,15 +187,14 @@ class CraftingDataPacket extends DataPacket {
 	 * @return int
 	 */
 	private static function writeFurnaceRecipe(FurnaceRecipe $recipe, BinaryStream $stream){
-		if(!$recipe->getInput()->hasAnyDamageValue()){ //Data recipe
-			$stream->putVarInt($recipe->getInput()->getId());
-			$stream->putVarInt($recipe->getInput()->getDamage());
+        $stream->putVarInt($recipe->getInput()->getId());
+        if(!$recipe->getInput()->hasAnyDamageValue()){
+            $stream->putVarInt($recipe->getInput()->getDamage());
 			$stream->putSlot($recipe->getResult());
 
 			return CraftingDataPacket::ENTRY_FURNACE_DATA;
 		}else{
-			$stream->putVarInt($recipe->getInput()->getId());
-			$stream->putSlot($recipe->getResult());
+            $stream->putSlot($recipe->getResult());
 
 			return CraftingDataPacket::ENTRY_FURNACE;
 		}

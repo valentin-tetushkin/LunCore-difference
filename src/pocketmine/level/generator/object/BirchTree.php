@@ -1,11 +1,34 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\object;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\Leaves;
 use pocketmine\block\Wood;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class BirchTree extends Tree {
@@ -18,8 +41,8 @@ class BirchTree extends Tree {
 	 * @param bool $superBirch
 	 */
 	public function __construct($superBirch = false){
-		$this->trunkBlock = Block::LOG;
-		$this->leafBlock = Block::LEAVES;
+		$this->trunkBlock = BlockIds::LOG;
+		$this->leafBlock = BlockIds::LEAVES;
 		$this->leafType = Leaves::BIRCH;
 		$this->type = Wood::BIRCH;
 		$this->superBirch = (bool) $superBirch;

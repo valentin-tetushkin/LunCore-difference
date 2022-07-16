@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -29,7 +51,14 @@ class ExplodePacket extends DataPacket {
 	 *
 	 */
 	public function decode(){
-
+		/*$this->getVector3f($this->x, $this->y, $this->z);
+		$this->radius = (float) ($this->getVarInt() / 32);
+		$count = $this->getUnsignedVarInt();
+		for($i = 0; $i < $count; ++$i){
+			$x = $y = $z = null;
+			$this->getSignedBlockCoords($x, $y, $z);
+			$this->records[$i] = new Vector3($x, $y, $z);
+		}*/
 	}
 
 	/**
@@ -42,7 +71,7 @@ class ExplodePacket extends DataPacket {
 		$this->putUnsignedVarInt(count($this->records));
 		if(count($this->records) > 0){
 			foreach($this->records as $record){
-				$this->putBlockCoords((int) $record->x, (int) $record->y, (int) $record->z);
+				$this->putSignedBlockCoords((int) $record->x, (int) $record->y, (int) $record->z);
 			}
 		}
 	}

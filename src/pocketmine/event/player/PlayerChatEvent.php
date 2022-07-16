@@ -1,29 +1,34 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link   http://www.pocketmine.net/
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
  *
  */
 
 namespace pocketmine\event\player;
 
+use pocketmine\command\CommandSender;
 use pocketmine\event\Cancellable;
 use pocketmine\Player;
 use pocketmine\Server;
+use function spl_object_id;
 
 /**
  * Called when a player chats something
@@ -57,7 +62,11 @@ class PlayerChatEvent extends PlayerEvent implements Cancellable {
 		$this->format = $format;
 
 		if($recipients === null){
-			$this->recipients = Server::getInstance()->getPluginManager()->getPermissionSubscriptions(Server::BROADCAST_CHANNEL_USERS);
+			foreach(Server::getInstance()->getPluginManager()->getPermissionSubscriptions(Server::BROADCAST_CHANNEL_USERS) as $permissible){
+				if($permissible instanceof CommandSender){
+					$this->recipients[spl_object_id($permissible)] = $permissible;
+				}
+			}
 		}else{
 			$this->recipients = $recipients;
 		}

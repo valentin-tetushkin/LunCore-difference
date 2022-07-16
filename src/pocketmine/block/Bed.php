@@ -1,27 +1,31 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Explosion;
 use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
@@ -52,13 +56,6 @@ class Bed extends Transparent{
 	 */
 	public function __construct($meta = 0){
 		$this->meta = $meta;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
 	}
 
 	/**
@@ -167,7 +164,7 @@ class Bed extends Transparent{
 	public function onActivate(Item $item, Player $player = null){
 		$dimension = $this->getLevel()->getDimension();
 		if($dimension == Level::DIMENSION_NETHER or $dimension == Level::DIMENSION_END){
-			$explosion = new Explosion($this, 6, $this);
+			$explosion = new Explosion($this, 6, $this, true, $player);
 			$explosion->explodeA();
 			return true;
 		}
@@ -179,7 +176,7 @@ class Bed extends Transparent{
 
 				return true;
 			}elseif($player->distanceSquared($this) > 4 and $player->distanceSquared($other) > 4){
-				$player->sendMessage(new TranslationContainer(TextFormat::GRAY . "%tile.bed.tooFar"));
+				//MCPE doesn't have messages for bed too far away
 				return true;
 			}
 
@@ -254,9 +251,9 @@ class Bed extends Transparent{
 	 * @return bool
 	 */
 	public function onBreak(Item $item){
-		$this->getLevel()->setBlock($this, Block::get(Block::AIR), true, true);
+		$this->getLevel()->setBlock($this, Block::get(BlockIds::AIR), true, true);
 		if(($other = $this->getOtherHalf()) !== null){
-			$this->getLevel()->useBreakOn($other, $item, null); //make sure tiles get removed
+			$this->getLevel()->useBreakOn($other, $item); //make sure tiles get removed
 		}
 
 		return true;
@@ -272,11 +269,11 @@ class Bed extends Transparent{
 			$tile = $this->getLevel()->getTile($this);
 			if($tile instanceof TileBed){
 				return [
-					[Item::BED, $tile->getColor(), 1]
+					[ItemIds::BED, $tile->getColor(), 1]
 				];
 			}else{
 				return [
-					[Item::BED, 14, 1] //Red
+					[ItemIds::BED, 14, 1] //Red
 				];
 			}
 		}else{
@@ -291,4 +288,11 @@ class Bed extends Transparent{
 		return 0x08;
 	}
 
+	public function getAffectedBlocks() : array{
+		if(($other = $this->getOtherHalf()) !== null){
+			return [$this, $other];
+		}
+
+		return parent::getAffectedBlocks();
+	}
 }

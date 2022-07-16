@@ -1,10 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 declare(strict_types = 1);
 
 namespace pocketmine\level\loadchunk;
 
-use pocketmine\block\Block;
 use pocketmine\level\format\Chunk;
 use pocketmine\math\Vector3;
 
@@ -21,7 +42,6 @@ interface ChunkLoader {
 	public function getZ();
 
 	public function getLevel();
-
 
 	public function onChunkChanged(Chunk $chunk);
 

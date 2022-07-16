@@ -1,13 +1,6 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
 
 namespace pocketmine\command\defaults;
 
@@ -15,6 +8,7 @@ use pocketmine\block\Block;
 use pocketmine\command\CommandSender;
 use pocketmine\event\TranslationContainer;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\particle\AngryVillagerParticle;
 use pocketmine\level\particle\BubbleParticle;
 use pocketmine\level\particle\BlockForceFieldParticle;
@@ -59,7 +53,7 @@ class ParticleCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.particle.description",
-			"%pocketmine.command.particle.usage"
+			"/lparticle <имя> <x> <y> <z> <xd> <yd> <zd> [значение] [данные]"
 		);
 		$this->setPermission("pocketmine.command.particle");
 	}
@@ -174,9 +168,9 @@ class ParticleCommand extends VanillaCommand {
 			case "reddust":
 				return new RedstoneParticle($pos, $data ?? 1);
 			case "snowballpoof":
-				return new ItemBreakParticle($pos, Item::get(Item::SNOWBALL));
+				return new ItemBreakParticle($pos, Item::get(ItemIds::SNOWBALL));
 			case "slime":
-				return new ItemBreakParticle($pos, Item::get(Item::SLIMEBALL));
+				return new ItemBreakParticle($pos, Item::get(ItemIds::SLIMEBALL));
 			case "itembreak":
 				if($data !== null and $data !== 0){
 					return new ItemBreakParticle($pos, $data);

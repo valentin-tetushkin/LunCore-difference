@@ -1,27 +1,31 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\level\sound\ItemFrameAddItemSound;
 use pocketmine\level\sound\ItemFrameRotateItemSound;
@@ -33,7 +37,7 @@ use pocketmine\tile\ItemFrame as TileItemFrame;
 use pocketmine\tile\Tile;
 
 class ItemFrame extends Flowable {
-	protected $id = Block::ITEM_FRAME_BLOCK;
+	protected $id = BlockIds::ITEM_FRAME_BLOCK;
 
 	/**
 	 * ItemFrame constructor.
@@ -49,13 +53,6 @@ class ItemFrame extends Flowable {
 	 */
 	public function getName() : string{
 		return "Item Frame";
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
 	}
 
 	/**
@@ -96,7 +93,7 @@ class ItemFrame extends Flowable {
 	public function onBreak(Item $item){
 		if(($tile = $this->level->getTile($this)) instanceof TileItemFrame){
 			//TODO: add events
-			if(lcg_value() <= $tile->getItemDropChance() and $tile->getItem()->getId() !== Item::AIR){
+			if(lcg_value() <= $tile->getItemDropChance() and $tile->getItem()->getId() !== BlockIds::AIR){
 				$this->level->dropItem($tile->getBlock(), $tile->getItem());
 			}
 		}
@@ -179,7 +176,7 @@ class ItemFrame extends Flowable {
 	 */
 	public function getDrops(Item $item) : array{
 		return [
-			[Item::ITEM_FRAME, 0, 1]
+			[ItemIds::ITEM_FRAME, 0, 1]
 		];
 	}
 

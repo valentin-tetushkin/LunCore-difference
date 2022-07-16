@@ -1,33 +1,66 @@
 <?php
-/*
+
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
 use pocketmine\event\player\PlayerPickupExpOrbEvent;
-use pocketmine\level\sound\ExpPickupSound;
+use pocketmine\entity\Entity;
+use pocketmine\entity\Human;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\LevelEventPacket;
 use pocketmine\Player;
 
 class XPOrb extends Entity {
 	const NETWORK_ID = 69;
+
+	/**
+	 * Max distance an orb will follow a player across.
+	 */
+	public const MAX_TARGET_DISTANCE = 8.0;
 
 	public $width = 0.25;
 	public $length = 0.25;
 	public $height = 0.25;
 
 	protected $gravity = 0.04;
-	protected $drag = 0;
+	protected $drag = 0.02;
 
 	protected $experience = 0;
 
 	protected $range = 6;
+
+	/**
+	 * @var int
+	 * Ticker used for determining interval in which to look for new target players.
+	 */
+	protected $lookForTargetTime = 0;
+
+	/**
+	 * @var int|null
+	 * Runtime entity ID of the player this XP orb is targeting.
+	 */
+	protected $targetPlayerRuntimeId = null;
 
 	public function initEntity(){
 		parent::initEntity();
@@ -36,95 +69,101 @@ class XPOrb extends Entity {
 		}else $this->close();
 	}
 
+	public function hasTargetPlayer() : bool{
+		return $this->targetPlayerRuntimeId !== null;
+	}
+
+	public function getTargetPlayer() : ?Human{
+		if($this->targetPlayerRuntimeId === null){
+			return null;
+		}
+
+		$entity = $this->level->getEntity($this->targetPlayerRuntimeId);
+		if($entity instanceof Human){
+			return $entity;
+		}
+
+		return null;
+	}
+
+	public function setTargetPlayer(?Human $player) : void{
+		$this->targetPlayerRuntimeId = $player ? $player->getId() : null;
+	}
+
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
 
-		$tickDiff = $currentTick - $this->lastUpdate;
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
-		$this->lastUpdate = $currentTick;
-
-		$this->timings->startTiming();
-
-		$hasUpdate = $this->entityBaseTick($tickDiff);
-
-		$this->age++;
-
-		if($this->age > 1200){
+		$this->age += $tickDiff;
+		if($this->age > 6000){
 			$this->kill();
 			$this->close();
-			$hasUpdate = true;
+			return true;
 		}
 
-		$minDistance = PHP_INT_MAX;
-		$target = null;
-		foreach($this->getViewers() as $p){
-			if(!$p->isSpectator() and $p->isAlive()){
-				if(($dist = $p->distance($this)) < $minDistance and $dist < $this->range){
-					$target = $p;
-					$minDistance = $dist;
+		$currentTarget = $this->getTargetPlayer();
+		if($currentTarget !== null and (!$currentTarget->isAlive() or $currentTarget->distanceSquared($this) > self::MAX_TARGET_DISTANCE ** 2)){
+			$currentTarget = null;
+		}
+
+		if($this->lookForTargetTime >= 20){
+			if($currentTarget === null){
+				$newTarget = $this->level->getNearestEntity($this, self::MAX_TARGET_DISTANCE, Human::class);
+
+				if($newTarget instanceof Human and !($newTarget instanceof Player and $newTarget->isSpectator())){
+					$currentTarget = $newTarget;
 				}
 			}
+
+			$this->lookForTargetTime = 0;
+		}else{
+			$this->lookForTargetTime += $tickDiff;
 		}
 
-		if($target !== null){
-			$moveSpeed = 0.7;
-			$motX = ($target->getX() - $this->x) / 8;
-			$motY = ($target->getY() + $target->getEyeHeight() - $this->y) / 8;
-			$motZ = ($target->getZ() - $this->z) / 8;
-			$motSqrt = sqrt($motX * $motX + $motY * $motY + $motZ * $motZ);
-			$motC = 1 - $motSqrt;
+		$this->setTargetPlayer($currentTarget);
 
-			if($motC > 0){
-				$motC *= $motC;
-				$this->motionX = $motX / $motSqrt * $motC * $moveSpeed;
-				$this->motionY = $motY / $motSqrt * $motC * $moveSpeed;
-				$this->motionZ = $motZ / $motSqrt * $motC * $moveSpeed;
+		if($currentTarget !== null){
+			$vector = $currentTarget->add(0, $currentTarget->getEyeHeight() / 2)->subtract($this)->divide(self::MAX_TARGET_DISTANCE);
+
+		    $distance = $vector->lengthSquared();
+			if($distance < 1){
+				$diff = $vector->normalize()->multiply(0.2 * (1 - sqrt($distance)) ** 2);
+
+				$this->motionX += $diff->x;
+				$this->motionY += $diff->y;
+				$this->motionZ += $diff->z;
 			}
 
-			$this->motionY -= $this->gravity;
+			if($this->getLevel()->getServer()->expEnabled and $currentTarget->canPickupXp() and $this->boundingBox->intersectsWith($currentTarget->getBoundingBox())){
+				$this->getLevel()->getServer()->getPluginManager()->callEvent($ev = new PlayerPickupExpOrbEvent($currentTarget, $this->getExperience()));
+				if(!$ev->isCancelled()){
+					$this->kill();
+					$this->close();
+					if($this->getExperience() > 0){
+						$this->level->broadcastLevelEvent($this, LevelEventPacket::EVENT_SOUND_ORB, mt_rand());
+						$currentTarget->addXp($this->getExperience());
+						$currentTarget->resetXpCooldown();
 
-			if($this->checkObstruction($this->x, $this->y, $this->z)){
-				$hasUpdate = true;
-			}
-
-			if($this->isInsideOfSolid()){
-				$this->setPosition($target);
-			}
-
-			if($minDistance <= 3.0){
-				if($this->getLevel()->getServer()->expEnabled and $target->canPickupXp()){
-					$this->getLevel()->getServer()->getPluginManager()->callEvent($ev = new PlayerPickupExpOrbEvent($target, $this->getExperience()));
-					if(!$ev->isCancelled()){
-						$this->kill();
-						$this->close();
-						if($this->getExperience() > 0){
-							$target->level->addSound(new ExpPickupSound($target, mt_rand(0, 1000)));
-							$target->addXp($this->getExperience());
-							$target->resetXpCooldown();
-						}
+						//TODO: check Mending enchantment
 					}
 				}
 			}
 		}
 
-		if ($this->level == null) {
-			return false;
-		}
+		return $hasUpdate;
+	}
 
-		$this->move($this->motionX, $this->motionY, $this->motionZ);
-
-		$this->updateMovement();
-
-		$this->timings->stopTiming();
-
-		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+	protected function tryChangeMovement(){
+		$this->checkObstruction($this->x, $this->y, $this->z);
+		parent::tryChangeMovement();
 	}
 
 	/**
@@ -158,7 +197,7 @@ class XPOrb extends Entity {
 	 * @param Player $player
 	 */
 	public function spawnTo(Player $player){
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI, true);
+		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_NO_AI);
 		$pk = new AddEntityPacket();
 		$pk->type = XPOrb::NETWORK_ID;
 		$pk->eid = $this->getId();

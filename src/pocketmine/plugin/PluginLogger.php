@@ -1,5 +1,19 @@
 <?php
 
+
+/*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ *
+*/
+
 namespace pocketmine\plugin;
 
 use LogLevel;
@@ -42,7 +56,7 @@ class PluginLogger implements \AttachableLogger {
 	 */
 	public function __construct(Plugin $context){
 		$prefix = $context->getDescription()->getPrefix();
-		$this->pluginName = $prefix != null ? "[$prefix] " : "(" . $context->getDescription()->getName() . ") ";
+		$this->pluginName = $prefix != null ? "[$prefix] " : "[" . $context->getDescription()->getName() . "] ";
 	}
 
 	/**

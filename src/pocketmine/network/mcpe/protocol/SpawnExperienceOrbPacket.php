@@ -1,5 +1,6 @@
 <?php
 
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -18,7 +19,8 @@ class SpawnExperienceOrbPacket extends DataPacket {
 	 *
 	 */
 	public function decode(){
-
+		$this->getVector3f($this->x, $this->y, $this->z);
+		$this->amount = $this->getVarInt();
 	}
 
 	/**

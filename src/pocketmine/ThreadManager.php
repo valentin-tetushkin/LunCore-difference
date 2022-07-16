@@ -1,11 +1,25 @@
 <?php
+
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 */
 
 namespace pocketmine;
@@ -64,13 +78,13 @@ class ThreadManager extends \Volatile {
 		$erroredThreads = 0;
 
 		foreach($this->getAll() as $thread){
-			$logger->debug("Stopping " . $thread->getThreadName() . " thread");
+			$logger->debug("Остановка " . $thread->getThreadName() . " thread");
 			try{
 				$thread->quit();
-				$logger->debug($thread->getThreadName() . " thread stopped successfully.");
+				$logger->debug($thread->getThreadName() . " поток успешно остановлен.");
 			}catch(\ThreadException $e){
 				++$erroredThreads;
-				$logger->debug("Could not stop " . $thread->getThreadName() . " thread: " . $e->getMessage());
+				$logger->debug("Не мог остановиться " . $thread->getThreadName() . " thread: " . $e->getMessage());
 			}
 		}
 

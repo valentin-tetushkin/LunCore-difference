@@ -1,26 +1,22 @@
 <?php
 
+
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
 */
 
 namespace pocketmine\tile;
 
+use pocketmine\block\BlockIds;
 use pocketmine\item\Item;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
@@ -57,17 +53,17 @@ class FlowerPot extends Spawnable {
 		}
 		switch($item->getId()){
 			/** @noinspection PhpMissingBreakStatementInspection */
-			case Item::TALL_GRASS:
+			case BlockIds::TALL_GRASS:
 				if($item->getDamage() === 1){
 					return false;
 				}
-			case Item::SAPLING:
-			case Item::DEAD_BUSH:
-			case Item::DANDELION:
-			case Item::RED_FLOWER:
-			case Item::BROWN_MUSHROOM:
-			case Item::RED_MUSHROOM:
-			case Item::CACTUS:
+			case BlockIds::SAPLING:
+			case BlockIds::DEAD_BUSH:
+			case BlockIds::DANDELION:
+			case BlockIds::RED_FLOWER:
+			case BlockIds::BROWN_MUSHROOM:
+			case BlockIds::RED_MUSHROOM:
+			case BlockIds::CACTUS:
 				return true;
 			default:
 				return false;
@@ -78,7 +74,7 @@ class FlowerPot extends Spawnable {
 	 * @return Item
 	 */
 	public function getItem() : Item{
-		return Item::get((int) ($this->namedtag["item"] ?? 0), (int) ($this->namedtag["mData"] ?? 0), 1);
+		return Item::get($this->namedtag["item"] ?? 0, $this->namedtag["mData"] ?? 0);
 	}
 
 	/**
@@ -91,14 +87,14 @@ class FlowerPot extends Spawnable {
 	}
 
 	public function removeItem(){
-		$this->setItem(Item::get(Item::AIR));
+		$this->setItem(Item::get(BlockIds::AIR));
 	}
 
 	/**
 	 * @return bool
 	 */
 	public function isEmpty() : bool{
-		return $this->getItem()->getId() === Item::AIR;
+		return $this->getItem()->getId() === BlockIds::AIR;
 	}
 
 	/**
@@ -107,9 +103,9 @@ class FlowerPot extends Spawnable {
 	public function getSpawnCompound() : CompoundTag{
 		return new CompoundTag("", [
 			new StringTag("id", Tile::FLOWER_POT),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z),
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z),
 			$this->namedtag->item,
 			$this->namedtag->mData
 		]);

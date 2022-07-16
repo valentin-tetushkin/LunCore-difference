@@ -1,10 +1,35 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\event\entity;
 
 use pocketmine\entity\Effect;
 use pocketmine\entity\Entity;
 
+/**
+ * Called when an entity takes damage from another entity.
+ */
 class EntityDamageByEntityEvent extends EntityDamageEvent {
 
 	/** @var int */
@@ -43,6 +68,9 @@ class EntityDamageByEntityEvent extends EntityDamageEvent {
 		}
 	}
 
+	/**
+	 * Returns the attacking entity, or null if the attacker has been killed or closed.
+	 */
 	public function getDamager(){
 		return $this->getEntity()->getLevel()->getServer()->findEntity($this->damagerEid);
 	}

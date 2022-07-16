@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\BlockIds;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class Sugarcane extends Populator {
@@ -47,7 +69,7 @@ class Sugarcane extends Populator {
 			if($y !== -1){
 				for(; $y < 127 and $y < $yMax; $y++){
 					if($this->canSugarcaneStay($x, $y, $z)){
-						$this->level->setBlockIdAt($x, $y, $z, Block::SUGARCANE_BLOCK);
+						$this->level->setBlockIdAt($x, $y, $z, BlockIds::SUGARCANE_BLOCK);
 						$this->level->setBlockDataAt($x, $y, $z, 1);
 					}
 				}
@@ -67,12 +89,12 @@ class Sugarcane extends Populator {
 		$below = $this->level->getBlockIdAt($x, $y - 1, $z);
 		$water = false;
 		foreach([$this->level->getBlockIdAt($x + 1, $y - 1, $z), $this->level->getBlockIdAt($x - 1, $y - 1, $z), $this->level->getBlockIdAt($x, $y - 1, $z + 1), $this->level->getBlockIdAt($x, $y - 1, $z - 1)] as $adjacent){
-			if($adjacent === Block::WATER or $adjacent === Block::STILL_WATER){
+			if($adjacent === BlockIds::WATER or $adjacent === BlockIds::STILL_WATER){
 				$water = true;
 				break;
 			}
 		}
-		return ($b === Block::AIR) and ((($below === Block::SAND or $below === Block::GRASS) and $water) or ($below === Block::SUGARCANE_BLOCK));
+		return ($b === BlockIds::AIR) and ((($below === BlockIds::SAND or $below === BlockIds::GRASS) and $water) or ($below === BlockIds::SUGARCANE_BLOCK));
 	}
 
 	/**
@@ -84,7 +106,7 @@ class Sugarcane extends Populator {
 	private function getHighestWorkableBlock($x, $z){
 		for($y = 127; $y >= 0; --$y){
 			$b = $this->level->getBlockIdAt($x, $y, $z);
-			if($b !== Block::AIR and $b !== Block::LEAVES and $b !== Block::LEAVES2){
+			if($b !== BlockIds::AIR and $b !== BlockIds::LEAVES and $b !== BlockIds::LEAVES2){
 				break;
 			}
 		}

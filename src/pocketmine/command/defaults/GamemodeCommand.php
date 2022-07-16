@@ -1,13 +1,6 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
 
 namespace pocketmine\command\defaults;
 
@@ -29,7 +22,7 @@ class GamemodeCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.gamemode.description",
-			"%commands.gamemode.usage",
+			"/lgamemode <игровой режим> [игрок]",
 			["gm"]
 		);
 		$this->setPermission("pocketmine.command.gamemode");
@@ -53,7 +46,7 @@ class GamemodeCommand extends VanillaCommand {
 			return false;
 		}
 
-		$gameMode = (int) Server::getGamemodeFromString($args[0]);
+		$gameMode = Server::getGamemodeFromString($args[0]);
 
 		if($gameMode === -1){
 			$sender->sendMessage("Unknown game mode");

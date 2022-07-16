@@ -1,11 +1,34 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\math\Vector3;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\network\mcpe\protocol\EntityEventPacket;
@@ -73,27 +96,22 @@ class Squid extends WaterAnimal implements Ageable {
 
 
 	/**
-	 * @param $currentTick
-	 *
+     *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->closed !== false){
 			return false;
 		}
 
-		if(++$this->switchDirectionTicker === 100){
+		if(++$this->switchDirectionTicker === 100 or $this->isCollided){
 			$this->switchDirectionTicker = 0;
 			if(mt_rand(0, 100) < 50){
 				$this->swimDirection = null;
 			}
 		}
 
-		$this->lastUpdate = $currentTick;
-
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
 
 		if($this->isAlive()){
 
@@ -103,7 +121,6 @@ class Squid extends WaterAnimal implements Ageable {
 
 			$inWater = $this->isInsideOfWater();
 			if(!$inWater){
-				$this->motionY -= $this->gravity;
 				$this->swimDirection = null;
 			}elseif($this->swimDirection !== null){
 				if($this->motionX ** 2 + $this->motionY ** 2 + $this->motionZ ** 2 <= $this->swimDirection->lengthSquared()){
@@ -116,36 +133,19 @@ class Squid extends WaterAnimal implements Ageable {
 				$this->swimSpeed = mt_rand(50, 100) / 2000;
 			}
 
-			$expectedPos = new Vector3($this->x + $this->motionX, $this->y + $this->motionY, $this->z + $this->motionZ);
-
-			$this->move($this->motionX, $this->motionY, $this->motionZ);
-
-			if($expectedPos->distanceSquared($this) > 0){
-				$this->swimDirection = $this->generateRandomDirection();
-				$this->swimSpeed = mt_rand(50, 100) / 2000;
-			}
-
-			$friction = 1 - $this->drag;
-
-			$this->motionX *= $friction;
-			$this->motionY *= 1 - $this->drag;
-			$this->motionZ *= $friction;
-
 			$f = sqrt(($this->motionX ** 2) + ($this->motionZ ** 2));
 			$this->yaw = (-atan2($this->motionX, $this->motionZ) * 180 / M_PI);
 			$this->pitch = (-atan2($f, $this->motionY) * 180 / M_PI);
-
-			if($this->onGround){
-				$this->motionY *= -0.5;
-			}
-
 		}
 
-		$this->timings->stopTiming();
-
-		return $hasUpdate or !$this->onGround or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+		return $hasUpdate;
 	}
-
+	
+	protected function applyGravity(){
+		if(!$this->isInsideOfWater()){
+			parent::applyGravity();
+		}
+	}
 
 	/**
 	 * @param Player $player
@@ -179,9 +179,7 @@ class Squid extends WaterAnimal implements Ageable {
 			if($damager instanceof Player){
 				$lootingL = $damager->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
 
-				$drops = [ItemItem::get(ItemItem::DYE, 0, mt_rand(1, 3 + $lootingL))];
-
-				return $drops;
+                return [ItemItem::get(ItemIds::DYE, 0, mt_rand(1, 3 + $lootingL))];
 			}
 		}
 

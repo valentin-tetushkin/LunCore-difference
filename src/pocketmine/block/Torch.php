@@ -1,23 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
@@ -76,8 +79,8 @@ class Torch extends Flowable {
 			if($this->getSide($face)->isTransparent() === true and
 				!($face === 0 and ($below->getId() === self::FENCE or
 						$below->getId() === self::COBBLE_WALL or
-						$below->getId() == Block::REDSTONE_LAMP or
-						$below->getId() == Block::LIT_REDSTONE_LAMP)
+						$below->getId() == BlockIds::REDSTONE_LAMP or
+						$below->getId() == BlockIds::LIT_REDSTONE_LAMP)
 				)
 			){
 				$this->getLevel()->useBreakOn($this);
@@ -119,8 +122,8 @@ class Torch extends Flowable {
 		}elseif(
 			$below->isTransparent() === false or $below->getId() === self::FENCE or
 			$below->getId() === self::COBBLE_WALL or
-			$below->getId() == Block::REDSTONE_LAMP or
-			$below->getId() == Block::LIT_REDSTONE_LAMP
+			$below->getId() == BlockIds::REDSTONE_LAMP or
+			$below->getId() == BlockIds::LIT_REDSTONE_LAMP
 		){
 			$this->meta = 0;
 			$this->getLevel()->setBlock($block, $this, true, true);

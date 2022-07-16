@@ -1,8 +1,31 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
-use pocketmine\event\entity\{EntityDamageEvent, EntityRegainHealthEvent};
+use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\event\entity\EntityRegainHealthEvent;
 use pocketmine\event\player\PlayerExhaustEvent;
 use pocketmine\network\mcpe\protocol\MobEffectPacket;
 use pocketmine\Player;
@@ -259,10 +282,10 @@ class Effect {
 					return ($this->duration % $interval) === 0;
 				}
 				return true;
-			case Effect::HUNGER:
+            case Effect::HARMING:
+            case Effect::HUNGER:
 				return true;
-			case Effect::HEALING:
-			case Effect::HARMING:
+            case Effect::HEALING:
 				return true;
 			case Effect::SATURATION:
 			    //If forced to last longer than 1 tick, these apply every tick.
@@ -306,22 +329,20 @@ class Effect {
 				$level = $this->getEffectLevel();
 				if(($entity->getHealth() + 4 * $level) <= $entity->getMaxHealth()){
 					$ev = new EntityRegainHealthEvent($entity, 4 * $level, EntityRegainHealthEvent::CAUSE_MAGIC);
-					$entity->heal($ev->getAmount(), $ev);
-				}else{
+                }else{
 					$ev = new EntityRegainHealthEvent($entity, $entity->getMaxHealth() - $entity->getHealth(), EntityRegainHealthEvent::CAUSE_MAGIC);
-					$entity->heal($ev->getAmount(), $ev);
-				}
-				break;
+                }
+                $entity->heal($ev->getAmount(), $ev);
+                break;
 			case Effect::HARMING:
 				$level = $this->getEffectLevel();
 				if(($entity->getHealth() - 6 * $level) >= 0){
 					$ev = new EntityDamageEvent($entity, EntityDamageEvent::CAUSE_MAGIC, 6 * $level);
-					$entity->attack($ev->getFinalDamage(), $ev);
-				}else{
+                }else{
 					$ev = new EntityDamageEvent($entity, EntityDamageEvent::CAUSE_MAGIC, $entity->getHealth());
-					$entity->attack($ev->getFinalDamage(), $ev);
-				}
-				break;
+                }
+                $entity->attack($ev->getFinalDamage(), $ev);
+                break;
 			case Effect::SATURATION:
 				if($entity instanceof Player){
 					if($entity->getServer()->foodEnabled){
@@ -391,7 +412,7 @@ class Effect {
 		}
 
 		if($this->id === Effect::INVISIBILITY){
-			$entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, true);
+			$entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE);
 			$entity->setNameTagVisible(false);
 		}
 	}
@@ -419,7 +440,7 @@ class Effect {
 
 		if($this->id === Effect::INVISIBILITY){
 			$entity->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_INVISIBLE, false);
-			$entity->setNameTagVisible(true);
+			$entity->setNameTagVisible();
 		}
 	}
 }

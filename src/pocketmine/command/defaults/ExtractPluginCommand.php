@@ -1,13 +1,7 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
+
 
 namespace pocketmine\command\defaults;
 
@@ -72,8 +66,11 @@ class ExtractPluginCommand extends VanillaCommand {
 		}
 
 		$reflection = new \ReflectionClass("pocketmine\\plugin\\PluginBase");
-		$file = $reflection->getProperty("file");
-		$file->setAccessible(true);
+        try {
+            $file = $reflection->getProperty("file");
+        } catch (\ReflectionException $e) {
+        }
+        $file->setAccessible(true);
 		$pharPath = str_replace("\\", "/", rtrim($file->getValue($plugin), "\\/"));
 
 		foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($pharPath)) as $fInfo){

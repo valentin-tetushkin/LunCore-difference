@@ -1,26 +1,30 @@
 <?php
 
+
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
 */
 
 namespace pocketmine\item\enchantment;
 
+use pocketmine\item\ItemIds;
 use pocketmine\Server;
 use pocketmine\item\ChainBoots;
 use pocketmine\item\ChainChestplate;
@@ -230,9 +234,9 @@ class Enchantment {
 	 */
 	public static function getEnchantAbility(Item $item){
 		switch($item->getId()){
-			case Item::BOOK:
-			case Item::BOW:
-			case Item::FISHING_ROD:
+			case ItemIds::BOOK:
+			case ItemIds::BOW:
+			case ItemIds::FISHING_ROD:
 				return 4;
 		}
 
@@ -262,47 +266,31 @@ class Enchantment {
 	 */
 	public static function getEnchantWeight(int $enchantmentId){
 		switch($enchantmentId){
-			case self::TYPE_ARMOR_PROTECTION:
+            case self::TYPE_WEAPON_SHARPNESS:
+            case self::TYPE_MINING_EFFICIENCY:
+            case self::TYPE_BOW_POWER:
+            case self::TYPE_ARMOR_PROTECTION:
 				return 10;
-			case self::TYPE_ARMOR_FIRE_PROTECTION:
+            case self::TYPE_ARMOR_EXPLOSION_PROTECTION:
+            case self::TYPE_WEAPON_SMITE:
+            case self::TYPE_WEAPON_ARTHROPODS:
+            case self::TYPE_WEAPON_KNOCKBACK:
+            case self::TYPE_MINING_DURABILITY:
+            case self::TYPE_ARMOR_FIRE_PROTECTION:
 				return 5;
-			case self::TYPE_ARMOR_FALL_PROTECTION:
+            case self::TYPE_WATER_BREATHING:
+            case self::TYPE_WATER_AFFINITY:
+            case self::TYPE_WEAPON_FIRE_ASPECT:
+            case self::TYPE_WEAPON_LOOTING:
+            case self::TYPE_MINING_FORTUNE:
+            case self::TYPE_BOW_KNOCKBACK:
+            case self::TYPE_BOW_FLAME:
+            case self::TYPE_ARMOR_FALL_PROTECTION:
 				return 2;
-			case self::TYPE_ARMOR_EXPLOSION_PROTECTION:
-				return 5;
-			case self::TYPE_WATER_BREATHING:
-				return 2;
-			case self::TYPE_WATER_AFFINITY:
-				return 2;
-			case self::TYPE_WEAPON_SHARPNESS:
-				return 10;
-			case self::TYPE_WEAPON_SMITE:
-				return 5;
-			case self::TYPE_WEAPON_ARTHROPODS:
-				return 5;
-			case self::TYPE_WEAPON_KNOCKBACK:
-				return 5;
-			case self::TYPE_WEAPON_FIRE_ASPECT:
-				return 2;
-			case self::TYPE_WEAPON_LOOTING:
-				return 2;
-			case self::TYPE_MINING_EFFICIENCY:
-				return 10;
-			case self::TYPE_MINING_SILK_TOUCH:
+            case self::TYPE_BOW_INFINITY:
+            case self::TYPE_MINING_SILK_TOUCH:
 				return 1;
-			case self::TYPE_MINING_DURABILITY:
-				return 5;
-			case self::TYPE_MINING_FORTUNE:
-				return 2;
-			case self::TYPE_BOW_POWER:
-				return 10;
-			case self::TYPE_BOW_KNOCKBACK:
-				return 2;
-			case self::TYPE_BOW_FLAME:
-				return 2;
-			case self::TYPE_BOW_INFINITY:
-				return 1;
-		}
+        }
 		return 0;
 	}
 
@@ -319,38 +307,33 @@ class Enchantment {
 			case self::TYPE_ARMOR_EXPLOSION_PROTECTION:
 			case self::TYPE_ARMOR_PROJECTILE_PROTECTION:
 				return 4;
-			case self::TYPE_ARMOR_THORNS:
+            case self::TYPE_WATER_SPEED:
+            case self::TYPE_WEAPON_LOOTING:
+            case self::TYPE_MINING_FORTUNE:
+            case self::TYPE_FISHING_LURE:
+            case self::TYPE_ARMOR_THORNS:
 				return 3;
-			case self::TYPE_WATER_BREATHING:
-			case self::TYPE_WATER_SPEED:
+            case self::TYPE_WATER_BREATHING:
 				return 3;
-			case self::TYPE_WATER_AFFINITY:
+            case self::TYPE_MINING_SILK_TOUCH:
+            case self::TYPE_BOW_INFINITY:
+            case self::TYPE_WATER_AFFINITY:
 				return 1;
 			case self::TYPE_WEAPON_SHARPNESS:
 			case self::TYPE_WEAPON_SMITE:
-			case self::TYPE_WEAPON_ARTHROPODS:
+            case self::TYPE_MINING_EFFICIENCY:
+            case self::TYPE_BOW_POWER:
+            case self::TYPE_WEAPON_ARTHROPODS:
 				return 5;
 			case self::TYPE_WEAPON_KNOCKBACK:
-			case self::TYPE_WEAPON_FIRE_ASPECT:
+            case self::TYPE_BOW_KNOCKBACK:
+            case self::TYPE_WEAPON_FIRE_ASPECT:
 				return 2;
-			case self::TYPE_WEAPON_LOOTING:
+            case self::TYPE_MINING_DURABILITY:
 				return 3;
-			case self::TYPE_MINING_EFFICIENCY:
-				return 5;
-			case self::TYPE_MINING_SILK_TOUCH:
+            case self::TYPE_BOW_FLAME:
 				return 1;
-			case self::TYPE_MINING_DURABILITY:
-			case self::TYPE_MINING_FORTUNE:
-				return 3;
-			case self::TYPE_BOW_POWER:
-				return 5;
-			case self::TYPE_BOW_KNOCKBACK:
-				return 2;
-			case self::TYPE_BOW_FLAME:
-			case self::TYPE_BOW_INFINITY:
-				return 1;
-			case self::TYPE_FISHING_FORTUNE:
-			case self::TYPE_FISHING_LURE:
+            case self::TYPE_FISHING_FORTUNE:
 				return 3;
 		}
 		return 999;
@@ -397,7 +380,7 @@ class Enchantment {
 	 * @return bool
 	 */
 	public function isCustom(){
-		return (bool) $this->isCustomVar;
+		return $this->isCustomVar;
 	}
 
 	/**

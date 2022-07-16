@@ -1,8 +1,31 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\event;
 
-use pocketmine\plugin\{Plugin, RegisteredListener};
+use pocketmine\plugin\Plugin;
+use pocketmine\plugin\RegisteredListener;
 
 class HandlerList {
 
@@ -84,8 +107,11 @@ class HandlerList {
 	 */
 	public function registerAll(array $listeners){
 		foreach($listeners as $listener){
-			$this->register($listener);
-		}
+            try {
+                $this->register($listener);
+            } catch (\Throwable $e) {
+            }
+        }
 	}
 
 	/**
@@ -136,7 +162,7 @@ class HandlerList {
 	public function getRegisteredListeners($plugin = null){
 		if($plugin !== null){
 			$listeners = [];
-			foreach($this->getRegisteredListeners(null) as $hash => $listener){
+			foreach($this->getRegisteredListeners() as $hash => $listener){
 				if($listener->getPlugin() === $plugin){
 					$listeners[$hash] = $plugin;
 				}

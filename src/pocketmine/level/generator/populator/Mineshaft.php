@@ -1,8 +1,30 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class Mineshaft extends Populator {
@@ -17,7 +39,7 @@ class Mineshaft extends Populator {
 	 */
 	public function populate(ChunkManager $level, $chunkX, $chunkZ, Random $random){
 		if($random->nextRange(0, self::$ODD) === 0){
-			//$mineshaft = new Mineshaft($random);
+			//$mineshaft = new Mineshaft($random); (возможно в будещем сделаем)
 		}
 	}
 

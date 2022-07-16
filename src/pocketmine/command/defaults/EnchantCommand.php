@@ -1,13 +1,7 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
+
 
 namespace pocketmine\command\defaults;
 
@@ -27,7 +21,7 @@ class EnchantCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.enchant.description",
-			"%commands.enchant.usage"
+			"/lenchant <игрок> <ID зачарования> [уровень]"
 		);
 		$this->setPermission("pocketmine.command.enchant");
 	}

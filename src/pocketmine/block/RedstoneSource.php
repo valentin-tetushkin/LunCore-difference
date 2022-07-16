@@ -1,27 +1,31 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -103,14 +107,14 @@ class RedstoneSource extends Flowable {
 		if(($block instanceof Door) or ($block instanceof Trapdoor) or ($block instanceof FenceGate)){
 			if(!$block->isOpened()) $block->onActivate(new Item(0));
 		}
-		if($block->getId() == Block::TNT) $block->onActivate(new Item(Item::FLINT_AND_STEEL));
+		if($block->getId() == BlockIds::TNT) $block->onActivate(new Item(ItemIds::FLINT_AND_STEEL));
 		/** @var InactiveRedstoneLamp $block */
-		if($block->getId() == Block::REDSTONE_LAMP) $block->turnOn();
+		if($block->getId() == BlockIds::REDSTONE_LAMP) $block->turnOn();
 		/** @var Dropper|Dispenser $block */
-		if($block->getId() == Block::DROPPER or $block->getId() == Block::DISPENSER) $block->activate();
+		if($block->getId() == BlockIds::DROPPER or $block->getId() == BlockIds::DISPENSER) $block->activate();
 
 		/** @var PoweredRepeater $block */
-		if($block->getId() == Block::UNPOWERED_REPEATER_BLOCK){
+		if($block->getId() == BlockIds::UNPOWERED_REPEATER_BLOCK){
 			if($this->equals($block->getSide($block->getDirection()))) $block->activate();
 		}
 	}
@@ -120,7 +124,7 @@ class RedstoneSource extends Flowable {
 	 */
 	public function activateBlock(Block $block){
 		$this->activateBlockWithoutWire($block);
-		if($block->getId() == Block::REDSTONE_WIRE){
+		if($block->getId() == BlockIds::REDSTONE_WIRE){
 			/** @var RedstoneWire $wire */
 			$wire = $block;
 			$wire->calcSignal($this->maxStrength, RedstoneWire::ON);
@@ -132,7 +136,7 @@ class RedstoneSource extends Flowable {
 	 */
 	public function deactivateBlock(Block $block){
 		$this->deactivateBlockWithoutWire($block);
-		if($block->getId() == Block::REDSTONE_WIRE){
+		if($block->getId() == BlockIds::REDSTONE_WIRE){
 			/** @var RedstoneWire $wire */
 			$wire = $block;
 			$wire->calcSignal(0, RedstoneWire::OFF);
@@ -149,10 +153,10 @@ class RedstoneSource extends Flowable {
 				if($block->isOpened()) $block->onActivate(new Item(0));
 			}
 			/** @var ActiveRedstoneLamp $block */
-			if($block->getId() == Block::LIT_REDSTONE_LAMP) $block->turnOff();
+			if($block->getId() == BlockIds::LIT_REDSTONE_LAMP) $block->turnOff();
 		}
 		/** @var PoweredRepeater $block */
-		if($block->getId() == Block::POWERED_REPEATER_BLOCK){
+		if($block->getId() == BlockIds::POWERED_REPEATER_BLOCK){
 			if($this->equals($block->getSide($block->getDirection()))) $block->deactivate();
 		}
 	}
@@ -201,7 +205,7 @@ class RedstoneSource extends Flowable {
 				$block = $this->getSide(Vector3::SIDE_DOWN);
 				if(!$this->checkPower($block)){
 					/** @var $block ActiveRedstoneLamp */
-					if($block->getId() == Block::LIT_REDSTONE_LAMP) $block->turnOff();
+					if($block->getId() == BlockIds::LIT_REDSTONE_LAMP) $block->turnOff();
 				}
 
 				$block = $this->getSide(Vector3::SIDE_DOWN, 2);
@@ -247,7 +251,7 @@ class RedstoneSource extends Flowable {
 			}
 		}
 
-		if($block->getId() == Block::LIT_REDSTONE_LAMP and !in_array(Vector3::SIDE_UP, $ignore)){
+		if($block->getId() == BlockIds::LIT_REDSTONE_LAMP and !in_array(Vector3::SIDE_UP, $ignore)){
 			$pos = $block->getSide(Vector3::SIDE_UP);
 			if($pos instanceof RedstoneSource and $pos->getId() != self::REDSTONE_TORCH){
 				if($pos->isActivated($this)) return true;

@@ -1,21 +1,24 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
@@ -23,6 +26,7 @@ namespace pocketmine\block;
 
 use pocketmine\event\block\BlockGrowEvent;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\Player;
 use pocketmine\Server;
@@ -62,20 +66,13 @@ class CocoaBlock extends Transparent{
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
-	}
-
-	/**
 	 * @param Item        $item
 	 * @param Player|null $player
 	 *
 	 * @return bool
 	 */
 	public function onActivate(Item $item, Player $player = null){
-		if($item->getId() === Item::DYE and $item->getDamage() === 0x0F){
+		if($item->getId() === ItemIds::DYE and $item->getDamage() === 0x0F){
 			$block = clone $this;
 			if($block->meta > 7){
 				return false;
@@ -135,7 +132,7 @@ class CocoaBlock extends Transparent{
 	 * @return bool
 	 */
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
-		if($target->getId() === Block::WOOD and $target->getDamage() === 3){
+		if($target->getId() === BlockIds::WOOD and $target->getDamage() === 3){
 			if($face !== 0 and $face !== 1){
 				$faces = [
 					2 => 0,
@@ -144,7 +141,7 @@ class CocoaBlock extends Transparent{
 					5 => 1,
 				];
 				$this->meta = $faces[$face];
-				$this->getLevel()->setBlock($block, Block::get(Item::COCOA_BLOCK, $this->meta), true);
+				$this->getLevel()->setBlock($block, Block::get(BlockIds::COCOA_BLOCK, $this->meta), true);
 				return true;
 			}
 		}
@@ -159,9 +156,9 @@ class CocoaBlock extends Transparent{
 	public function getDrops(Item $item) : array{
 		$drops = [];
 		if($this->meta >= 8){
-			$drops[] = [Item::DYE, 3, 3];
+			$drops[] = [ItemIds::DYE, 3, 3];
 		}else{
-			$drops[] = [Item::DYE, 3, 1];
+			$drops[] = [ItemIds::DYE, 3, 1];
 		}
 		return $drops;
 	}

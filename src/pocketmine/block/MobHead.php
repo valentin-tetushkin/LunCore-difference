@@ -1,27 +1,31 @@
 <?php
 
-/*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\tag\ByteTag;
@@ -64,6 +68,7 @@ class MobHead extends Flowable {
 	 * @return AxisAlignedBB
 	 */
 	protected function recalculateBoundingBox(){
+		//TODO: different bounds depending on attached face (meta)
 		return new AxisAlignedBB(
 			$this->x + 0.25,
 			$this->y,
@@ -99,9 +104,9 @@ class MobHead extends Flowable {
 				new StringTag("id", Tile::SKULL),
 				new ByteTag("SkullType", $item->getDamage()),
 				new ByteTag("Rot", $rot),
-				new IntTag("x", (int) $this->x),
-				new IntTag("y", (int) $this->y),
-				new IntTag("z", (int) $this->z)
+				new IntTag("x", $this->x),
+				new IntTag("y", $this->y),
+				new IntTag("z", $this->z)
 			]);
 			if($item->hasCustomName()){
 				$nbt->CustomName = new StringTag("CustomName", $item->getCustomName());
@@ -114,30 +119,6 @@ class MobHead extends Flowable {
 	}
 
 	/**
-	 * @param int $type
-	 *
-	 * @return int|void
-	 */
-	public function onUpdate($type){
-		$faces = [
-			1 => 0,
-			2 => 3,
-			3 => 2,
-			4 => 5,
-			5 => 4,
-		];
-		if($type === Level::BLOCK_UPDATE_NORMAL){
-			if($this->getSide($faces[$this->meta])->getId() === self::AIR){
-				$this->getLevel()->useBreakOn($this);
-
-				return Level::BLOCK_UPDATE_NORMAL;
-			}
-		}
-
-		return parent::onUpdate($type);
-	}
-
-	/**
 	 * @param Item $item
 	 *
 	 * @return array
@@ -146,7 +127,7 @@ class MobHead extends Flowable {
 		$tile = $this->level->getTile($this);
 		if($tile instanceof SkullTile){
 			return [
-				[Item::MOB_HEAD, $tile->getType(), 1]
+				[ItemIds::MOB_HEAD, $tile->getType(), 1]
 			];
 		}
 

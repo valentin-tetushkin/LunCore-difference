@@ -1,21 +1,24 @@
 <?php
 
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
  *
 */
 
@@ -26,7 +29,7 @@ use pocketmine\plugin\Plugin;
 interface Metadatable {
 
 	/**
-	 * Sets a metadata value in the implementing object's metadata store.
+     * Устанавливает значение метаданных в хранилище метаданных реализующего объекта.
 	 *
 	 * @param string        $metadataKey
 	 * @param MetadataValue $newMetadataValue
@@ -34,8 +37,8 @@ interface Metadatable {
 	public function setMetadata(string $metadataKey, MetadataValue $newMetadataValue);
 
 	/**
-	 * Returns a list of previously set metadata values from the implementing
-	 * object's metadata store.
+     * Возвращает список ранее установленных значений метаданных из реализующего
+     * хранилище метаданных объекта.
 	 *
 	 * @param string $metadataKey
 	 *
@@ -44,8 +47,8 @@ interface Metadatable {
 	public function getMetadata(string $metadataKey);
 
 	/**
-	 * Tests to see whether the implementing object contains the given
-	 * metadata value in its metadata store.
+     * Проверяет, содержит ли реализующий объект заданный
+     * значение метаданных в его хранилище метаданных.
 	 *
 	 * @param string $metadataKey
 	 *
@@ -54,8 +57,8 @@ interface Metadatable {
 	public function hasMetadata(string $metadataKey) : bool;
 
 	/**
-	 * Removes the given metadata value from the implementing object's
-	 * metadata store.
+     * Удаляет заданное значение метаданных из реализующего объекта
+     * хранилище метаданных.
 	 *
 	 * @param string $metadataKey
 	 * @param Plugin $owningPlugin

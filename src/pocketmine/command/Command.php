@@ -1,13 +1,30 @@
 <?php
 
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
+/**
+ * Command handling related classes
+ */
 
 namespace pocketmine\command;
 
@@ -294,7 +311,7 @@ abstract class Command{
 	public function setAliases(array $aliases){
 		$this->commandData->aliases = $aliases;
 		if(!$this->isRegistered()){
-			$this->activeAliases = (array) $aliases;
+			$this->activeAliases = $aliases;
 		}
 	}
 

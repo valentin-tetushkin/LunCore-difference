@@ -1,4 +1,27 @@
 <?php
+
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 /**
  * Different noise generators for level generation
  */
@@ -21,7 +44,7 @@ abstract class Noise {
 	 * @return int
 	 */
 	public static function floor($x){
-		return $x >= 0 ? (int) $x : (int) ($x - 1);
+		return $x >= 0 ? (int) $x : $x - 1;
 	}
 
 	/**

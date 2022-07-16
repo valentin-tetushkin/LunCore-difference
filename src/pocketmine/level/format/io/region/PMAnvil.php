@@ -1,20 +1,23 @@
 <?php
 
+
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
  *
 */
@@ -139,16 +142,16 @@ class PMAnvil extends Anvil {
 			}
 
 			$result = new Chunk(
-				$chunk["xPos"],
-				$chunk["zPos"],
+                (int) $chunk["xPos"],
+                (int) $chunk["zPos"],
 				$subChunks,
 				isset($chunk->Entities) ? $chunk->Entities->getValue() : [],
 				isset($chunk->TileEntities) ? $chunk->TileEntities->getValue() : [],
 				isset($chunk->Biomes) ? $chunk->Biomes->getValue() : "",
 				isset($chunk->HeightMap) ? $chunk->HeightMap->getValue() : []
 			);
-			$result->setLightPopulated(isset($chunk->LightPopulated) ? ((bool) $chunk->LightPopulated->getValue()) : false);
-			$result->setPopulated(isset($chunk->TerrainPopulated) ? ((bool) $chunk->TerrainPopulated->getValue()) : false);
+			$result->setLightPopulated(isset($chunk->LightPopulated) && $chunk->LightPopulated->getValue());
+			$result->setPopulated(isset($chunk->TerrainPopulated) && $chunk->TerrainPopulated->getValue());
 			$result->setGenerated(true);
 			return $result;
 		}catch(\Throwable $e){

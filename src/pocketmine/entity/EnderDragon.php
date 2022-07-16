@@ -1,16 +1,37 @@
 <?php
 
 
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\Player;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 
-class EnderDragon extends Monster {
+class EnderDragon extends Monster { // возможно в будещем напишем его
 
 	const NETWORK_ID = 53;
 
-	public $dropExp = [500, 12, 000];
+	public $dropExp = [500, 12, 000];//TODO: Add death animation and exp drop.
 
 	public function initEntity(){
 		$this->setMaxHealth(200);

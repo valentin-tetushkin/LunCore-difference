@@ -1,23 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
@@ -111,11 +114,10 @@ abstract class Liquid extends Transparent{
 		return ($d + 1) / 9;
 	}
 
-	/**
-	 * @param Vector3 $pos
-	 *
-	 * @return int
-	 */
+    /**
+     * @param Block $block
+     * @return int
+     */
 	protected function getFlowDecay(Block $block) : int{
 		if($block->getId() !== $this->getId()){
 			return -1;
@@ -184,8 +186,7 @@ abstract class Liquid extends Transparent{
 					$vector->z += ($sideBlock->z - $this->z) * $realDecay;
 				}
 
-				continue;
-			}else{
+            }else{
 				$realDecay = $blockDecay - $decay;
 				$vector->x += ($sideBlock->x - $this->x) * $realDecay;
 				$vector->y += ($sideBlock->y - $this->y) * $realDecay;
@@ -204,7 +205,7 @@ abstract class Liquid extends Transparent{
 				!$this->canFlowInto($this->level->getBlockAt($this->x - 1, $this->y + 1, $this->z)) or
 				!$this->canFlowInto($this->level->getBlockAt($this->x + 1, $this->y + 1, $this->z))
 			){
-				$vector = $vector->normalize()->add(0, -6, 0);
+				$vector = $vector->normalize()->add(0, -6);
 			}
 		}
 
@@ -332,10 +333,10 @@ abstract class Liquid extends Transparent{
 		return false;
 	}
 
-	/**
-	 * @param Block $block
-	 * @param       $newFlowDecay
-	 */
+    /**
+     * @param Block $block
+     * @param int $newFlowDecay
+     */
 	protected function flowIntoBlock(Block $block, int $newFlowDecay) : void{
 		if($this->canFlowInto($block) and !($block instanceof Liquid)){
 			if($block instanceof Lava){
@@ -428,8 +429,7 @@ abstract class Liquid extends Transparent{
 
 			if(!$this->canFlowInto($block)){
 				$this->flowCostVisited[Level::blockHash($x, $y, $z)] = self::BLOCKED;
-				continue;
-			}elseif($this->level->getBlockAt($x, $y - 1, $z)->canBeFlowedInto()){
+            }elseif($this->level->getBlockAt($x, $y - 1, $z)->canBeFlowedInto()){
 				$this->flowCostVisited[Level::blockHash($x, $y, $z)] = self::CAN_FLOW_DOWN;
 				$flowCost[$j] = $maxCost = 0;
 			}elseif($maxCost > 0){

@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\command\defaults;
 
 use pocketmine\command\CommandSender;
@@ -66,7 +88,7 @@ class StatusCommand extends VanillaCommand {
 					: "") . "$minutes минут(-ы) "
 			: "") . "$seconds секунд(-ы)";
 
-		$sender->sendMessage("§l§fLun§cCore §7- §l§fСколько живет: §5". $uptime ."");
+		$sender->sendMessage("§l§fLun§cCore §7- §l§fСколько живет: §5". $uptime);
 
 		$tpsColor = TextFormat::WHITE;
 		if($server->getTicksPerSecond() < 17){
@@ -86,6 +108,7 @@ class StatusCommand extends VanillaCommand {
 		}
 
 		$sender->sendMessage("§l§f". "%pocketmine.command.status.player" . "§l§5" . " " . $onlineCount . "/" . $sender->getServer()->getMaxPlayers());
+		$sender->sendMessage("§l§f".  TextFormat::WHITE . "§l§fКоличество ядер: " . "§l§5" . Utils::getCoreCount(true));
 		$sender->sendMessage("§l§f". "%pocketmine.command.status.Networkupload " . "§l§5" . \round($server->getNetwork()->getUpload() / 1024, 2) . " kB/s");
 		$sender->sendMessage("§l§f". "%pocketmine.command.status.Networkdownload " . "§l§5" . \round($server->getNetwork()->getDownload() / 1024, 2) . " kB/s");
 		$sender->sendMessage("§l§f". "%pocketmine.command.status.Threadcount " . "§l§5" . Utils::getThreadCount());
@@ -102,9 +125,9 @@ class StatusCommand extends VanillaCommand {
 			$levelName = $level->getFolderName() !== $level->getName() ? " (" . $level->getName() . ")" : "";
 			$timeColor = $level->getTickRateTime() > 40 ? TextFormat::RED : TextFormat::YELLOW;
 			$sender->sendMessage("§l§f". "Мир \"{$level->getFolderName()}\"$levelName: " .
-			"§l§5" . number_format(count($level->getChunks())) . TextFormat::WHITE . " %pocketmine.command.status.chunks " .
-			"§l§5" . number_format(count($level->getEntities())) . TextFormat::WHITE . " %pocketmine.command.status.entities " .
-			"§l§5" . number_format(count($level->getTiles())) . TextFormat::WHITE . " %pocketmine.command.status.tiles " .
+			"§l§5" . number_format(count($level->getChunks())) . "§l§5" . " %pocketmine.command.status.chunks " .
+			"§l§5" . number_format(count($level->getEntities())) . "§l§5" . " %pocketmine.command.status.entities " .
+			"§l§5" . number_format(count($level->getTiles())) . "§l§5" . " %pocketmine.command.status.tiles " .
 				"%pocketmine.command.status.Time " . round($level->getTickRateTime(), 2) . "ms"
 			);
 		}

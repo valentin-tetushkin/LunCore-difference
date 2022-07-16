@@ -1,10 +1,38 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
+/* TODO: 骑马 */
+
 namespace pocketmine\entity;
 
 use pocketmine\Player;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\network\mcpe\protocol\MobArmorEquipmentPacket;
+use pocketmine\item\Item as ItemItem;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\ItemIds;
 
 class Horse extends Living {
 
@@ -27,16 +55,25 @@ class Horse extends Living {
 		$pk = new MobArmorEquipmentPacket();
 		$pk->eid = $this->getId();
 		$pk->slots = [
-			ItemItem::get(0, 0),
-			ItemItem::get($id, 0),
-			ItemItem::get(0, 0),
-			ItemItem::get(0, 0)
+			ItemItem::get(0),
+			ItemItem::get($id),
+			ItemItem::get(0),
+			ItemItem::get(0)
 		];
 		foreach($this->level->getPlayers() as $player){
 			$player->dataPacket($pk);
 		}
 	}
 
+    public function getDrops(){
+        $lootingL = 0;
+        $cause = $this->lastDamageCause;
+        if($cause instanceof EntityDamageByEntityEvent and $cause->getDamager() instanceof Player){
+            $lootingL = $cause->getDamager()->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
+        }
+        $drops[] = ItemItem::get(ItemIds::LEATHER, 0, mt_rand(0, 2 + $lootingL));
+        return $drops;
+    }
 	/**
 	 * @param Player $player
 	 */

@@ -1,10 +1,26 @@
 <?php
-# ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
-# ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
-# ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
-# ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
-# ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
-# ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
 
 namespace pocketmine\nbt\tag;
 
@@ -127,10 +143,10 @@ class CompoundTag extends NamedTag implements ArrayAccess {
 		}while(!($tag instanceof EndTag) && !$nbt->feof());
 	}
 
-	/**
-	 * Sets the specified NamedTag as a child tag of the CompoundTag at the offset specified by the tag's name. If a tag
-	 * already exists at the offset and the types do not match, an exception will be thrown unless $force is true.
-	 *
+    /**
+     * Устанавливает указанный NamedTag в качестве дочернего тега CompoundTag со смещением, указанным именем тега. Если тег
+     * уже существует по смещению и типы не совпадают, будет выдано исключение, если только $force не является истинным.
+     *
 	 * @param NamedTag $tag
 	 * @param bool     $force
 	 */
@@ -181,10 +197,8 @@ class CompoundTag extends NamedTag implements ArrayAccess {
         ];
 
         foreach($this as $tag){
-            if($this instanceof Tag){
-                $result["value"][] = $tag;
-            }
-	    }
+            $result["value"][] = $tag;
+        }
 
         return $result;
     }

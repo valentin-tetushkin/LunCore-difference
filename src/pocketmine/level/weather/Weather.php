@@ -1,6 +1,26 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\level\weather;
 
@@ -17,27 +37,16 @@ class Weather {
 	const RAINY = 1;
 	const RAINY_THUNDER = 2;
 	const THUNDER = 3;
-
 	private $level;
 	private $weatherNow = 0;
-	private $strength1;
-	private $strength2;
+	private $strength1 = 100000;
+	private $strength2 = 35000;
 	private $duration;
 	private $canCalculate = true;
-
-	/** @var Vector3 */
 	private $temporalVector = null;
-
 	private $lastUpdate = 0;
-
 	private $randomWeatherData = [0, 1, 0, 1, 0, 1, 0, 2, 0, 3];
 
-	/**
-	 * Weather constructor.
-	 *
-	 * @param Level $level
-	 * @param int   $duration
-	 */
 	public function __construct(Level $level, $duration = 1200){
 		$this->level = $level;
 		$this->weatherNow = self::SUNNY;
@@ -46,23 +55,14 @@ class Weather {
 		$this->temporalVector = new Vector3(0, 0, 0);
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function canCalculate() : bool{
 		return $this->canCalculate;
 	}
 
-	/**
-	 * @param bool $canCalc
-	 */
 	public function setCanCalculate(bool $canCalc){
 		$this->canCalculate = $canCalc;
 	}
 
-	/**
-	 * @param $currentTick
-	 */
 	public function calcWeather($currentTick){
 		if($this->canCalculate()){
 			$tickDiff = $currentTick - $this->lastUpdate;
@@ -75,12 +75,11 @@ class Weather {
 
 				if($this->weatherNow === self::SUNNY){
 					$weather = $this->randomWeatherData[array_rand($this->randomWeatherData)];
-					$this->setWeather($weather, $duration);
-				}else{
+                }else{
 					$weather = self::SUNNY;
-					$this->setWeather($weather, $duration);
-				}
-			}
+                }
+                $this->setWeather($weather, $duration);
+            }
 			if(($this->weatherNow >= self::RAINY_THUNDER) and ($this->level->getServer()->lightningTime > 0) and is_int($this->duration / $this->level->getServer()->lightningTime)){
 				$players = $this->level->getPlayers();
 				if(count($players) > 0){
@@ -103,39 +102,25 @@ class Weather {
 		$this->level->getServer()->getPluginManager()->callEvent($ev = new WeatherChangeEvent($this->level, $wea, $duration));
 		if(!$ev->isCancelled()){
 			$this->weatherNow = $ev->getWeather();
-			$this->strength1 = mt_rand(90000, 110000); //If we're clearing the weather, it doesn't matter what strength values we set
+			$this->strength1 = mt_rand(90000, 110000);
 			$this->strength2 = mt_rand(30000, 40000);
 			$this->duration = $ev->getDuration();
 			$this->sendWeatherToAll();
 		}
 	}
 
-	/**
-	 * @return array
-	 */
 	public function getRandomWeatherData() : array{
 		return $this->randomWeatherData;
 	}
 
-	/**
-	 * @param array $randomWeatherData
-	 */
 	public function setRandomWeatherData(array $randomWeatherData){
 		$this->randomWeatherData = $randomWeatherData;
 	}
 
-	/**
-	 * @return int
-	 */
 	public function getWeather() : int{
 		return $this->weatherNow;
 	}
 
-	/**
-	 * @param $weather
-	 *
-	 * @return int
-	 */
 	public static function getWeatherFromString($weather){
 		if(is_int($weather)){
 			if($weather <= 3){
@@ -145,8 +130,7 @@ class Weather {
 		}
 		switch(strtolower($weather)){
 			case "clear":
-			case "sunny":
-			case "fine":
+            case "sunny":
 				return self::SUNNY;
 			case "rain":
 			case "rainy":
@@ -157,49 +141,32 @@ class Weather {
 			case "rainy_thunder":
 			case "storm":
 				return self::RAINY_THUNDER;
-			default:
+            case "fine":
+            default:
 				return self::SUNNY;
 		}
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isSunny() : bool{
 		return $this->getWeather() === self::SUNNY;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isRainy() : bool{
 		return $this->getWeather() === self::RAINY;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isRainyThunder() : bool{
 		return $this->getWeather() === self::RAINY_THUNDER;
 	}
 
-	/**
-	 * @return bool
-	 */
 	public function isThunder() : bool{
 		return $this->getWeather() === self::THUNDER;
 	}
 
-	/**
-	 * @return array
-	 */
 	public function getStrength() : array{
 		return [$this->strength1, $this->strength2];
 	}
 
-	/**
-	 * @param Player $p
-	 */
 	public function sendWeather(Player $p){
 		$pks = [
 			new LevelEventPacket(),

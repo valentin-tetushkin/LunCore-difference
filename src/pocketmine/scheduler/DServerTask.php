@@ -1,7 +1,16 @@
 <?php
+
 /*
- * DServerTask 2.0
- * @author MUedsa, PeratX
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ *
 */
 
 namespace pocketmine\scheduler;
@@ -32,7 +41,7 @@ class DServerTask extends AsyncTask {
 			$re[0] = $re[0] + $data[0];
 			$re[1] = $re[1] + $data[1];
 		}
-		$this->re = (array) $re;
+		$this->re = $re;
 	}
 
 

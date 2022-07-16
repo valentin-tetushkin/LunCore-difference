@@ -1,5 +1,6 @@
 <?php
 
+
 /*
  *
  *  ____            _        _   __  __ _                  __  __ ____  
@@ -44,16 +45,18 @@ class StartGamePacket extends DataPacket {
 	public $spawnX;
 	public $spawnY;
 	public $spawnZ;
-	public $hasAchievementsDisabled = 1;
+	public $hasAchievementsDisabled = true;
 	public $dayCycleStopTime = -1; //-1 = not stopped, any positive value = stopped at that time
-	public $eduMode = 0;
+	public $eduMode = false;
 	public $rainLevel;
 	public $lightningLevel;
 	public $commandsEnabled;
-	public $isTexturePacksRequired = 0;
+	public $isTexturePacksRequired = true;
 	public $levelId = "";
 	public $worldName;
 	public $premiumWorldTemplateId = "";
+	public $unknownBool = false;
+	public $currentTick = 0;
 
 	/**
 	 *
@@ -90,6 +93,8 @@ class StartGamePacket extends DataPacket {
 		$this->putString($this->levelId);
 		$this->putString($this->worldName);
 		$this->putString($this->premiumWorldTemplateId);
+		$this->putBool($this->unknownBool);
+		$this->putLLong($this->currentTick);
 	}
 
 }

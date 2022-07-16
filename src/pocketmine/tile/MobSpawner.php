@@ -1,26 +1,22 @@
 <?php
 
+
 /*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+*/
 
 namespace pocketmine\tile;
 
+use pocketmine\block\BlockIds;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityGenerateEvent;
 use pocketmine\item\Item;
@@ -198,7 +194,7 @@ class MobSpawner extends Spawnable {
 					$pos = $this->add(mt_rand() / mt_getrandmax() * $this->getSpawnRange(), mt_rand(-1, 1), mt_rand() / mt_getrandmax() * $this->getSpawnRange());
 					$target = $this->getLevel()->getBlock($pos);
 					$ground = $target->getSide(Vector3::SIDE_DOWN);
-					if($target->getId() == Item::AIR && $ground->isTopFacingSurfaceSolid()){
+					if($target->getId() == BlockIds::AIR && $ground->isTopFacingSurfaceSolid()){
 						$success++;
 						$this->getLevel()->getServer()->getPluginManager()->callEvent($ev = new EntityGenerateEvent($pos, $this->getEntityId(), EntityGenerateEvent::CAUSE_MOB_SPAWNER));
 						if(!$ev->isCancelled()){
@@ -240,14 +236,12 @@ class MobSpawner extends Spawnable {
 	 * @return CompoundTag
 	 */
 	public function getSpawnCompound(){
-		$c = new CompoundTag("", [
-			new StringTag("id", Tile::MOB_SPAWNER),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z),
-			new IntTag("EntityId", (int) $this->getEntityId())
-		]);
-
-		return $c;
+        return new CompoundTag("", [
+            new StringTag("id", Tile::MOB_SPAWNER),
+            new IntTag("x", $this->x),
+            new IntTag("y", $this->y),
+            new IntTag("z", $this->z),
+            new IntTag("EntityId", (int) $this->getEntityId())
+        ]);
 	}
 }

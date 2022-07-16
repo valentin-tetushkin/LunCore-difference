@@ -1,27 +1,26 @@
 <?php
 
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
  *
 */
-
-/**
- * Saves extra data on runtime for different items
- */
 
 namespace pocketmine\metadata;
 
@@ -56,8 +55,8 @@ abstract class MetadataStore {
 	}
 
 	/**
-	 * Returns all metadata values attached to an object. If multiple
-	 * have attached metadata, each will value will be included.
+     * Возвращает все значения метаданных, прикрепленные к объекту. Если несколько
+     * имеют прикрепленные метаданные, каждое значение будет включено.
 	 *
 	 * @param Metadatable $subject
 	 * @param string      $metadataKey
@@ -66,15 +65,11 @@ abstract class MetadataStore {
 	 */
 	public function getMetadata(Metadatable $subject, string $metadataKey){
 		$key = $this->disambiguate($subject, $metadataKey);
-		if(isset($this->metadataMap[$key])){
-			return $this->metadataMap[$key];
-		}else{
-			return [];
-		}
+        return $this->metadataMap[$key] ?? [];
 	}
 
 	/**
-	 * Tests to see if a metadata attribute has been set on an object.
+     * Проверяет, установлен ли для объекта атрибут метаданных.
 	 *
 	 * @param Metadatable $subject
 	 * @param string      $metadataKey
@@ -86,7 +81,7 @@ abstract class MetadataStore {
 	}
 
 	/**
-	 * Removes a metadata item owned by a plugin from a subject.
+     * Удаляет элемент метаданных, принадлежащий плагину, из темы.
 	 *
 	 * @param Metadatable $subject
 	 * @param string      $metadataKey
@@ -103,9 +98,9 @@ abstract class MetadataStore {
 	}
 
 	/**
-	 * Invalidates all metadata in the metadata store that originates from the
-	 * given plugin. Doing this will force each invalidated metadata item to
-	 * be recalculated the next time it is accessed.
+     * Делает недействительными все метаданные в хранилище метаданных, которые происходят из
+     * данный плагин. Это заставит каждый недействительный элемент метаданных
+     * быть пересчитан при следующем доступе.
 	 *
 	 * @param Plugin $owningPlugin
 	 */
@@ -119,8 +114,8 @@ abstract class MetadataStore {
 	}
 
 	/**
-	 * Creates a unique name for the object receiving metadata by combining
-	 * unique data from the subject with a metadataKey.
+     * Создает уникальное имя для объекта, получающего метаданные, комбинируя
+     * уникальные данные субъекта с помощью metadataKey.
 	 *
 	 * @param Metadatable $subject
 	 * @param string      $metadataKey

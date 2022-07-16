@@ -1,8 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\entity;
 
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -46,9 +69,8 @@ class Chicken extends Animal {
 	 * @return array
 	 */
 	public function getDrops(){
-		$drops = [ItemItem::get(ItemItem::FEATHER, 0, mt_rand(0, 2))
-		];
-		$drops[] = ItemItem::get(ItemItem::RAW_CHICKEN, 0, 1);
+		$drops = [ItemItem::get(ItemIds::FEATHER, 0, mt_rand(0, 2))];
+		$drops[] = ItemItem::get(ItemIds::RAW_CHICKEN, 0, mt_rand(0, 3));
 
 		return $drops;
 	}

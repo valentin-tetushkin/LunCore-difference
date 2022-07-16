@@ -1,5 +1,19 @@
 <?php
 
+
+/*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ *
+*/
+
 namespace pocketmine\network;
 
 use pocketmine\network\mcpe\protocol\BatchPacket;
@@ -18,23 +32,29 @@ class CompressBatchedTask extends AsyncTask{
 	 * @param BatchPacket $batch
 	 * @param Player[]    $targets
 	 */
-public function __construct(BatchPacket $batch, array $targets){
-$this->data = $batch->payload;
-$this->level = $batch->getCompressionLevel();
-$this->storeLocal($targets);
-}
-public function onRun(){
-$batch = new BatchPacket();
-$batch->payload = $this->data;
-$batch->setCompressionLevel($this->level);
-$batch->encode();
-$this->setResult($batch->buffer);
-}
-public function onCompletion(Server $server){
-$pk = new BatchPacket($this->getResult());
-$pk->isEncoded = true;
-/** @var Player[] $targets */
-$targets = $this->fetchLocal();
-$server->broadcastPacketsCallback($pk, $targets);
-}
+	public function __construct(BatchPacket $batch, array $targets){
+		$this->data = $batch->payload;
+		$this->level = $batch->getCompressionLevel();
+		$this->storeLocal($targets);
+	}
+
+	public function onRun(){
+		$batch = new BatchPacket();
+		$batch->payload = $this->data;
+
+		$batch->setCompressionLevel($this->level);
+		$batch->encode();
+
+		$this->setResult($batch->buffer);
+	}
+
+	public function onCompletion(Server $server){
+		$pk = new BatchPacket($this->getResult());
+		$pk->isEncoded = true;
+
+		/** @var Player[] $targets */
+		$targets = $this->fetchLocal();
+
+		$server->broadcastPacketsCallback($pk, $targets);
+	}
 }

@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 declare(strict_types=1);
 
 namespace pocketmine\item;
@@ -10,10 +32,6 @@ class EmptyMap extends Item{
 
     public function __construct(int $meta = 0, int $count = 1){
         parent::__construct(self::EMPTY_MAP, $meta, $count, "Empty Map");
-    }
-
-    public function canBeActivated() : bool{
-        return true;
     }
 
     public function getMaxStackSize() : int{

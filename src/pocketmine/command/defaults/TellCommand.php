@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -27,7 +19,7 @@ class TellCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.tell.description",
-			"%commands.tell.usage",
+			"/m <player> (сообщение)",
 			["w", "whisper", "msg", "m"]
 		);
 		$this->setPermission("pocketmine.command.tell");

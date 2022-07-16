@@ -1,9 +1,32 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\ender;
 
 use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\BlockIds;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\ender\populator\EnderPilar;
 use pocketmine\level\generator\Generator;
@@ -100,7 +123,7 @@ class Ender extends Generator
 
                 $biome = Biome::getBiome(Biome::END);
                 $biome->setGroundCover([
-                    Block::get(Block::OBSIDIAN, 0)
+                    Block::get(BlockIds::OBSIDIAN)
 
                 ]);
                 $chunk->setBiomeId($x, $z, $biome->getId());
@@ -112,7 +135,7 @@ class Ender extends Generator
 
                 //$chunk->setBiomeColor($x, $z, $color[0], $color[1], $color[2]);
 
-                for ($y = 0; $y < 40; ++$y) {
+                for ($y = 0; $y < 128; ++$y) {
 
                     $noiseValue = (abs($this->emptyHeight - $y) / $this->emptyHeight) * $this->emptyAmplitude - $noise[$x][$z][$y];
                     $noiseValue -= 1 - $this->density;
@@ -121,7 +144,7 @@ class Ender extends Generator
                     $distance = $distance->distance(new Vector3($chunkX * 16 + $x, ($y / 1.3), $chunkZ * 16 + $z));
 
                     if ($noiseValue < 0 && $distance < 100 or $noiseValue < -0.2 && $distance > 400) {
-                        $chunk->setBlockId($x, $y, $z, Block::END_STONE);
+                        $chunk->setBlockId($x, $y, $z, BlockIds::END_STONE);
                     }
                 }
             }

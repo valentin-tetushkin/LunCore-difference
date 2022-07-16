@@ -1,5 +1,27 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\event\entity;
 
 use pocketmine\block\Block;
@@ -7,6 +29,9 @@ use pocketmine\entity\Entity;
 use pocketmine\event\Cancellable;
 use pocketmine\level\Position;
 
+/**
+ * Called when a entity explodes
+ */
 class EntityExplodeEvent extends EntityEvent implements Cancellable {
 	public static $handlerList = null;
 
@@ -21,17 +46,22 @@ class EntityExplodeEvent extends EntityEvent implements Cancellable {
 	/** @var float */
 	protected $yield;
 
+	protected $arsonist;
+
 	/**
-	 * @param Entity   $entity
-	 * @param Position $position
-	 * @param Block[]  $blocks
+     * @param Block[]  $blocks
 	 * @param float    $yield
 	 */
-	public function __construct(Entity $entity, Position $position, array $blocks, $yield){
+	public function __construct(Entity $entity, Position $position, array $blocks, $yield, $arsonist = null){
 		$this->entity = $entity;
 		$this->position = $position;
 		$this->blocks = $blocks;
 		$this->yield = $yield;
+		$this->arsonist = $arsonist;
+	}
+
+	public function getArsonist(){
+		return $this->arsonist;
 	}
 
 	/**

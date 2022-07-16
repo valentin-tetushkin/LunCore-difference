@@ -1,13 +1,5 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
 
 namespace pocketmine\command\defaults;
 
@@ -74,15 +66,15 @@ class CaveCommand extends VanillaCommand {
 			$sender->sendMessage(TextFormat::RED . "Wrong LevelName");
 			return false;
 		}
-		$x = isset($args[4]) ? $args[4] : $sender->getX();
-		$y = isset($args[5]) ? $args[5] : $sender->getY();
-		$z = isset($args[6]) ? $args[6] : $sender->getZ();
+		$x = $args[4] ?? $sender->getX();
+		$y = $args[5] ?? $sender->getY();
+		$z = $args[6] ?? $sender->getZ();
 
 		$pos = new Position($x, $y, $z, $level);
-		$caves[0] = isset($args[0]) ? $args[0] : mt_rand(1, 360);
-		$caves[1] = isset($args[1]) ? $args[1] : mt_rand(10, 300);
-		$caves[2] = isset($args[2]) ? $args[2] : mt_rand(1, 6);
-		$caves[4] = isset($args[3]) ? $args[3] : mt_rand(1, 10);
+		$caves[0] = $args[0] ?? mt_rand(1, 360);
+		$caves[1] = $args[1] ?? mt_rand(10, 300);
+		$caves[2] = $args[2] ?? mt_rand(1, 6);
+		$caves[4] = $args[3] ?? mt_rand(1, 10);
 		$caves[3] = [false, true, true];
 		$sender->sendMessage(new TranslationContainer("pocketmine.commands.cave.info", [$caves[0], $caves[1], $caves[2], $caves[4]]));
 		$sender->sendMessage(new TranslationContainer(TextFormat::YELLOW . "%pocketmine.commands.cave.start"));
@@ -265,7 +257,7 @@ class CaveCommand extends VanillaCommand {
 		$vector = new Vector3(0, 0, 0);
 		$vBlock = new Vector3(0, 0, 0);
 		$stepLen = 0.3;
-		$mRays = \intval($rays - 1);
+		$mRays = $rays - 1;
 		$affectedBlocks = [];
 		for($i = 0; $i < $rays; ++$i){
 			for($j = 0; $j < $rays; ++$j){
@@ -278,9 +270,9 @@ class CaveCommand extends VanillaCommand {
 						$pointerZ = $source->z;
 
 						for($blastForce = $size * (\mt_rand(700, 1300) / 1000); $blastForce > 0; $blastForce -= $stepLen * 0.75){
-							$x = (int) $pointerX;
-							$y = (int) $pointerY;
-							$z = (int) $pointerZ;
+							$x = $pointerX;
+							$y = $pointerY;
+							$z = $pointerZ;
 							$vBlock->x = $pointerX >= $x ? $x : $x - 1;
 							$vBlock->y = $pointerY >= $y ? $y : $y - 1;
 							$vBlock->z = $pointerZ >= $z ? $z : $z - 1;

@@ -1,11 +1,25 @@
 <?php
+
+
 /*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
 */
 
 namespace pocketmine;
@@ -18,13 +32,13 @@ abstract class Achievement {
 	 * @var array[]
 	 */
 	public static $list = [
-		"openInventory" => array(
+		/*"openInventory" => array(
 			"name" => "Taking Inventory",
 			"requires" => [],
-		),
+		),*/
 		"mineWood" => [
 			"name" => "Getting Wood",
-			"requires" => [ "openInventory",
+			"requires" => [ //"openInventory",
 			],
 		],
 		"buildWorkBench" => [
@@ -131,6 +145,4 @@ abstract class Achievement {
 
 		return false;
 	}
-
-
 }

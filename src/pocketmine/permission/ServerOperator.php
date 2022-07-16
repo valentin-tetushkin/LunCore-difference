@@ -1,18 +1,28 @@
 <?php
 
+
+/*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+*/
+
 namespace pocketmine\permission;
 
 
 interface ServerOperator {
 	/**
-	 * Checks if the current object has operator permissions
+     * Проверяет, есть ли у текущего объекта права оператора
 	 *
 	 * @return bool
 	 */
 	public function isOp();
 
 	/**
-	 * Sets the operator permission for the current object
+     * Устанавливает разрешение оператора для текущего объекта
 	 *
 	 * @param bool $value
 	 *

@@ -1,13 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\inventory;
 
@@ -93,9 +106,9 @@ class ShulkerBoxInventory extends ContainerInventory{
     protected function broadcastBlockEventPacket(bool $isOpen){
         $holder = $this->getHolder();
         $pk = new BlockEventPacket();
-        $pk->x = (int)$holder->x;
-        $pk->y = (int)$holder->y;
-        $pk->z = (int)$holder->z;
+        $pk->x = $holder->x;
+        $pk->y = $holder->y;
+        $pk->z = $holder->z;
         $pk->eventType = 1;
         $pk->eventData = +$isOpen;
         $holder->getLevel()->addChunkPacket($holder->getX() >> 4, $holder->getZ() >> 4, $pk);

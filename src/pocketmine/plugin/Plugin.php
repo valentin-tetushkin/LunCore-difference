@@ -1,21 +1,16 @@
 <?php
 
+
 /*
- *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
 */
 
@@ -29,19 +24,19 @@ use pocketmine\command\CommandExecutor;
 
 
 /**
- * It is recommended to use PluginBase for the actual plugin
+ * Рекомендуется использовать PluginBase для фактического плагина
  *
  */
 interface Plugin extends CommandExecutor {
 
-	/**
-	 * Called when the plugin is loaded, before calling onEnable()
-	 */
+    /**
+     * Вызывается при загрузке плагина перед вызовом onEnable()
+     */
 	public function onLoad();
 
-	/**
-	 * Called when the plugin is enabled
-	 */
+    /**
+     * Вызывается, когда плагин включен
+     */
 	public function onEnable();
 
 	/**
@@ -49,10 +44,10 @@ interface Plugin extends CommandExecutor {
 	 */
 	public function isEnabled();
 
-	/**
-	 * Called when the plugin is disabled
-	 * Use this to free open things and finish actions
-	 */
+    /**
+     * Вызывается, когда плагин отключен
+     * Используйте это, чтобы освободить открытые вещи и завершить действия
+     */
 	public function onDisable();
 
 	/**
@@ -60,9 +55,9 @@ interface Plugin extends CommandExecutor {
 	 */
 	public function isDisabled();
 
-	/**
-	 * Gets the plugin's data folder to save files and configuration
-	 */
+    /**
+     * Получает папку данных плагина для сохранения файлов и конфигурации
+     */
 	public function getDataFolder();
 
 	/**
@@ -70,24 +65,24 @@ interface Plugin extends CommandExecutor {
 	 */
 	public function getDescription();
 
-	/**
-	 * Gets an embedded resource in the plugin file.
-	 *
+    /**
+     * Получает встроенный ресурс в файле плагина.
+     *
 	 * @param string $filename
 	 */
 	public function getResource($filename);
 
-	/**
-	 * Saves an embedded resource to its relative location in the data folder
-	 *
-	 * @param string $filename
-	 * @param bool   $replace
-	 */
+    /**
+     * Сохраняет встроенный ресурс в его относительное местоположение в папке данных
+     *
+     * @param строка $filename
+     * @param логический $replace
+     */
 	public function saveResource($filename, $replace = false);
 
-	/**
-	 * Returns all the resources packaged with the plugin
-	 */
+    /**
+     * Возвращает все ресурсы, упакованные с плагином
+     */
 	public function getResources();
 
 	/**

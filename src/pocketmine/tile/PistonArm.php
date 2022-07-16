@@ -1,4 +1,5 @@
 <?php
+
 /*
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
@@ -27,9 +28,9 @@ class PistonArm extends Spawnable {
      }
 		return new CompoundTag("", [
 			new StringTag("id", Tile::PISTON_ARM),
-			new IntTag("x", (int)$this->x),
-			new IntTag("y", (int)$this->y),
-			new IntTag("z", (int)$this->z),
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z),
 			new FloatTag("Progress", $this->namedtag['Progress']),
 			new ByteTag("State", $this->namedtag['State']),
             new ByteTag("Sticky", $sticky),

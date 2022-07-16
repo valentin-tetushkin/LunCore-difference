@@ -1,13 +1,26 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\command\defaults;
 
@@ -28,7 +41,7 @@ class OpCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.op.description",
-			"%commands.op.usage"
+			"/op <player>"
 		);
 		$this->setPermission("pocketmine.command.op.give");
 	}
@@ -56,7 +69,7 @@ class OpCommand extends VanillaCommand {
 		$player = $sender->getServer()->getOfflinePlayer($name);
 		Command::broadcastCommandMessage($sender, new TranslationContainer("commands.op.success", [$player->getName()]));
 		if($player instanceof Player){
-			$player->sendMessage("§l§5You are now op!");
+			$player->sendMessage(TextFormat::GRAY . "You are now op!");
 		}
 		$player->setOp(true);
 		return true;

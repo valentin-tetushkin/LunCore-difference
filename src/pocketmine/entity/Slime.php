@@ -1,9 +1,32 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -49,18 +72,18 @@ class Slime extends Living {
 	 * @return array
 	 */
 	public function getDrops(){
-		$drops = [ItemItem::get(ItemItem::SLIMEBALL, 0, 1)];
+		$drops = [ItemItem::get(ItemIds::SLIMEBALL)];
 		if($this->lastDamageCause instanceof EntityDamageByEntityEvent and $this->lastDamageCause->getEntity() instanceof Player){
 			if(\mt_rand(0, 199) < 5){
 				switch(\mt_rand(0, 2)){
 					case 0:
-						$drops[] = ItemItem::get(ItemItem::IRON_INGOT, 0, 1);
+						$drops[] = ItemItem::get(ItemIds::IRON_INGOT);
 						break;
 					case 1:
-						$drops[] = ItemItem::get(ItemItem::CARROT, 0, 1);
+						$drops[] = ItemItem::get(ItemIds::CARROT);
 						break;
 					case 2:
-						$drops[] = ItemItem::get(ItemItem::POTATO, 0, 1);
+						$drops[] = ItemItem::get(ItemIds::POTATO);
 						break;
 				}
 			}

@@ -1,28 +1,32 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\item\Tool;
 
 class Glowstone extends Transparent implements SolidLight {
@@ -72,17 +76,17 @@ class Glowstone extends Transparent implements SolidLight {
 	public function getDrops(Item $item) : array{
 		if($item->getEnchantmentLevel(Enchantment::TYPE_MINING_SILK_TOUCH) > 0){
 			return [
-				[Item::GLOWSTONE_BLOCK, 0, 1],
+				[BlockIds::GLOWSTONE_BLOCK, 0, 1],
 			];
 		}else{
 			$fortuneL = $item->getEnchantmentLevel(Enchantment::TYPE_MINING_FORTUNE);
-			$fortuneL = $fortuneL > 3 ? 3 : $fortuneL;
+			$fortuneL = min($fortuneL, 3);
 			$times = [1, 1, 2, 3, 4];
 			$time = $times[mt_rand(0, $fortuneL + 1)];
 			$num = mt_rand(2, 4) * $time;
-			$num = $num > 4 ? 4 : $num;
+			$num = min($num, 4);
 			return [
-				[Item::GLOWSTONE_DUST, 0, $num],
+				[ItemIds::GLOWSTONE_DUST, 0, $num],
 			];
 		}
 	}

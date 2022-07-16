@@ -1,18 +1,43 @@
 <?php
 
+
+/*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
+ *
+*/
+
 namespace pocketmine\network\mcpe;
 
-use raklib\RakLib;
 use pocketmine\event\player\PlayerCreationEvent;
-use pocketmine\sleeper\SleeperNotifier;
-use pocketmine\network\{Network, AdvancedSourceInterface};
-use pocketmine\network\mcpe\protocol\{DataPacket, ProtocolInfo, BatchPacket};
-use pocketmine\{Player, Server};
-use raklib\protocol\{EncapsulatedPacket, PacketReliability};
-use raklib\server\{RakLibServer, ServerHandler, ServerInstance};
+use pocketmine\network\Network;
+use pocketmine\network\AdvancedSourceInterface;
+use pocketmine\network\mcpe\protocol\DataPacket;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
+use pocketmine\network\mcpe\protocol\BatchPacket;
+use pocketmine\Player;
+use pocketmine\Server;
+use pocketmine\snooze\SleeperNotifier;
+use raklib\protocol\EncapsulatedPacket;
+use raklib\protocol\PacketReliability;
+use raklib\RakLib;
+use raklib\server\RakLibServer;
+use raklib\server\ServerHandler;
+use raklib\server\ServerInstance;
+use raklib\utils\InternetAddress;
 
 class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
-    
+    /**
+     * Иногда это меняется, когда протокол уровня MCPE ломается до такой степени, что старый и новый не могут
+     * общаться. Важно, чтобы мы проверили это, чтобы избежать катастроф.
+     */
 	private const MCPE_RAKNET_PROTOCOL_VERSION = 8;
 
 	/** @var Server */
@@ -55,14 +80,13 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		    $this->packetLogger->start(PTHREADS_INHERIT_NONE);
 		}else{
 			$logger = $this->server->getLogger();
-			$logger->info("§cЛоггер Пакетов Выключен!");
+			$logger->notice("(LunCore) - Логи пакетов выключены.");
 		}
 
 		$this->rakLib = new RakLibServer(
 			$this->server->getLogger(),
 			$this->server->getLoader(),
-			$this->server->getPort(),
-			$this->server->getIp() === "" ? "0.0.0.0" : $this->server->getIp(),
+			new InternetAddress($this->server->getIp(), $this->server->getPort(), 4),
 			(int) $this->server->getProperty("network.max-mtu-size", 1492),
 			self::MCPE_RAKNET_PROTOCOL_VERSION,
 			$this->sleeper
@@ -81,7 +105,10 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$this->network = $network;
 	}
 
-	public function process() : void{
+    /**
+     * @throws \Exception
+     */
+    public function process() : void{
 		while($this->interface->handlePacket()){}
 
 		if(!$this->rakLib->isRunning() and !$this->rakLib->isShutdown()){
@@ -89,7 +116,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		}
 	}
 
-	public function closeSession($identifier, $reason){
+	public function closeSession(string $identifier, string $reason) : void{
 		if(isset($this->players[$identifier])){
 			$player = $this->players[$identifier];
 			unset($this->identifiers[spl_object_hash($player)]);
@@ -126,7 +153,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		}
 	}
 
-	public function openSession($identifier, $address, $port, $clientID){
+	public function openSession(string $identifier, string $address, int $port, int $clientID) : void{
 		$ev = new PlayerCreationEvent($this, Player::class, Player::class, $address, $port);
 		$this->server->getPluginManager()->callEvent($ev);
 		$class = $ev->getPlayerClass();
@@ -138,7 +165,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$this->server->addPlayer($player);
 	}
 
-	public function handleEncapsulated($identifier, EncapsulatedPacket $packet, $flags){
+	public function handleEncapsulated(string $identifier, EncapsulatedPacket $packet, int $flags) : void{
 		if(isset($this->players[$identifier])){
 			//get this now for blocking in case the player was closed before the exception was raised
 			$player = $this->players[$identifier];
@@ -159,8 +186,8 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 				$logger->debug("Packet " . (isset($pk) ? get_class($pk) : "unknown") . ": " . base64_encode($packet->buffer));
 				$logger->logException($e);
 
-				$player->close($player->getLeaveMessage(), "Internal server error");
-				$this->interface->blockAddress($address, 5);
+				//$player->close($player->getLeaveMessage(), "Internal server error");
+				//$this->interface->blockAddress($address, 5);
 			}
 		}
 	}
@@ -173,7 +200,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$this->interface->unblockAddress($address);
 	}
 
-	public function handleRaw(string $address, int $port, string $payload){
+	public function handleRaw(string $address, int $port, string $payload) : void{
 		$this->server->handlePacket($this, $address, $port, $payload);
 	}
 
@@ -181,7 +208,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$this->interface->sendRaw($address, $port, $payload);
 	}
 
-	public function notifyACK($identifier, $identifierACK){
+	public function notifyACK(string $identifier, int $identifierACK) : void{
 
 	}
 
@@ -216,8 +243,8 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		$this->interface->sendOption("packetLimit", $limit);
 	}
 
-	public function handleOption(string $name, string $value){
-		if($name === "bandwidth"){
+	public function handleOption(string $option, string $value) : void{
+		if($option === "bandwidth"){
 			$v = unserialize($value);
 			$this->network->addStatistics($v["up"], $v["down"]);
 		}
@@ -270,7 +297,7 @@ class RakLibInterface implements ServerInstance, AdvancedSourceInterface{
 		return $data;
 	}
 
-	public function updatePing($identifier, $pingMS){
+	public function updatePing(string $identifier, int $pingMS) : void{
 		if(isset($this->players[$identifier])){
 			$player = $this->players[$identifier];
 			$player->setPing($pingMS);

@@ -1,8 +1,30 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\object;
 
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\math\VectorMath;
 use pocketmine\utils\Random;
 
@@ -47,7 +69,7 @@ class NetherOreTop {
 	 * @param              $z
 	 */
 	public function placeObject(ChunkManager $level, $x, $y, $z){
-		$clusterSize = (int) $this->type->clusterSize;
+		$clusterSize = $this->type->clusterSize;
 		$angle = $this->random->nextFloat() * M_PI;
 		$offset = VectorMath::getDirection2D($angle)->multiply($clusterSize)->divide(8);
 		$x1 = $x + 8 + $offset->x;

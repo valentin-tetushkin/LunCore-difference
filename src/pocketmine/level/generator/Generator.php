@@ -1,10 +1,30 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
 
 namespace pocketmine\level\generator;
 
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\noise\Noise;
 use pocketmine\level\generator\normal\Normal;
 use pocketmine\utils\Random;
@@ -75,10 +95,10 @@ abstract class Generator {
 	 */
 	public static function getFastNoise1D(Noise $noise, $xSize, $samplingRate, $x, $y, $z){
 		if($samplingRate === 0){
-			throw new \InvalidArgumentException("samplingRate cannot be 0");
+			throw new \InvalidArgumentException("SampleRate не может быть 0");
 		}
 		if($xSize % $samplingRate !== 0){
-			throw new \InvalidArgumentException("xSize % samplingRate must return 0");
+			throw new \InvalidArgumentException("xSize % sampleRate должен возвращать 0");
 		}
 
 		$noiseArray = new \SplFixedArray($xSize + 1);
@@ -110,13 +130,13 @@ abstract class Generator {
 	 */
 	public static function getFastNoise2D(Noise $noise, $xSize, $zSize, $samplingRate, $x, $y, $z){
 		if($samplingRate === 0){
-			throw new \InvalidArgumentException("samplingRate cannot be 0");
+			throw new \InvalidArgumentException("SampleRate не может быть 0");
 		}
 		if($xSize % $samplingRate !== 0){
-			throw new \InvalidArgumentException("xSize % samplingRate must return 0");
+			throw new \InvalidArgumentException("xSize % sampleRate должен возвращать 0");
 		}
 		if($zSize % $samplingRate !== 0){
-			throw new \InvalidArgumentException("zSize % samplingRate must return 0");
+			throw new \InvalidArgumentException("Размер % Частота дискретизации должна возвращать 0");
 		}
 
 		$noiseArray = new \SplFixedArray($xSize + 1);
@@ -165,22 +185,22 @@ abstract class Generator {
 	 */
 	public static function getFastNoise3D(Noise $noise, $xSize, $ySize, $zSize, $xSamplingRate, $ySamplingRate, $zSamplingRate, $x, $y, $z){
 		if($xSamplingRate === 0){
-			throw new \InvalidArgumentException("xSamplingRate cannot be 0");
+			throw new \InvalidArgumentException("xSamplingRate не может быть 0");
 		}
 		if($zSamplingRate === 0){
-			throw new \InvalidArgumentException("zSamplingRate cannot be 0");
+			throw new \InvalidArgumentException("zSamplingRate не может быть 0");
 		}
 		if($ySamplingRate === 0){
-			throw new \InvalidArgumentException("ySamplingRate cannot be 0");
+			throw new \InvalidArgumentException("ySamplingRate не может быть 0");
 		}
 		if($xSize % $xSamplingRate !== 0){
-			throw new \InvalidArgumentException("xSize % xSamplingRate must return 0");
+			throw new \InvalidArgumentException("xSize % xSamplingRate должен вернуться 0");
 		}
 		if($zSize % $zSamplingRate !== 0){
-			throw new \InvalidArgumentException("zSize % zSamplingRate must return 0");
+			throw new \InvalidArgumentException("zSize % zSamplingRate должен вернуться 0");
 		}
 		if($ySize % $ySamplingRate !== 0){
-			throw new \InvalidArgumentException("ySize % ySamplingRate must return 0");
+			throw new \InvalidArgumentException("ySize % ySamplingRate должен вернуться 0");
 		}
 
 		$noiseArray = array_fill(0, $xSize + 1, array_fill(0, $zSize + 1, []));

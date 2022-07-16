@@ -1,5 +1,15 @@
 <?php
 
+
+/*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+*/
+
 namespace pocketmine\permission;
 
 use pocketmine\utils\MainLogger;
@@ -9,11 +19,11 @@ class BanEntry {
 
 	private $name;
 	/** @var \DateTime */
-	private $creationDate = null;
+	private $creationDate;
 	private $source = "(Unknown)";
 	/** @var \DateTime */
 	private $expirationDate = null;
-	private $reason = "Banned by an operator.";
+	private $reason = "Вы были забанены!.";
 
 	/**
 	 * BanEntry constructor.
@@ -43,6 +53,7 @@ class BanEntry {
 	 * @param \DateTime $date
 	 */
 	public function setCreated(\DateTime $date){
+		self::validateDate($date);
 		$this->creationDate = $date;
 	}
 
@@ -67,10 +78,13 @@ class BanEntry {
 		return $this->expirationDate;
 	}
 
-	/**
-	 * @param \DateTime $date
-	 */
-	public function setExpires($date){
+    /**
+     * @param \DateTime|null $date
+     */
+	public function setExpires(\DateTime $date = null){
+		if($date !== null){
+			self::validateDate($date);
+		}
 		$this->expirationDate = $date;
 	}
 
@@ -80,7 +94,7 @@ class BanEntry {
 	public function hasExpired(){
 		$now = new \DateTime();
 
-		return $this->expirationDate === null ? false : $this->expirationDate < $now;
+		return !($this->expirationDate === null) && $this->expirationDate < $now;
 	}
 
 	/**
@@ -115,37 +129,68 @@ class BanEntry {
 		return $str;
 	}
 
+    /**
+     * Хакерская функция для проверки объектов \DateTime из-за ошибки в PHP. format() с "Y" может испускать годы с более чем
+     * 4 цифры, но createFromFormat() с "Y" не принимает их, если год содержит более 4 цифр.
+     *
+     * @param \DateTime $dateTime
+     * @throws \RuntimeException, если аргумент не может быть проанализирован из отформатированной строки даты
+     */
+	private static function validateDate(\DateTime $dateTime) : void{
+		self::parseDate($dateTime->format(self::$format));
+	}
+
+	/**
+	 * @param string $date
+	 *
+	 * @return \DateTime
+	 * @throws \RuntimeException
+	 */
+	private static function parseDate(string $date) : \DateTime{
+		$datetime = \DateTime::createFromFormat(self::$format, $date);
+		if(!($datetime instanceof \DateTime)){
+			throw new \RuntimeException("Error parsing date for BanEntry: " . implode(", ", \DateTime::getLastErrors()["errors"]));
+		}
+
+		return $datetime;
+	}
+
 	/**
 	 * @param string $str
 	 *
 	 * @return BanEntry
+	 * @throws \RuntimeException
 	 */
-	public static function fromString($str){
+	public static function fromString(string $str) : ?BanEntry{
 		if(strlen($str) < 2){
 			return null;
 		}else{
 			$str = explode("|", trim($str));
 			$entry = new BanEntry(trim(array_shift($str)));
-			if(count($str) > 0){
-				$datetime = \DateTime::createFromFormat(self::$format, array_shift($str));
-				if(!($datetime instanceof \DateTime)){
-					MainLogger::getLogger()->alert("Error parsing date for BanEntry for player \"" . $entry->getName() . "\", the format may be invalid!");
-					return $entry;
+			do{
+				if(empty($str)){
+					break;
 				}
-				$entry->setCreated($datetime);
-				if(count($str) > 0){
-					$entry->setSource(trim(array_shift($str)));
-					if(count($str) > 0){
-						$expire = trim(array_shift($str));
-						if(strtolower($expire) !== "forever" and strlen($expire) > 0){
-							$entry->setExpires(\DateTime::createFromFormat(self::$format, $expire));
-						}
-						if(count($str) > 0){
-							$entry->setReason(trim(array_shift($str)));
-						}
-					}
+
+				$entry->setCreated(self::parseDate(array_shift($str)));
+				if(empty($str)){
+					break;
 				}
-			}
+			    $entry->setSource(trim(array_shift($str)));
+				if(empty($str)){
+					break;
+				}
+
+				$expire = trim(array_shift($str));
+				if(strtolower($expire) !== "forever" and strlen($expire) > 0){
+					$entry->setExpires(self::parseDate($expire));
+				}
+				if(empty($str)){
+					break;
+				}
+
+				$entry->setReason(trim(array_shift($str)));
+			}while(false);
 
 			return $entry;
 		}

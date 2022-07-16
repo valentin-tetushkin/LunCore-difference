@@ -1,33 +1,37 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\generator\object\Tree;
 use pocketmine\level\Level;
 use pocketmine\Player;
 use pocketmine\utils\Random;
 
-class Sapling extends Flowable {
+class Sapling extends Flowable{
 	const OAK = 0;
 	const SPRUCE = 1;
 	const BIRCH = 2;
@@ -47,13 +51,6 @@ class Sapling extends Flowable {
 	}
 
 	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
-	}
-
-	/**
 	 * @return string
 	 */
 	public function getName() : string{
@@ -63,11 +60,9 @@ class Sapling extends Flowable {
 			2 => "Birch Sapling",
 			3 => "Jungle Sapling",
 			4 => "Acacia Sapling",
-			5 => "Dark Oak Sapling",
-			6 => "",
-			7 => "",
+			5 => "Dark Oak Sapling"
 		];
-		return $names[$this->meta & 0x07];
+		return $names[$this->meta & 0x07] ?? "Unknown";
 	}
 
 
@@ -101,12 +96,11 @@ class Sapling extends Flowable {
 	 * @return bool
 	 */
 	public function onActivate(Item $item, Player $player = null){
-		if($item->getId() === Item::DYE and $item->getDamage() === 0x0F){ //Bonemeal
+		if($item->getId() === ItemIds::DYE and $item->getDamage() === 0x0F){ //Bonemeal
 			//TODO: change log type
 			Tree::growTree($this->getLevel(), $this->x, $this->y, $this->z, new Random(mt_rand()), $this->meta & 0x07, false);
-			if(($player->gamemode & 0x01) === 0){
-                $item->pop();
-			}
+			
+            $item->pop();
 
 			return true;
 		}

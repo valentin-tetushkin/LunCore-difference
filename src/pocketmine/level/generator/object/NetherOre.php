@@ -1,10 +1,30 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\level\generator\object;
 
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\math\VectorMath;
 use pocketmine\utils\Random;
 
@@ -49,7 +69,7 @@ class NetherOre {
 	 * @param              $z
 	 */
 	public function placeObject(ChunkManager $level, $x, $y, $z){
-		$clusterSize = (int) $this->type->clusterSize;
+		$clusterSize = $this->type->clusterSize;
 		$angle = $this->random->nextFloat() * M_PI;
 		$offset = VectorMath::getDirection2D($angle)->multiply($clusterSize)->divide(8);
 		$x1 = $x + 8 + $offset->x;
@@ -71,6 +91,7 @@ class NetherOre {
 			$endX = (int) ($seedX + $size);
 			$endY = (int) ($seedY + $size);
 			$endZ = (int) ($seedZ + $size);
+			//echo "ORE: $startX, $startY, $startZ,, $endX, $endY, $endZ\n";
 			for($x = $startX; $x <= $endX; ++$x){
 				$sizeX = ($x + 0.5 - $seedX) / $size;
 				$sizeX *= $sizeX;
@@ -89,13 +110,15 @@ class NetherOre {
 									$level->setBlockIdAt($x, $y, $z, $this->type->material->getId());
 									if($this->type->material->getDamage() !== 0){
 										$level->setBlockDataAt($x, $y, $z, $this->type->material->getDamage());
-}
-}
-}
-}
-}
-}
-}
-}
-}
+									}
+									//echo "Placed to $x, $y, $z\n";
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
 }

@@ -1,27 +1,23 @@
 <?php
 
+
 /*
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * @creator vk.com/klainyt
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author iTX Technologies
- * @link https://itxtech.org
- *
- */
+*/
 
 namespace pocketmine\tile;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\block\DaylightDetector;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
@@ -96,14 +92,13 @@ class DLDetector extends Spawnable {
 	 * @return bool
 	 */
 	public function isActivated() : bool{
-		if($this->getType() == Block::DAYLIGHT_SENSOR){
+		if($this->getType() == BlockIds::DAYLIGHT_SENSOR){
 			if($this->getLightByTime() == 15) return true;
-			return false;
-		}else{
+        }else{
 			if($this->getLightByTime() == 0) return true;
-			return false;
-		}
-	}
+        }
+        return false;
+    }
 
 	/**
 	 * @return int
@@ -137,9 +132,9 @@ class DLDetector extends Spawnable {
 	public function getSpawnCompound(){
 		return new CompoundTag("", [
 			new StringTag("id", Tile::DAY_LIGHT_DETECTOR),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z),
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z),
 		]);
 	}
 }

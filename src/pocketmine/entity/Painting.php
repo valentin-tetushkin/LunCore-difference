@@ -1,15 +1,33 @@
 <?php
-/*
- * This file is translated from the Nukkit Project
- * which is written by MagicDroidX
- * @link https://github.com/Nukkit/Nukkit
-*/
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
 use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\level\particle\DestroyBlockParticle;
 use pocketmine\network\mcpe\protocol\AddPaintingPacket;
 use pocketmine\Player;
@@ -37,7 +55,7 @@ class Painting extends Hanging {
 	public function attack($damage, EntityDamageEvent $source){
 		parent::attack($damage, $source);
 		if($source->isCancelled()) return false;
-		$this->level->addParticle(new DestroyBlockParticle($this->add(0.5), Block::get(Block::LADDER)));
+		$this->level->addParticle(new DestroyBlockParticle($this->add(0.5), Block::get(BlockIds::LADDER)));
 		$this->kill();
 		return true;
 	}
@@ -66,6 +84,6 @@ class Painting extends Hanging {
 	 * @return array
 	 */
 	public function getDrops(){
-		return [ItemItem::get(ItemItem::PAINTING, 0, 1)];
+		return [ItemItem::get(ItemIds::PAINTING)];
 	}
 }

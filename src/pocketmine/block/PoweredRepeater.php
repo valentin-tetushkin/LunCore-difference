@@ -1,27 +1,31 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
  *
  */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
@@ -46,13 +50,6 @@ class PoweredRepeater extends RedstoneSource {
 	 */
 	public function getName() : string{
 		return "Powered Repeater";
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function canBeActivated() : bool{
-		return true;
 	}
 
 	/**
@@ -104,18 +101,16 @@ class PoweredRepeater extends RedstoneSource {
 	 * @return bool
 	 */
 	public function isActivated(Block $from = null){
-		if(!$from instanceof Block){
-			return false;
-		}else{
-			if($this->y != $from->y){
-				return false;
-			}
-			if($from->equals($this->getSide($this->getOppositeDirection()))){
-				return true;
-			}
-			return false;
-		}
-	}
+		if($from instanceof Block) {
+            if ($this->y != $from->y) {
+                return false;
+            }
+            if ($from->equals($this->getSide($this->getOppositeDirection()))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
 	/**
 	 * @param array $ignore
@@ -226,7 +221,7 @@ class PoweredRepeater extends RedstoneSource {
 	 */
 	public function getDrops(Item $item) : array{
 		return [
-			[Item::REPEATER, 0, 1]
+			[ItemIds::REPEATER, 0, 1]
 		];
 	}
 }

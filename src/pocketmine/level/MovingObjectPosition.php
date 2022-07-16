@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 declare(strict_types = 1);
 
 namespace pocketmine\level;
@@ -9,37 +31,19 @@ use pocketmine\math\Vector3;
 
 class MovingObjectPosition {
 
-	/** 0 = block, 1 = entity */
 	public $typeOfHit;
 
 	public $blockX;
 	public $blockY;
 	public $blockZ;
-
-	public $sideHit;
-
-	/** @var Vector3 */
+	//public $sideHit;
 	public $hitVector;
-
-	/** @var Entity */
 	public $entityHit = null;
 
-	/**
-	 * MovingObjectPosition constructor.
-	 */
 	protected function __construct(){
 
 	}
 
-	/**
-	 * @param int     $x
-	 * @param int     $y
-	 * @param int     $z
-	 * @param int     $side
-	 * @param Vector3 $hitVector
-	 *
-	 * @return MovingObjectPosition
-	 */
 	public static function fromBlock($x, $y, $z, $side, Vector3 $hitVector){
 		$ob = new MovingObjectPosition;
 		$ob->typeOfHit = 0;
@@ -50,11 +54,6 @@ class MovingObjectPosition {
 		return $ob;
 	}
 
-	/**
-	 * @param Entity $entity
-	 *
-	 * @return MovingObjectPosition
-	 */
 	public static function fromEntity(Entity $entity){
 		$ob = new MovingObjectPosition;
 		$ob->typeOfHit = 1;

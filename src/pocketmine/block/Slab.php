@@ -1,23 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
@@ -153,11 +156,11 @@ class Slab extends Transparent {
 		$this->meta &= 0x07;
 		if($face === 0){
 			if($target->getId() === self::SLAB and ($target->getDamage() & 0x08) === 0x08 and ($target->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($target, Block::get(Item::DOUBLE_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($target, Block::get(BlockIds::DOUBLE_SLAB, $this->meta), true);
 
 				return true;
 			}elseif($block->getId() === self::SLAB and ($block->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($block, Block::get(Item::DOUBLE_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($block, Block::get(BlockIds::DOUBLE_SLAB, $this->meta), true);
 
 				return true;
 			}else{
@@ -165,11 +168,11 @@ class Slab extends Transparent {
 			}
 		}elseif($face === 1){
 			if($target->getId() === self::SLAB and ($target->getDamage() & 0x08) === 0 and ($target->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($target, Block::get(Item::DOUBLE_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($target, Block::get(BlockIds::DOUBLE_SLAB, $this->meta), true);
 
 				return true;
 			}elseif($block->getId() === self::SLAB and ($block->getDamage() & 0x07) === ($this->meta & 0x07)){
-				$this->getLevel()->setBlock($block, Block::get(Item::DOUBLE_SLAB, $this->meta), true);
+				$this->getLevel()->setBlock($block, Block::get(BlockIds::DOUBLE_SLAB, $this->meta), true);
 
 				return true;
 			}
@@ -177,7 +180,7 @@ class Slab extends Transparent {
 		}else{
 			if($block->getId() === self::SLAB){
 				if(($block->getDamage() & 0x07) === ($this->meta & 0x07)){
-					$this->getLevel()->setBlock($block, Block::get(Item::DOUBLE_SLAB, $this->meta), true);
+					$this->getLevel()->setBlock($block, Block::get(BlockIds::DOUBLE_SLAB, $this->meta), true);
 
 					return true;
 				}

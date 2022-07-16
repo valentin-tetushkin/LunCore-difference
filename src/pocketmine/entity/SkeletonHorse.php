@@ -1,9 +1,35 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
+use pocketmine\event\entity\EntityDamageByEntityEvent;
+use pocketmine\item\enchantment\Enchantment;
+use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 
 class SkeletonHorse extends Animal {
 	const NETWORK_ID = 26;
@@ -25,6 +51,16 @@ class SkeletonHorse extends Animal {
 		$this->setMaxHealth(30);
 		parent::initEntity();
 	}
+
+    public function getDrops(){
+        $lootingL = 0;
+        $cause = $this->lastDamageCause;
+        if($cause instanceof EntityDamageByEntityEvent and $cause->getDamager() instanceof Player){
+            $lootingL = $cause->getDamager()->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
+        }
+            $drops[] = ItemItem::get(ItemIds::BONE, 0, mt_rand(0, 1 + $lootingL));
+        return $drops;
+    }
 
 	/**
 	 * @param Player $player

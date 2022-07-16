@@ -1,29 +1,34 @@
 <?php
 
+
 /*
  *
- *  _____   _____   __   _   _   _____  __    __  _____
- * /  ___| | ____| |  \ | | | | /  ___/ \ \  / / /  ___/
- * | |     | |__   |   \| | | | | |___   \ \/ /  | |___
- * | |  _  |  __|  | |\   | | | \___  \   \  /   \___  \
- * | |_| | | |___  | | \  | | |  ___| |   / /     ___| |
- * \_____/ |_____| |_|  \_| |_| /_____/  /_/     /_____/
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author iTX Technologies
- * @link https://itxtech.org
  *
- */
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\tile;
 
+use pocketmine\block\BlockIds;
 use pocketmine\inventory\BrewingInventory;
 use pocketmine\inventory\InventoryHolder;
 use pocketmine\item\Item;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\nbt\NBT;
 use pocketmine\nbt\tag\CompoundTag;
@@ -40,23 +45,23 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	protected $inventory;
 
 	public static $ingredients = [
-		Item::NETHER_WART => 0,
-		Item::GLOWSTONE_DUST => 0,
-		Item::REDSTONE => 0,
-		Item::FERMENTED_SPIDER_EYE => 0,
+		ItemIds::NETHER_WART => 0,
+		ItemIds::GLOWSTONE_DUST => 0,
+		ItemIds::REDSTONE => 0,
+		ItemIds::FERMENTED_SPIDER_EYE => 0,
 
-		Item::MAGMA_CREAM => 0,
-		Item::SUGAR => 0,
-		Item::GLISTERING_MELON => 0,
-		Item::SPIDER_EYE => 0,
-		Item::GHAST_TEAR => 0,
-		Item::BLAZE_POWDER => 0,
-		Item::GOLDEN_CARROT => 0,
+		ItemIds::MAGMA_CREAM => 0,
+		ItemIds::SUGAR => 0,
+		ItemIds::GLISTERING_MELON => 0,
+		ItemIds::SPIDER_EYE => 0,
+		ItemIds::GHAST_TEAR => 0,
+		ItemIds::BLAZE_POWDER => 0,
+		ItemIds::GOLDEN_CARROT => 0,
 		//Item::RAW_FISH => Fish::FISH_PUFFERFISH,
-		Item::PUFFER_FISH,
-		Item::RABBIT_FOOT => 0,
+		ItemIds::PUFFER_FISH,
+		ItemIds::RABBIT_FOOT => 0,
 
-		Item::GUNPOWDER => 0,
+		ItemIds::GUNPOWDER => 0,
 	];
 
 	/**
@@ -161,7 +166,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	public function getItem($index){
 		$i = $this->getSlotIndex($index);
 		if($i < 0){
-			return Item::get(Item::AIR, 0, 0);
+			return Item::get(BlockIds::AIR, 0, 0);
 		}else{
 			return Item::nbtDeserialize($this->namedtag->Items[$i]);
 		}
@@ -178,7 +183,7 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	public function setItem($index, Item $item){
 		$i = $this->getSlotIndex($index);
 
-		if($item->getId() === Item::AIR or $item->getCount() <= 0){
+		if($item->getId() === BlockIds::AIR or $item->getCount() <= 0){
 			if($i >= 0){
 				unset($this->namedtag->Items[$i]);
 			}
@@ -238,14 +243,14 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 		$canBrew = false;
 
 		for($i = 1; $i <= 3; $i++){
-			if($this->inventory->getItem($i)->getId() === Item::POTION or
-				$this->inventory->getItem($i)->getId() === Item::SPLASH_POTION
+			if($this->inventory->getItem($i)->getId() === ItemIds::POTION or
+				$this->inventory->getItem($i)->getId() === ItemIds::SPLASH_POTION
 			){
 				$canBrew = true;
 			}
 		}
 
-		if($ingredient->getId() !== Item::AIR and $ingredient->getCount() > 0){
+		if($ingredient->getId() !== BlockIds::AIR and $ingredient->getCount() > 0){
 			if($canBrew){
 				if(!$this->checkIngredient($ingredient)){
 					$canBrew = false;
@@ -286,13 +291,13 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 				for($i = 1; $i <= 3; $i++){
 					$potion = $this->inventory->getItem($i);
 					$recipe = Server::getInstance()->getCraftingManager()->matchBrewingRecipe($ingredient, $potion);
-					if($recipe != null and $potion->getId() !== Item::AIR){
+					if($recipe != null and $potion->getId() !== BlockIds::AIR){
 						$this->inventory->setItem($i, $recipe->getResult());
 					}
 				}
 
 				$ingredient->count--;
-				if($ingredient->getCount() <= 0) $ingredient = Item::get(Item::AIR);
+				if($ingredient->getCount() <= 0) $ingredient = Item::get(BlockIds::AIR);
 				$this->inventory->setIngredient($ingredient);
 			}
 
@@ -323,9 +328,9 @@ class BrewingStand extends Spawnable implements InventoryHolder, Container, Name
 	public function getSpawnCompound(){
 		$nbt = new CompoundTag("", [
 			new StringTag("id", Tile::BREWING_STAND),
-			new IntTag("x", (int) $this->x),
-			new IntTag("y", (int) $this->y),
-			new IntTag("z", (int) $this->z),
+			new IntTag("x", $this->x),
+			new IntTag("y", $this->y),
+			new IntTag("z", $this->z),
 			new ShortTag("CookTime", self::MAX_BREW_TIME),
 			$this->namedtag->Items,
 		]);

@@ -1,8 +1,30 @@
 <?php
 
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 
@@ -25,7 +47,7 @@ class ElderGuardian extends Animal {
 
 	public function initEntity(){
 		$this->setMaxHealth(80);
-		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_ELDER, true);
+		$this->setDataFlag(Entity::DATA_FLAGS, Entity::DATA_FLAG_ELDER);
 		parent::initEntity();
 	}
 
@@ -55,9 +77,9 @@ class ElderGuardian extends Animal {
 	 */
 	public function getDrops(){
 		$drops = [
-			ItemItem::get(ItemItem::PRISMARINE_CRYSTALS, 0, mt_rand(0, 1))
+			ItemItem::get(ItemIds::PRISMARINE_CRYSTALS, 0, mt_rand(0, 1))
 		];
-		$drops[] = ItemItem::get(ItemItem::PRISMARINE_SHARD, 0, mt_rand(0, 2));
+		$drops[] = ItemItem::get(ItemIds::PRISMARINE_SHARD, 0, mt_rand(0, 2));
 
 		return $drops;
 	}

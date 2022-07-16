@@ -1,17 +1,52 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
 
 namespace pocketmine\level\generator\normal;
 
-use pocketmine\block\{Block, CoalOre, DiamondOre, Dirt, GoldOre, Gravel, IronOre, LapisOre, RedstoneOre, Stone};
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\Block;
+use pocketmine\block\BlockIds;
+use pocketmine\block\CoalOre;
+use pocketmine\block\DiamondOre;
+use pocketmine\block\Dirt;
+use pocketmine\block\EmeraldOre;
+use pocketmine\block\GoldOre;
+use pocketmine\block\Gravel;
+use pocketmine\block\IronOre;
+use pocketmine\block\LapisOre;
+use pocketmine\block\RedstoneOre;
+use pocketmine\block\Solid;
+use pocketmine\block\Stone;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\generator\biome\Biome;
 use pocketmine\level\generator\biome\BiomeSelector;
 use pocketmine\level\generator\Generator;
 use pocketmine\level\generator\noise\Simplex;
 use pocketmine\level\generator\object\OreType;
-use pocketmine\level\generator\populator\{Cave, GroundCover, Ore, Populator};
+use pocketmine\level\generator\populator\Cave;
+use pocketmine\level\generator\populator\GroundCover;
+use pocketmine\level\generator\populator\Ore;
+use pocketmine\level\generator\populator\Populator;
 use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\utils\Random;
@@ -48,8 +83,8 @@ class Normal extends Generator {
 	private static function generateKernel(){
 		self::$GAUSSIAN_KERNEL = [];
 
-		$bellSize = 1 / self::$SMOOTH_SIZE;
-		$bellHeight = 2 * self::$SMOOTH_SIZE;
+		$bellSize = 5 / self::$SMOOTH_SIZE;
+		$bellHeight = 6 * self::$SMOOTH_SIZE;
 
 		for($sx = -self::$SMOOTH_SIZE; $sx <= self::$SMOOTH_SIZE; ++$sx){
 			self::$GAUSSIAN_KERNEL[$sx + self::$SMOOTH_SIZE] = [];
@@ -93,55 +128,63 @@ class Normal extends Generator {
 		$this->level = $level;
 		$this->random = $random;
 		$this->random->setSeed($this->level->getSeed());
-		$this->noiseBase = new Simplex($this->random, 4, 1 / 4, 1 / 32);
+		$this->noiseBase = new Simplex($this->random, 2, 1 / 2, 1 / 64);
 		$this->random->setSeed($this->level->getSeed());
 		$this->selector = new BiomeSelector($this->random, function($temperature, $rainfall){
-			if($rainfall < 0.25){
-				if($temperature < 1){
-					return Biome::OCEAN;
-				}elseif($temperature < 1.35){
-					return Biome::RIVER;
-				}else{
-					return Biome::SWAMP;
-				}
-			}elseif($rainfall < 0.60){
-				if($temperature < 0.25){
-					return Biome::ICE_PLAINS;
-				}elseif($temperature < 0.75){
-					return Biome::PLAINS;
-				}else{
-					return Biome::DESERT;
-				}
-			}elseif($rainfall < 0.80){
-				if($temperature < 0.25){
-					return Biome::TAIGA;
-				}elseif($temperature < 0.75){
-					return Biome::FOREST;
-				}else{
-					return Biome::BIRCH_FOREST;
-				}
-			}else{
-				if($temperature < 0.20){
-					return Biome::MOUNTAINS;
-				}elseif($temperature < 0.40){
-					return Biome::SMALL_MOUNTAINS;
-				}else{
-					return Biome::RIVER;
-				}
-			}
-		}, Biome::getBiome(Biome::OCEAN));
+            if($rainfall < 0.25){
+                if($temperature < 0.7){
+                    return Biome::OCEAN;
+                }elseif($temperature < 0.85){
+                    return Biome::RIVER;
+                }else{
+                    return Biome::SWAMP;
+                }
+            }elseif($rainfall < 0.60){
+                if($temperature < 0.05){
+                    return Biome::ICE_PLAINS;
+                }elseif($temperature < 0.25){
+                    return Biome::PLAINS;
+                }else{
+                    return Biome::DESERT;
+                }
+            }elseif($rainfall < 0.80){
+                if($temperature < 0.25){
+                    return Biome::RIVER;
+                }elseif($temperature < 0.75){
+                    return Biome::FOREST;
+                }elseif($temperature < 1.7){
+                    return Biome::SAVANNA;
+                }else{
+                    return Biome::BIRCH_FOREST;
+                }
+            }else{
+                if($temperature < 0.25){
+                    return Biome::MOUNTAINS;
+                }elseif($temperature < 0.70){
+                    return Biome::MESA;
+                }elseif($temperature < 0.95){
+                    return Biome::JUNGLE;
+                }else{
+                    return Biome::SANDY;
+                }
+            }
+        }, Biome::getBiome(Biome::OCEAN));
 
 		$this->selector->addBiome(Biome::getBiome(Biome::OCEAN));
 		$this->selector->addBiome(Biome::getBiome(Biome::PLAINS));
 		$this->selector->addBiome(Biome::getBiome(Biome::DESERT));
 		$this->selector->addBiome(Biome::getBiome(Biome::MOUNTAINS));
 		$this->selector->addBiome(Biome::getBiome(Biome::FOREST));
-		$this->selector->addBiome(Biome::getBiome(Biome::TAIGA));
+		$this->selector->addBiome(Biome::getBiome(Biome::SAVANNA));
+		//$this->selector->addBiome(Biome::getBiome(Biome::TAIGA));
 		$this->selector->addBiome(Biome::getBiome(Biome::SWAMP));
-		$this->selector->addBiome(Biome::getBiome(Biome::RIVER));	$this->selector->addBiome(Biome::getBiome(Biome::SMALL_MOUNTAINS));
+		$this->selector->addBiome(Biome::getBiome(Biome::RIVER));
+		$this->selector->addBiome(Biome::getBiome(Biome::ICE_PLAINS));
+		$this->selector->addBiome(Biome::getBiome(Biome::SMALL_MOUNTAINS));
 		$this->selector->addBiome(Biome::getBiome(Biome::BIRCH_FOREST));
-		$this->selector->addBiome(Biome::getBiome(Biome::BEACH));
-		$this->selector->addBiome(Biome::getBiome(Biome::MESA));
+        $this->selector->addBiome(Biome::getBiome(Biome::MESA));
+        $this->selector->addBiome(Biome::getBiome(Biome::JUNGLE));
+        $this->selector->addBiome(Biome::getBiome(Biome::BEACH));
 
 		$this->selector->recalculate();
 
@@ -154,11 +197,12 @@ class Normal extends Generator {
 		$ores = new Ore();
 		$ores->setOreTypes([
 			new OreType(new CoalOre(), 20, 16, 0, 128),
-			new OreType(new IronOre(), 20, 8, 0, 64),
+			new OreType(New IronOre(), 20, 8, 0, 64),
 			new OreType(new RedstoneOre(), 8, 7, 0, 16),
 			new OreType(new LapisOre(), 1, 6, 0, 32),
 			new OreType(new GoldOre(), 2, 8, 0, 32),
 			new OreType(new DiamondOre(), 1, 7, 0, 16),
+            new OreType(new EmeraldOre(), 1, 7, 0, 16),
 			new OreType(new Dirt(), 20, 32, 0, 128),
 			new OreType(new Stone(Stone::GRANITE), 20, 32, 0, 128),
 			new OreType(new Stone(Stone::DIORITE), 20, 32, 0, 128),
@@ -214,31 +258,50 @@ class Normal extends Generator {
 
 				$solidLand = false;
 				for($y = 127; $y >= 0; --$y){
-					if($y <= 4 and $y !== 0){
-						if(mt_rand(1, 2) == 2) $chunk->setBlockId($x, $y, $z, Block::BEDROCK);
-						else $chunk->setBlockId($x, $y, $z, Block::STONE);
-						continue;
-					}
-					if($y <= 0){
-						$chunk->setBlockId($x, $y, $z, Block::BEDROCK);
-						continue;
-					}
 
+					// A noiseAdjustment of 1 will guarantee ground, a noiseAdjustment of -1 will guarantee air.
+					//$effHeight = min($y - $smoothHeight - $minSum,
 					$noiseAdjustment = 2 * (($maxSum - $y) / ($maxSum - $minSum)) - 1;
 
 
+					// To generate caves, we bring the noiseAdjustment down away from 1.
 					$caveLevel = $minSum - 10;
-					$distAboveCaveLevel = max(0, $y - $caveLevel);
+					$distAboveCaveLevel = max(0, $y - $caveLevel); // must be positive
 
-					$noiseAdjustment = min($noiseAdjustment, 0.4 + ($distAboveCaveLevel / 10));
+					$noiseAdjustment = min($noiseAdjustment, 0.4 + ($distAboveCaveLevel));
 					$noiseValue = $noise[$x][$z][$y] + $noiseAdjustment;
 
 					if($noiseValue > 0){
-						$chunk->setBlockId($x, $y, $z, Block::STONE);
+						$chunk->setBlockId($x, $y, $z, BlockIds::STONE);
 						$solidLand = true;
 					}elseif($y <= $this->waterHeight && $solidLand == false){
-						$chunk->setBlockId($x, $y, $z, Block::STILL_WATER);
-					}
+						$chunk->setBlockId($x, $y, $z, BlockIds::STILL_WATER);
+					}elseif($y < 10 && !Block::get($chunk->getBlockId($x, $y, $z)) instanceof Solid) {
+                        $chunk->setBlockId($x, $y, $z, BlockIds::STILL_LAVA);
+                    }
+                    if($y === 0){
+                        $chunk->setBlockId($x, $y, $z, BlockIds::BEDROCK);
+                        continue;
+                    }
+                    if($y === 1){
+                        if(mt_rand(0, 1) == 1) $chunk->setBlockId($x, $y, $z, BlockIds::BEDROCK);
+                        continue;
+                    }
+                    if($y === 2){
+                        if(mt_rand(0, 1) == 1) $chunk->setBlockId($x, $y, $z, BlockIds::BEDROCK);
+                        continue;
+                    }
+                    if($y === 3){
+                        if(mt_rand(0, 1) == 1) $chunk->setBlockId($x, $y, $z, BlockIds::BEDROCK);
+                        continue;
+                    }
+                    if($y === 4){
+                        if(mt_rand(0, 1) == 1) $chunk->setBlockId($x, $y, $z, BlockIds::BEDROCK);
+                        continue;
+                    }
+                    if($y === 5){
+                        if(mt_rand(0, 2) == 2) $chunk->setBlockId($x, $y, $z, BlockIds::BEDROCK);
+                    }
 				}
 			}
 		}
@@ -247,7 +310,6 @@ class Normal extends Generator {
 			$populator->populate($this->level, $chunkX, $chunkZ, $this->random);
 		}
 	}
-
 	public function populateChunk($chunkX, $chunkZ){
 		$this->random->setSeed(0xdeadbeef ^ ($chunkX << 8) ^ $chunkZ ^ $this->level->getSeed());
 		foreach($this->populators as $populator){

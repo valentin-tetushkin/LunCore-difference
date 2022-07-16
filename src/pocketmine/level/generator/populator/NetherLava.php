@@ -1,9 +1,31 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 namespace pocketmine\level\generator\populator;
 
-use pocketmine\block\Block;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\block\BlockIds;
+use pocketmine\level\ChunkManager;
 use pocketmine\utils\Random;
 
 class NetherLava extends Populator {
@@ -43,7 +65,7 @@ class NetherLava extends Populator {
 				$z = $random->nextRange($chunkZ * 16, $chunkZ * 16 + 15);
 				$y = $this->getHighestWorkableBlock($x, $z);
 				if($y !== -1 and $this->canNetherLavaStay($x, $y, $z)){
-					$this->level->setBlockIdAt($x, $y, $z, Block::LAVA);
+					$this->level->setBlockIdAt($x, $y, $z, BlockIds::LAVA);
 					$this->level->updateBlockLight($x, $y, $z);
 					$this->lavaSpread($x, $y, $z);
 				}
@@ -111,7 +133,7 @@ class NetherLava extends Populator {
 				if($decay < 0){
 					$this->level->setBlockIdAt($x, $y, $z, 0);
 				}else{
-					$this->level->setBlockIdAt($x, $y, $z, Block::LAVA);
+					$this->level->setBlockIdAt($x, $y, $z, BlockIds::LAVA);
 					$this->level->setBlockDataAt($x, $y, $z, $decay);
 					$this->level->updateBlockLight($x, $y, $z);
 					$this->lavaSpread($x, $y, $z);
@@ -164,8 +186,8 @@ class NetherLava extends Populator {
 	 * @param $newFlowDecay
 	 */
 	private function flowIntoBlock($x, $y, $z, $newFlowDecay){
-		if($this->level->getBlockIdAt($x, $y, $z) === Block::AIR){
-			$this->level->setBlockIdAt($x, $y, $z, Block::LAVA);
+		if($this->level->getBlockIdAt($x, $y, $z) === BlockIds::AIR){
+			$this->level->setBlockIdAt($x, $y, $z, BlockIds::LAVA);
 			$this->level->setBlockDataAt($x, $y, $z, $newFlowDecay);
 			$this->level->updateBlockLight($x, $y, $z);
 			$this->lavaSpread($x, $y, $z);
@@ -181,7 +203,7 @@ class NetherLava extends Populator {
 	 */
 	private function canFlowInto($x, $y, $z){
 		$id = $this->level->getBlockIdAt($x, $y, $z);
-		if($id === Block::AIR or $id === Block::LAVA or $id === Block::STILL_LAVA){
+		if($id === BlockIds::AIR or $id === BlockIds::LAVA or $id === BlockIds::STILL_LAVA){
 			return true;
 		}
 		return false;
@@ -331,7 +353,7 @@ class NetherLava extends Populator {
 	 */
 	private function canNetherLavaStay($x, $y, $z){
 		$b = $this->level->getBlockIdAt($x, $y, $z);
-		return $b === Block::AIR;
+		return $b === BlockIds::AIR;
 	}
 
 	/**
@@ -343,7 +365,7 @@ class NetherLava extends Populator {
 	private function getHighestWorkableBlock($x, $z){
 		for($y = 127; $y >= 0; --$y){
 			$b = $this->level->getBlockIdAt($x, $y, $z);
-			if($b == Block::AIR){
+			if($b == BlockIds::AIR){
 				break;
 			}
 		}

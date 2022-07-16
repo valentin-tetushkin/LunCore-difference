@@ -1,6 +1,26 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
 
 namespace pocketmine\level\generator;
 
@@ -32,7 +52,7 @@ class GeneratorRegisterTask extends AsyncTask{
 	public $worldHeight = Level::Y_MAX;
 
 	/**
-	 * @param mixed[] $generatorSettings
+	 * @param array $generatorSettings
 	 * @phpstan-param class-string<Generator> $generatorClass
 	 * @phpstan-param array<string, mixed> $generatorSettings
 	 */
@@ -49,7 +69,7 @@ class GeneratorRegisterTask extends AsyncTask{
 		Block::init();
 		Biome::init();
 		$manager = new SimpleChunkManager($this->seed, $this->waterHeight, $this->worldHeight);
-		$this->saveToThreadStore("generation.level{$this->levelId}.manager", $manager);
+		$this->worker->saveToThreadStore("generation.level$this->levelId.manager", $manager);
 
 		/**
 		 * @var Generator $generator
@@ -57,6 +77,6 @@ class GeneratorRegisterTask extends AsyncTask{
 		 */
 		$generator = new $this->generatorClass(unserialize($this->settings));
 		$generator->init($manager, new Random($manager->getSeed()));
-		$this->saveToThreadStore("generation.level{$this->levelId}.generator", $generator);
+		$this->worker->saveToThreadStore("generation.level$this->levelId.generator", $generator);
 	}
 }

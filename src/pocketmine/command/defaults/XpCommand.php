@@ -1,12 +1,23 @@
 <?php
 
+
 /*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *  ____            _        _   __  __ _                  __  __ ____
+ * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
+ * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
+ * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
+ * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * @author PocketMine Team
+ * @link http://www.pocketmine.net/
+ *
+ *
 */
 
 namespace pocketmine\command\defaults;
@@ -30,7 +41,7 @@ class XpCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.xp.description",
-			"%pocketmine.command.xp.usage"
+			"/xp (количество) <player>"
 		);
 		$this->setPermission("pocketmine.command.xp");
 	}
@@ -65,12 +76,12 @@ class XpCommand extends VanillaCommand {
 			if(strcasecmp(substr($args[0], -1), "L") == 0){
 				$level = (int) rtrim($args[0], "Ll");
 				if($level > 0){
-					$player->addXpLevel((int) $level);
+					$player->addXpLevel($level);
 					$sender->sendMessage(new TranslationContainer("%commands.xp.success.levels", [$level, $name]));
 					$player->getLevel()->broadcastLevelSoundEvent($player, LevelSoundEventPacket::SOUND_LEVELUP);
 					return true;
 				}elseif($level < 0){
-					$player->takeXpLevel((int) -$level);
+					$player->takeXpLevel(-$level);
 					$sender->sendMessage(new TranslationContainer("%commands.xp.success.negative.levels", [-$level, $name]));
 					return true;
 				}
@@ -87,10 +98,9 @@ class XpCommand extends VanillaCommand {
 			}
 
 			$sender->sendMessage(new TranslationContainer("commands.generic.usage", [$this->usageMessage]));
-			return false;
-		}else{
+        }else{
 			$sender->sendMessage(new TranslationContainer(TextFormat::RED . "%commands.generic.player.notFound"));
-			return false;
-		}
-	}
+        }
+        return false;
+    }
 }

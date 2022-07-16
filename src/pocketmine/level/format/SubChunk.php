@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 declare(strict_types=1);
 
 namespace pocketmine\level\format;
@@ -147,7 +169,7 @@ class SubChunk implements SubChunkInterface{
 			}
 		}
 
-		return -1;
+		return -1; //highest block not in this subchunk
 	}
 
 	public function getBlockIdColumn(int $x, int $z) : string{
@@ -197,17 +219,23 @@ class SubChunk implements SubChunkInterface{
 	}
 
 	public function networkSerialize() : string{
+		// storage version, ids, data, skylight, blocklight
 		return "\x00" . $this->ids . $this->data . $this->skyLight . $this->blockLight;
 	}
 
 	/**
-	 * @return mixed[]
+	 * @return array
 	 */
 	public function __debugInfo(){
 		return [];
 	}
 
 	public function collectGarbage() : void{
+		/*
+		 * This strange looking code is designed to exploit PHP's copy-on-write behaviour. Assigning will copy a
+		 * reference to the const instead of duplicating the whole string. The string will only be duplicated when
+		 * modified, which is perfect for this purpose.
+		 */
 		if($this->data === self::ZERO_NIBBLE_ARRAY){
 			$this->data = self::ZERO_NIBBLE_ARRAY;
 		}

@@ -1,14 +1,28 @@
 <?php
-/*
+
+
+namespace pocketmine\entity;
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
-
-namespace pocketmine\entity;
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\event\entity\ExplosionPrimeEvent;
@@ -69,7 +83,7 @@ class WitherTNT extends Entity implements Explosive {
 			$this->fuse = 120;
 		}
 
-		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_IGNITED, true);
+		$this->setDataFlag(self::DATA_FLAGS, self::DATA_FLAG_IGNITED);
 		$this->setDataProperty(self::DATA_FUSE_LENGTH, self::DATA_TYPE_INT, $this->fuse);
 	}
 
@@ -89,60 +103,21 @@ class WitherTNT extends Entity implements Explosive {
 	}
 
 	/**
-	 * @param $currentTick
+	 * @param $tickDiff
 	 *
 	 * @return bool
 	 */
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1){
 		if($this->closed){
 			return false;
 		}
 
-		$this->timings->startTiming();
-
-		$tickDiff = $currentTick - $this->lastUpdate;
-		if($tickDiff <= 0 and !$this->justCreated){
-			return true;
-		}
-
-		$this->lastUpdate = $currentTick;
-
-		$hasUpdate = $this->entityBaseTick($tickDiff);
+		$hasUpdate = parent::entityBaseTick($tickDiff);
 
 		if($this->isAlive()){
-
-			$this->motionY -= $this->gravity;
-
-			$this->move($this->motionX, $this->motionY, $this->motionZ);
-
-			$this->updateMovement();
-
 			if($this->onGround){
-				$this->motionY *= -0.5;
-				$this->motionX *= 0.7;
-				$this->motionZ *= 0.7;
 				if($this->fuse > 10){
 					$this->fuse = 10;
-				}
-			}else{
-				$side = $this->getDirection();
-				$x = 0;
-				$z = 0;
-				if($side == 0){
-					$x = 0.4;
-				}elseif($side == 1){
-					$z = 0.4;
-				}elseif($side == 2){
-					$x = -0.4;
-				}elseif($side == 3){
-					$z = -0.4;
-				}
-				
-				if($x != 0){
-					$this->motionX = $x;
-				}
-				if($z != 0){
-					$this->motionZ = $z;
 				}
 			}
 
@@ -152,18 +127,16 @@ class WitherTNT extends Entity implements Explosive {
 			}else{
 				$this->fuse--;
 			}
-
 		}
 
-
-		return $hasUpdate or $this->fuse >= 0 or abs($this->motionX) > 0.00001 or abs($this->motionY) > 0.00001 or abs($this->motionZ) > 0.00001;
+		return $hasUpdate or $this->fuse >= 0;
 	}
 
 	public function explode(){
 		$this->server->getPluginManager()->callEvent($ev = new ExplosionPrimeEvent($this, 3, $this->dropItem));
 
 		if(!$ev->isCancelled()){
-			$explosion = new Explosion($this, $ev->getForce(), $this, $ev->dropItem());
+			$explosion = new Explosion($this, $ev->getForce(), $this, $ev->dropItem(), null);
 			if($ev->isBlockBreaking()){
 				$explosion->explodeC();
 			}

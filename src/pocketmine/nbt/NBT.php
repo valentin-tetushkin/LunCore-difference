@@ -1,12 +1,30 @@
 <?php
+
+
 /*
-# ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
-# ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
-# ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
-# ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
-# ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
-# ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 */
+
+/**
+ * Именованные классы обработки бинарных тегов
+ */
 
 namespace pocketmine\nbt;
 
@@ -34,7 +52,7 @@ use pocketmine\utils\Binary;
 #include <rules/NBT.h>
 
 /**
- * Named Binary Tag encoder/decoder
+ * Кодировщик/декодер именованных двоичных тегов
  */
 class NBT {
 
@@ -263,14 +281,13 @@ class NBT {
 		$this->buffer = "";
 	}
 
-	/**
-	 * @param     $buffer
-	 * @param int $compression
-	 */
+    /**
+     * @param     $buffer
+     */
 	public function readCompressed($buffer){
 		$decompressed = zlib_decode($buffer);
 		if($decompressed === false){
-			throw new \UnexpectedValueException("Failed to decompress data");
+			throw new \UnexpectedValueException("Не удалось распаковать данные");
 		}
 		return $this->read($decompressed);
 	}
@@ -462,18 +479,14 @@ class NBT {
 	 * @param bool $network
 	 */
 	public function putString($v, bool $network = false){
-		if($network === true){
-			$len = strlen($v);
-		    if($len > 32767){
-			    throw new \InvalidArgumentException("NBT strings cannot be longer than 32767 bytes, got $len bytes");
-		    }
-		    $this->put(Binary::writeUnsignedVarInt($len));
+        $len = strlen($v);
+        if($len > 32767){
+            throw new \InvalidArgumentException("Строки NBT не могут быть длиннее 32767 байт, получили $len байт");
+        }
+        if($network === true){
+            $this->put(Binary::writeUnsignedVarInt($len));
 		}else{
-			$len = strlen($v);
-		    if($len > 32767){
-			    throw new \InvalidArgumentException("NBT strings cannot be longer than 32767 bytes, got $len bytes");
-		    }
-		    $this->putShort($len);
+            $this->putShort($len);
 		}
 		$this->buffer .= $v;
 	}

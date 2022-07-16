@@ -1,12 +1,26 @@
 <?php
-/*
+
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
@@ -14,6 +28,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
@@ -122,14 +137,14 @@ class Rabbit extends Animal {
 				$lootingL = $damager->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
 			}
 		}
-		$drops = [ItemItem::get(ItemItem::RABBIT_HIDE, 0, mt_rand(0, 1))];
+		$drops = [ItemItem::get(ItemIds::RABBIT_HIDE, 0, mt_rand(0, 1))];
 		if($this->getLastDamageCause() === EntityDamageEvent::CAUSE_FIRE){
-			$drops[] = ItemItem::get(ItemItem::COOKED_RABBIT, 0, mt_rand(0, 1));
+			$drops[] = ItemItem::get(ItemIds::COOKED_RABBIT, 0, mt_rand(0, 1));
 		}else{
-			$drops[] = ItemItem::get(ItemItem::RAW_RABBIT, 0, mt_rand(0, 1));
+			$drops[] = ItemItem::get(ItemIds::RAW_RABBIT, 0, mt_rand(0, 1));
 		}
 		if(mt_rand(1, 200) <= (5 + 2 * $lootingL)){
-			$drops[] = ItemItem::get(ItemItem::RABBIT_FOOT, 0, 1);
+			$drops[] = ItemItem::get(ItemIds::RABBIT_FOOT);
 		}
 		return $drops;
 	}

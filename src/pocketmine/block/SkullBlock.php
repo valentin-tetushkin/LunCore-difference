@@ -1,31 +1,32 @@
 <?php
 
-/*
- *
- *  _____            _               _____           
- * / ____|          (_)             |  __ \          
- *| |  __  ___ _ __  _ ___ _   _ ___| |__) | __ ___  
- *| | |_ |/ _ \ '_ \| / __| | | / __|  ___/ '__/ _ \ 
- *| |__| |  __/ | | | \__ \ |_| \__ \ |   | | | (_) |
- * \_____|\___|_| |_|_|___/\__, |___/_|   |_|  \___/ 
- *                         __/ |                    
- *                        |___/                     
- *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * @author GenisysPro
- * @link https://github.com/GenisysPro/GenisysPro
+
+/* @author LunCore team
  *
  *
-*/
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
 use pocketmine\item\Item;
 
+use pocketmine\item\ItemIds;
 use pocketmine\math\AxisAlignedBB;
 use pocketmine\nbt\tag\ByteTag;
 use pocketmine\nbt\tag\CompoundTag;
@@ -101,16 +102,16 @@ class SkullBlock extends Flowable {
 			$this->getLevel()->setBlock($block, $this, true);
 			$moveMouth = false;
 			if($item->getDamage() === SkullTile::TYPE_DRAGON){
-				if(in_array($target->getId(), [Block::REDSTONE_TORCH, Block::REDSTONE_BLOCK])) $moveMouth = true; //Temp-hacking Dragon Head Mouth Move
+				if(in_array($target->getId(), [BlockIds::REDSTONE_TORCH, BlockIds::REDSTONE_BLOCK])) $moveMouth = true; //Temp-hacking Dragon Head Mouth Move
 			}
 			$nbt = new CompoundTag("", [
 				new StringTag("id", Tile::SKULL),
 				new ByteTag("SkullType", $item->getDamage()),
 				new ByteTag("Rot", $rot),
-				new ByteTag("MouthMoving", (bool) $moveMouth),
-				new IntTag("x", (int) $this->x),
-				new IntTag("y", (int) $this->y),
-				new IntTag("z", (int) $this->z)
+				new ByteTag("MouthMoving", $moveMouth),
+				new IntTag("x", $this->x),
+				new IntTag("y", $this->y),
+				new IntTag("z", $this->z)
 			]);
 			if($item->hasCustomName()){
 				$nbt->CustomName = new StringTag("CustomName", $item->getCustomName());
@@ -130,7 +131,7 @@ class SkullBlock extends Flowable {
 		$tile = $this->level->getTile($this);
 		if($tile instanceof SkullTile){
 			return [
-				[Item::MOB_HEAD, $tile->getType(), 1]
+				[ItemIds::MOB_HEAD, $tile->getType(), 1]
 			];
 		}
 		return [];

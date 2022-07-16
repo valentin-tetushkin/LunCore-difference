@@ -1,5 +1,27 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+*/
+
 declare(strict_types = 1);
 
 namespace pocketmine\level\generator;
@@ -9,7 +31,6 @@ use pocketmine\level\Level;
 use pocketmine\level\SimpleChunkManager;
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\Server;
-
 
 class GenerationTask extends AsyncTask {
 
@@ -31,16 +52,15 @@ class GenerationTask extends AsyncTask {
 
 	public function onRun(){
 		/** @var SimpleChunkManager $manager */
-		$manager = $this->getFromThreadStore("generation.level{$this->levelId}.manager");
+		$manager = $this->getFromThreadStore("generation.level$this->levelId.manager");
 		/** @var Generator $generator */
-		$generator = $this->getFromThreadStore("generation.level{$this->levelId}.generator");
+		$generator = $this->getFromThreadStore("generation.level$this->levelId.generator");
 		if($manager === null or $generator === null){
 			$this->state = false;
 			return;
 		}
 
-		/** @var Chunk $chunk */
-		$chunk = Chunk::fastDeserialize($this->chunk);
+        $chunk = Chunk::fastDeserialize($this->chunk);
 		if($chunk === null){
 			//TODO error
 			return;
@@ -54,7 +74,7 @@ class GenerationTask extends AsyncTask {
 		$chunk->setGenerated();
 		$this->chunk = $chunk->fastSerialize();
 
-		$manager->setChunk($chunk->getX(), $chunk->getZ(), null);
+		$manager->setChunk($chunk->getX(), $chunk->getZ());
 	}
 
 	/**
@@ -67,8 +87,7 @@ class GenerationTask extends AsyncTask {
 				$level->registerGenerator();
 				return;
 			}
-			/** @var Chunk $chunk */
-			$chunk = Chunk::fastDeserialize($this->chunk);
+            $chunk = Chunk::fastDeserialize($this->chunk);
 			if($chunk === null){
 				//TODO error
 				return;

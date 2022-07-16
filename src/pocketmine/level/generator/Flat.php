@@ -1,6 +1,26 @@
 <?php
 
-declare(strict_types = 1);
+
+/*
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ * 
+ * 
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
 
 namespace pocketmine\level\generator;
 
@@ -13,7 +33,7 @@ use pocketmine\block\IronOre;
 use pocketmine\block\LapisOre;
 use pocketmine\block\RedstoneOre;
 use pocketmine\item\Item;
-use pocketmine\level\loadchunk\ChunkManager;
+use pocketmine\level\ChunkManager;
 use pocketmine\level\format\Chunk;
 use pocketmine\level\generator\populator\Ore;
 use pocketmine\level\generator\populator\Populator;
@@ -29,11 +49,9 @@ class Flat extends Generator {
 	private $random;
 	/** @var Populator[] */
 	private $populators = [];
-	/** @var int[][] */
-	private $structure;
-	/** @var int */
+    /** @var int */
 	private $floorLevel;
-	/** @var mixed[] */
+	/** @var array */
 	private $options;
 	/** @var string */
 	private $preset;
@@ -105,9 +123,9 @@ class Flat extends Generator {
 		$blocks = (string) ($preset[1] ?? "");
 		$biome = (int) ($preset[2] ?? 1);
 		$options = (string) ($preset[3] ?? "");
-		$this->structure = self::parseLayers($blocks);
+		$structure = self::parseLayers($blocks);
 
-		$this->floorLevel = $y = count($this->structure);
+		$this->floorLevel = $y = count($structure);
 
 		$this->chunk = clone $this->level->getChunk($chunkX, $chunkZ);
 		$this->chunk->setGenerated();
@@ -118,11 +136,11 @@ class Flat extends Generator {
 				}
 		}
 
-		$count = count($this->structure);
+		$count = count($structure);
 		for($sy = 0; $sy < $count; $sy += 16){
 			$subchunk = $this->chunk->getSubChunk($sy >> 4, true);
-			for($y = 0; $y < 16 and isset($this->structure[$y | $sy]); ++$y){
-				list($id, $meta) = $this->structure[$y | $sy];
+			for($y = 0; $y < 16 and isset($structure[$y | $sy]); ++$y){
+				list($id, $meta) = $structure[$y | $sy];
 
 				for($Z = 0; $Z < 16; ++$Z){
 					for($X = 0; $X < 16; ++$X){

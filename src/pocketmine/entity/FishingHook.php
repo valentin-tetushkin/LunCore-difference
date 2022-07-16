@@ -1,12 +1,35 @@
 <?php
 
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * возможно сделаем в 1.0.9
+ *
+ */
+
 namespace pocketmine\entity;
 
 use pocketmine\event\player\PlayerFishEvent;
 use pocketmine\item\Item as ItemItem;
 use pocketmine\level\Level;
 use pocketmine\nbt\tag\CompoundTag;
-use pocketmine\network\mcpe\protocol\{AddEntityPacket, EntityEventPacket};
+use pocketmine\network\mcpe\protocol\AddEntityPacket;
+use pocketmine\network\mcpe\protocol\EntityEventPacket;
 use pocketmine\Player;
 
 
@@ -59,18 +82,16 @@ class FishingHook extends Projectile {
     }
 
     /**
-     * @param $currentTick
+     * @param $tickDiff
      *
      * @return bool
      */
-    public function onUpdate($currentTick){
+    public function entityBaseTick($tickDiff = 1){
         if($this->closed){
             return false;
         }
 
-        $this->timings->startTiming();
-
-        $hasUpdate = parent::onUpdate($currentTick);
+        $hasUpdate = parent::entityBaseTick($tickDiff);
 
         if($this->isCollidedVertically && $this->isInsideOfWater()){
             $this->motionX = 0;
@@ -86,11 +107,11 @@ class FishingHook extends Projectile {
             $this->keepMovement = false;
             $hasUpdate = true;
         }
-        if($this->attractTimer === 0 && mt_rand(0, 100) <= 30){
-            $this->coughtTimer = mt_rand(5, 10) * 20;
-            $this->attractTimer = mt_rand(30, 100) * 20;
+        if($this->attractTimer === 0 && mt_rand(0, 100) <= 30){ // chance, that a fish bites
+            $this->coughtTimer = mt_rand(5, 10) * 20; // random delay to catch fish
+            $this->attractTimer = mt_rand(30, 100) * 20; // reset timer
             $this->attractFish();
-            if($this->getOwningEntity() instanceof Player) $this->getOwningEntity()->sendTip("§l§cКинь крючок в воду!");
+            if($this->getOwningEntity() instanceof Player) $this->getOwningEntity()->sendMessage("(LunCore) - Возможно в LunCore 1.0.9 - сделаем рыбалку");
         }elseif($this->attractTimer > 0){
             $this->attractTimer--;
         }
@@ -99,15 +120,13 @@ class FishingHook extends Projectile {
             $this->fishBites();
         }
 
-        $this->timings->stopTiming();
-
         return $hasUpdate;
     }
 
     public function fishBites(){
         if($this->getOwningEntity() instanceof Player){
             $pk = new EntityEventPacket();
-            $pk->eid = $this->getOwningEntity()->getId();
+            $pk->eid = $this->getOwningEntity()->getId();//$this or $this->getOwningEntity()
             $pk->event = EntityEventPacket::FISH_HOOK_HOOK;
             $this->server->broadcastPacket($this->getOwningEntity()->hasSpawned, $pk);
         }

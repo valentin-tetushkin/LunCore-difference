@@ -1,52 +1,61 @@
 <?php
 
+
 /*
  *
- *  ____            _        _   __  __ _                  __  __ ____
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_|
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
  *
 */
 
 namespace pocketmine\scheduler;
 
+use pocketmine\Collectable;
 use pocketmine\Server;
-use pocketmine\utils\MainLogger;
+use pocketmine\utils\AssumptionFailedError;
+use function is_scalar;
+use function is_string;
+use function serialize;
+use function unserialize;
 
 /**
- * Class used to run async tasks in other threads.
+ * Класс, используемый для запуска асинхронных задач в других потоках.
  *
- * An AsyncTask does not have its own thread. It is queued into an AsyncPool and executed if there is an async worker
- * with no AsyncTask running. Therefore, an AsyncTask SHOULD NOT execute for more than a few seconds. For tasks that
- * run for a long time or infinitely, start another {@link \pocketmine\Thread} instead.
+ * AsyncTask не имеет собственного потока. Он ставится в очередь в AsyncPool и выполняется, если есть асинхронный рабочий процесс.
+ * без запущенной AsyncTask. Поэтому AsyncTask НЕ ДОЛЖЕН выполняться дольше нескольких секунд. Для задач, которые
+ * работать долго или бесконечно, вместо этого запустить другой поток.
  *
- * WARNING: Any non-Threaded objects WILL BE SERIALIZED when assigned to members of AsyncTasks or other Threaded object.
- * If later accessed from said Threaded object, you will be operating on a COPY OF THE OBJECT, NOT THE ORIGINAL OBJECT.
- * If you want to store non-serializable objects to access when the task completes, store them using
- * {@link AsyncTask#storeLocal}.
+ * ПРЕДУПРЕЖДЕНИЕ. Любые объекты, не являющиеся потоками, БУДУТ СЕРИАЛИЗОВАТЬСЯ при назначении членам AsyncTasks или другого объекта Threaded.
+ * При последующем доступе из указанного объекта Threaded вы будете работать с КОПИЕЙ ОБЪЕКТА, А НЕ ОРИГИНАЛЬНЫМ ОБЪЕКТОМ.
+ * Если вы хотите сохранить несериализуемые объекты для доступа после завершения задачи, сохраните их с помощью
+ * {@link AsyncTask::storeLocal}.
  *
- * WARNING: As of pthreads v3.1.6, arrays are converted to Volatile objects when assigned as members of Threaded objects.
- * Keep this in mind when using arrays stored as members of your AsyncTask.
+ * ПРЕДУПРЕЖДЕНИЕ. Начиная с pthreads v3.1.6, массивы преобразуются в объекты Volatile, если они назначаются членами объектов Threaded.
+ * Имейте это в виду при использовании массивов, хранящихся как члены вашей AsyncTask.
  *
- * WARNING: Do not call PocketMine-MP API methods from other Threads!!
+ * ПРЕДУПРЕЖДЕНИЕ: Не вызывайте методы API LunCore из других потоков!!
  */
-abstract class AsyncTask extends \Threaded implements \Collectable{
+abstract class AsyncTask extends Collectable{
 	/**
 	 * @var \SplObjectStorage|null
-	 * Used to store objects on the main thread which should not be serialized.
+	 * @phpstan-var \SplObjectStorage<AsyncTask, mixed>
+     * Используется для хранения объектов в основном потоке, которые не должны сериализоваться.
 	 */
-	private static $localObjectStorage;
+	private static $threadLocalStorage;
 
 	/** @var AsyncWorker $worker */
 	public $worker = null;
@@ -54,17 +63,19 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 	/** @var \Threaded */
 	public $progressUpdates;
 
+	/** @var scalar|null */
 	private $result = null;
+	/** @var bool */
 	private $serialized = false;
+	/** @var bool */
 	private $cancelRun = false;
-	/** @var int */
+	/** @var int|null */
 	private $taskId = null;
 
+	/** @var bool */
 	private $crashed = false;
 
 	private $isGarbage = false;
-
-	private $isFinished = false;
 
 	/**
 	 * @return bool
@@ -78,17 +89,13 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 	}
 
 	/**
-	 * @return bool
+	 * @return void
 	 */
-	public function isFinished() : bool{
-		return $this->isFinished;
-	}
-
 	public function run(){
 		$this->result = null;
 		$this->isGarbage = false;
 
-		if($this->cancelRun !== true){
+		if(!$this->cancelRun){
 			try{
 				$this->onRun();
 			}catch(\Throwable $e){
@@ -97,8 +104,7 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 			}
 		}
 
-		$this->isFinished = true;
-		//$this->setGarbage();
+		$this->setGarbage();
 	}
 
 	/**
@@ -112,56 +118,58 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 	 * @return mixed
 	 */
 	public function getResult(){
-		return $this->serialized ? unserialize($this->result) : $this->result;
+		if($this->serialized){
+			if(!is_string($this->result)) throw new AssumptionFailedError("Result expected to be a serialized string");
+			return unserialize($this->result);
+		}
+		return $this->result;
 	}
 
+	/**
+	 * @return void
+	 */
 	public function cancelRun(){
 		$this->cancelRun = true;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function hasCancelledRun(){
+	public function hasCancelledRun() : bool{
 		return $this->cancelRun === true;
 	}
 
-	/**
-	 * @return bool
-	 */
-	public function hasResult(){
+	public function hasResult() : bool{
 		return $this->result !== null;
 	}
 
 	/**
 	 * @param mixed $result
+	 *
+	 * @return void
 	 */
     public function setResult($result){
         $this->result = ($this->serialized = !is_scalar($result)) ? serialize($result) : $result;
 	}
 
 	/**
-	 * @param $taskId
+	 * @return void
 	 */
-	public function setTaskId($taskId){
+	public function setTaskId(int $taskId){
 		$this->taskId = $taskId;
 	}
 
 	/**
-	 * @return int
+	 * @return int|null
 	 */
 	public function getTaskId(){
 		return $this->taskId;
 	}
 
 	/**
+	 * @deprecated
 	 * @see AsyncWorker::getFromThreadStore()
-	 *
-	 * @param string $identifier
 	 *
 	 * @return mixed
 	 */
-	public function getFromThreadStore($identifier){
+	public function getFromThreadStore(string $identifier){
 		if($this->worker === null or $this->isGarbage()){
 			throw new \BadMethodCallException("Objects stored in AsyncWorker thread-local storage can only be retrieved during task execution");
 		}
@@ -169,12 +177,14 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 	}
 
 	/**
+	 * @deprecated
 	 * @see AsyncWorker::saveToThreadStore()
 	 *
-	 * @param string $identifier
 	 * @param mixed  $value
+	 *
+	 * @return void
 	 */
-	public function saveToThreadStore($identifier, $value){
+	public function saveToThreadStore(string $identifier, $value){
 		if($this->worker === null or $this->isGarbage()){
 			throw new \BadMethodCallException("Objects can only be added to AsyncWorker thread-local storage during task execution");
 		}
@@ -182,9 +192,8 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 	}
 
 	/**
+	 * @deprecated
 	 * @see AsyncWorker::removeFromThreadStore()
-	 *
-	 * @param string $identifier
 	 */
 	public function removeFromThreadStore(string $identifier) : void{
 		if($this->worker === null or $this->isGarbage()){
@@ -193,38 +202,38 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 		$this->worker->removeFromThreadStore($identifier);
 	}
 
-	/**
-	 * Actions to execute when run
-	 *
+    /**
+     * Действия для выполнения при запуске
+     *
 	 * @return void
 	 */
 	public abstract function onRun();
 
 	/**
-	 * Actions to execute when completed (on main thread)
-	 * Implement this if you want to handle the data in your AsyncTask after it has been processed
-	 *
-	 * @param Server $server
-	 *
+     * Действия, выполняемые после завершения (в основном потоке)
+     * Реализуйте это, если хотите обрабатывать данные в своей AsyncTask после их обработки.
+     *
 	 * @return void
 	 */
 	public function onCompletion(Server $server){
 
 	}
 
-	/**
-	 * Call this method from {@link AsyncTask#onRun} (AsyncTask execution therad) to schedule a call to
-	 * {@link AsyncTask#onProgressUpdate} from the main thread with the given progress parameter.
-	 *
-	 * @param \Threaded|mixed $progress A Threaded object, or a value that can be safely serialize()'ed.
-	 */
+    /**
+     * Вызовите этот метод из {@link AsyncTask::onRun} (поток выполнения AsyncTask), чтобы запланировать вызов
+     * {@link AsyncTask::onProgressUpdate} из основного потока с заданным параметром прогресса.
+     *
+     * @parammixed $progress Значение, которое можно безопасно сериализовать().
+     *
+     * @возврат недействителен
+     */
 	public function publishProgress($progress){
 		$this->progressUpdates[] = serialize($progress);
 	}
 
-	/**
-	 * @internal Only call from AsyncPool.php on the main thread
-	 *
+    /**
+     * @internal Только вызов из AsyncPool.php в основном потоке
+     *
 	 * @param Server $server
 	 */
 	public function checkProgressUpdates(Server $server){
@@ -234,124 +243,90 @@ abstract class AsyncTask extends \Threaded implements \Collectable{
 		}
 	}
 
-	/**
-	 * Called from the main thread after {@link AsyncTask#publishProgress} is called.
-	 * All {@link AsyncTask#publishProgress} calls should result in {@link AsyncTask#onProgressUpdate} calls before
-	 * {@link AsyncTask#onCompletion} is called.
-	 *
-	 * @param Server          $server
-	 * @param \Threaded|mixed $progress The parameter passed to {@link AsyncTask#publishProgress}. If it is not a
-	 *                                  Threaded object, it would be serialize()'ed and later unserialize()'ed, as if it
-	 *                                  has been cloned.
-	 */
+    /**
+     * Вызывается из основного потока после вызова {@link AsyncTask#publishProgress}.
+     * Все вызовы {@link AsyncTask#publishProgress} должны приводить к вызовам {@link AsyncTask#onProgressUpdate} до
+     * Вызывается {@link AsyncTask#onCompletion}.
+     *
+     * @param Сервер $сервер
+     * @param \Threaded|mixed $progress Параметр, переданный в {@link AsyncTask#publishProgress}. Если это не
+     * Объект с резьбой, он будет сериализован(), а затем десериализован(), как если бы он
+     * был клонирован.
+     */
 	public function onProgressUpdate(Server $server, $progress){
 
 	}
 
-	/**
-	 * Saves mixed data in thread-local storage on the parent thread. You may use this to retain references to objects
-	 * or arrays which you need to access in {@link AsyncTask#onCompletion} which cannot be stored as a property of
-	 * your task (due to them becoming serialized).
-	 *
-	 * Scalar types can be stored directly in class properties instead of using this storage.
-	 *
-	 * Objects stored in this storage MUST be retrieved through {@link #fetchLocal} when {@link #onCompletion} is called.
-	 * Otherwise, a NOTICE level message will be raised and the reference will be removed after onCompletion exits.
-	 *
-	 * WARNING: Use this method carefully. It might take a long time before an AsyncTask is completed. PocketMine will
-	 * keep a strong reference to objects passed in this method. This may result in a light memory leak. Usually this
-	 * does not cause memory failure, but be aware that the object may be no longer usable when the AsyncTask completes.
-	 * (E.g. a {@link \pocketmine\Level} object is no longer usable because it is unloaded while the AsyncTask is
-	 * executing, or even a plugin might be unloaded). Since PocketMine keeps a strong reference, the objects are still
-	 * valid, but the implementation is responsible for checking whether these objects are still usable.
-	 *
-	 * WARNING: THIS METHOD SHOULD ONLY BE CALLED FROM THE MAIN THREAD!
-	 *
-	 * @param mixed $complexData the data to store
-	 *
-	 * @throws \BadMethodCallException if called from any thread except the main thread
-	 */
+    /**
+     * Сохраняет смешанные данные в локальном хранилище потока в родительском потоке. Вы можете использовать это для сохранения ссылок на объекты
+     * или массивы, к которым вам нужно получить доступ в {@link AsyncTask#onCompletion}, которые не могут быть сохранены как свойство
+     * ваша задача (из-за того, что они сериализуются).
+     *
+     * Скалярные типы можно хранить непосредственно в свойствах класса вместо использования этого хранилища.
+     *
+     * ВНИМАНИЕ: ЭТОТ МЕТОД ДОЛЖЕН ВЫЗЫВАТЬСЯ ТОЛЬКО ИЗ ОСНОВНОГО ПОТОКА!
+     *
+     * @param Mixed $complexData данные для хранения
+     *
+     * @throws \BadMethodCallException при вызове из любого потока, кроме основного потока
+     */
 	protected function storeLocal($complexData){
 		if($this->worker !== null and $this->worker === \Thread::getCurrentThread()){
 			throw new \BadMethodCallException("Objects can only be stored from the parent thread");
 		}
 
-		if(self::$localObjectStorage === null){
-			self::$localObjectStorage = new \SplObjectStorage(); //lazy init
+		if(self::$threadLocalStorage === null){
+			self::$threadLocalStorage = new \SplObjectStorage(); //lazy init
 		}
 
-		if(isset(self::$localObjectStorage[$this])){
+		if(isset(self::$threadLocalStorage[$this])){
 			throw new \InvalidStateException("Already storing complex data for this async task");
 		}
-		self::$localObjectStorage[$this] = $complexData;
+		self::$threadLocalStorage[$this] = $complexData;
 	}
 
-	/**
-	 * Returns and removes mixed data in thread-local storage on the parent thread. Call this method from
-	 * {@link AsyncTask#onCompletion} to fetch the data stored in the object store, if any.
-	 *
-	 * If no data was stored in the local store, or if the data was already retrieved by a previous call to fetchLocal,
-	 * do NOT call this method, or an exception will be thrown.
-	 *
-	 * Do not call this method from {@link AsyncTask#onProgressUpdate}, because this method deletes stored data, which
-	 * means that you will not be able to retrieve it again afterwards. Use {@link AsyncTask#peekLocal} instead to
-	 * retrieve stored data without removing it from the store.
-	 *
-	 * WARNING: THIS METHOD SHOULD ONLY BE CALLED FROM THE MAIN THREAD!
-	 *
-	 * @return mixed
-	 *
-	 * @throws \RuntimeException if no data were stored by this AsyncTask instance.
-	 * @throws \BadMethodCallException if called from any thread except the main thread
-	 */
+    /**
+     * Возвращает данные, ранее сохраненные в локальном хранилище потока в родительском потоке. Используйте это во время обновлений прогресса или
+     * завершение задачи для извлечения данных, которые вы сохранили, используя {@link AsyncTask::storeLocal}.
+     *
+     * ВНИМАНИЕ: ЭТОТ МЕТОД ДОЛЖЕН ВЫЗЫВАТЬСЯ ТОЛЬКО ИЗ ОСНОВНОГО ПОТОКА!
+     *
+     * @возврат смешанный
+     *
+     * @throws \RuntimeException, если этот экземпляр AsyncTask не сохранил никаких данных.
+     * @throws \BadMethodCallException при вызове из любого потока, кроме основного потока
+     */
 	protected function fetchLocal(){
-		try{
-			return $this->peekLocal();
-		}finally{
-			if(self::$localObjectStorage !== null){
-				unset(self::$localObjectStorage[$this]);
-			}
-		}
-	}
-
-	/**
-	 * Returns mixed data in thread-local storage on the parent thread **without clearing** it. Call this method from
-	 * {@link AsyncTask#onProgressUpdate} to fetch the data stored if you need to be able to access the data later on,
-	 * such as in another progress update.
-	 *
-	 * Use {@link AsyncTask#fetchLocal} instead from {@link AsyncTask#onCompletion}, because this method does not delete
-	 * the data, and not clearing the data will result in a warning for memory leak after {@link AsyncTask#onCompletion}
-	 * finished executing.
-	 *
-	 * WARNING: THIS METHOD SHOULD ONLY BE CALLED FROM THE MAIN THREAD!
-	 *
-	 * @return mixed
-	 *
-	 * @throws \RuntimeException if no data were stored by this AsyncTask instance
-	 * @throws \BadMethodCallException if called from any thread except the main thread
-	 */
-	protected function peekLocal(){
 		if($this->worker !== null and $this->worker === \Thread::getCurrentThread()){
 			throw new \BadMethodCallException("Objects can only be retrieved from the parent thread");
 		}
 
-		if(self::$localObjectStorage === null or !isset(self::$localObjectStorage[$this])){
+		if(self::$threadLocalStorage === null or !isset(self::$threadLocalStorage[$this])){
 			throw new \InvalidStateException("No complex data stored for this async task");
 		}
 
-		return self::$localObjectStorage[$this];
+		return self::$threadLocalStorage[$this];
 	}
 
-	/**
-	 * @internal Called by the AsyncPool to destroy any leftover stored objects that this task failed to retrieve.
-	 * @return bool
-	 */
-	public function removeDanglingStoredObjects() : bool{
-		if(self::$localObjectStorage !== null and isset(self::$localObjectStorage[$this])){
-			unset(self::$localObjectStorage[$this]);
-			return true;
-		}
+    /**
+     * @устарело
+     * @см. AsyncTask::fetchLocal()
+     *
+     * @возврат смешанный
+     *
+     * @throws \RuntimeException, если данные не были сохранены этим экземпляром AsyncTask
+     * @throws \BadMethodCallException при вызове из любого потока, кроме основного потока
+     */
+	protected function peekLocal(){
+		return $this->fetchLocal();
+	}
 
-		return false;
+    /**
+     * @internal Вызывается AsyncPool для уничтожения любых оставшихся сохраненных объектов, которые эта задача не смогла получить.
+     */
+	public function removeDanglingStoredObjects() : void{
+		if(self::$threadLocalStorage !== null and isset(self::$threadLocalStorage[$this])){
+			unset(self::$threadLocalStorage[$this]);
+		}
 	}
 }

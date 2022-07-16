@@ -1,5 +1,29 @@
 <?php
 
+
+/*
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ * 
+ *
+*/
+
+declare(strict_types=1);
+
 namespace pocketmine\network\mcpe\protocol;
 
 #include <rules/DataPacket.h>
@@ -9,7 +33,7 @@ use pocketmine\item\Item;
 use pocketmine\utils\BinaryStream;
 use pocketmine\utils\Utils;
 
-abstract class DataPacket extends BinaryStream {
+abstract class DataPacket extends BinaryStream{
 
 	const NETWORK_ID = 0;
 
@@ -98,7 +122,7 @@ abstract class DataPacket extends BinaryStream {
 					$value = $this->getByte();
 					break;
 				case Entity::DATA_TYPE_SHORT:
-					$value = $this->getLShort(true); //signed
+					$value = $this->getSignedLShort();
 					break;
 				case Entity::DATA_TYPE_INT:
 					$value = $this->getVarInt();
@@ -187,11 +211,18 @@ abstract class DataPacket extends BinaryStream {
 		}
 	}
 
+	public function getByteRotation() : float{
+		return (float) ($this->getByte() * (360 / 256));
+	}
+
+	public function putByteRotation(float $rotation){
+		$this->putByte((int) ($rotation / (360 / 256)));
+	}
+
 	/**
 	 * @return string
 	 */
 	public function getName(){
 		return "DataPacket";
 	}
-
 }

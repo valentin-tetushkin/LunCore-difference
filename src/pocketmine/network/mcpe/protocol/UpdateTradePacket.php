@@ -1,5 +1,6 @@
 <?php
 
+
 namespace pocketmine\network\mcpe\protocol;
 
 use pocketmine\network\mcpe\protocol\types\InventoryNetworkIds;

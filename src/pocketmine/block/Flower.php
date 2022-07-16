@@ -1,23 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
  *
- *  ____            _        _   __  __ _                  __  __ ____  
- * |  _ \ ___   ___| | _____| |_|  \/  (_)_ __   ___      |  \/  |  _ \ 
- * | |_) / _ \ / __| |/ / _ \ __| |\/| | | '_ \ / _ \_____| |\/| | |_) |
- * |  __/ (_) | (__|   <  __/ |_| |  | | | | | |  __/_____| |  | |  __/ 
- * |_|   \___/ \___|_|\_\___|\__|_|  |_|_|_| |_|\___|     |_|  |_|_| 
  *
- * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU Lesser General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
+ * @author LunCore team
+ * @link http://vk.com/luncore
  *
- * @author PocketMine Team
- * @link http://www.pocketmine.net/
- * 
  *
-*/
+╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
+║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
+║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
+║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
+║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
+╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\block;
 
@@ -26,7 +29,7 @@ use pocketmine\level\Level;
 use pocketmine\math\Vector3;
 use pocketmine\Player;
 
-class Flower extends Flowable {
+class Flower extends Flowable{
 	const TYPE_POPPY = 0;
 	const TYPE_BLUE_ORCHID = 1;
 	const TYPE_ALLIUM = 2;
@@ -61,16 +64,9 @@ class Flower extends Flowable {
 			self::TYPE_ORANGE_TULIP => "Orange Tulip",
 			self::TYPE_WHITE_TULIP => "White Tulip",
 			self::TYPE_PINK_TULIP => "Pink Tulip",
-			self::TYPE_OXEYE_DAISY => "Oxeye Daisy",
-			9 => "Unknown",
-			10 => "Unknown",
-			11 => "Unknown",
-			12 => "Unknown",
-			13 => "Unknown",
-			14 => "Unknown",
-			15 => "Unknown"
+			self::TYPE_OXEYE_DAISY => "Oxeye Daisy"
 		];
-		return $names[$this->meta];
+		return $names[$this->meta] ?? "Unknown";
 	}
 
 
@@ -88,7 +84,7 @@ class Flower extends Flowable {
 	 */
 	public function place(Item $item, Block $block, Block $target, $face, $fx, $fy, $fz, Player $player = null){
 		$down = $this->getSide(0);
-		if($down->getId() === Block::GRASS or $down->getId() === Block::DIRT or $down->getId() === Block::FARMLAND){
+		if($down->getId() === BlockIds::GRASS or $down->getId() === BlockIds::DIRT or $down->getId() === BlockIds::FARMLAND){
 			$this->getLevel()->setBlock($block, $this, true);
 
 			return true;

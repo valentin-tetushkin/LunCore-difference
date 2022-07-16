@@ -1,12 +1,26 @@
 <?php
-/*
+
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\entity;
 
@@ -14,6 +28,7 @@ use pocketmine\event\entity\EntityDamageByEntityEvent;
 use pocketmine\event\entity\EntityDamageEvent;
 use pocketmine\item\enchantment\Enchantment;
 use pocketmine\item\Item as ItemItem;
+use pocketmine\item\ItemIds;
 use pocketmine\network\mcpe\protocol\AddEntityPacket;
 use pocketmine\Player;
 use pocketmine\math\Vector3;
@@ -64,38 +79,27 @@ class Spider extends Monster {
 	/**
 	 * @return array
 	 */
-	public function getDrops(){
-		$drops = [ItemItem::get(ItemItem::STRING, 0, 1)];
-		if($this->lastDamageCause instanceof EntityDamageByEntityEvent and $this->lastDamageCause->getEntity() instanceof Player){
-			if(mt_rand(0, 199) < 5){
-				switch(mt_rand(0, 2)){
-					case 0:
-						$drops[] = ItemItem::get(ItemItem::IRON_INGOT, 0, 1);
-						break;
-					case 1:
-						$drops[] = ItemItem::get(ItemItem::CARROT, 0, 1);
-						break;
-					case 2:
-						$drops[] = ItemItem::get(ItemItem::POTATO, 0, 1);
-						break;
-				}
-			}
-		}
-		return $drops;
-	}
+
+    public function getDrops(){
+        $lootingL = 0;
+        $cause = $this->lastDamageCause;
+        if($cause instanceof EntityDamageByEntityEvent and $cause->getDamager() instanceof Player){
+            $lootingL = $cause->getDamager()->getItemInHand()->getEnchantmentLevel(Enchantment::TYPE_WEAPON_LOOTING);
+        }
+        $drops[] = ItemItem::get(ItemIds::STRING, 0, mt_rand(0, 3 + $lootingL));
+        return $drops;
+    }
 	
-	public function onUpdate($currentTick){
+	public function entityBaseTick($tickDiff = 1, $EnchantL = 0){
 		if($this->isClosed() or !$this->isAlive()){
-			return parent::onUpdate($currentTick);
+			return parent::entityBaseTick($tickDiff, $EnchantL);
 		}
 		
 		if($this->isMorph){
 			return true;
 		}
 
-		$this->timings->startTiming();
-
-		$hasUpdate = parent::onUpdate($currentTick);
+		$hasUpdate = parent::entityBaseTick($tickDiff, $EnchantL);
         if ($this->getLevel() !== null) {
             $block = $this->getLevel()->getBlock(new Vector3(floor($this->x), floor($this->y) - 1, floor($this->z)));
         }else{
@@ -125,7 +129,7 @@ class Spider extends Monster {
 								$this->farest = $viewer;
 							}
 							
-							if($this->farest != $viewer){
+							if($this->farest !== $viewer){
 								if($this->distance($viewer) < $this->distance($this->farest)){
 									$this->farest = $viewer;
 								}
@@ -228,8 +232,6 @@ class Spider extends Monster {
 		if((($x != 0)or($y != 0)or($z != 0))and($this->motionVector != null)){
 			$this->setMotion(new Vector3($x, $y, $z));
 		}
-		
-		$this->timings->stopTiming();
 
 		return $hasUpdate;
 	}

@@ -1,13 +1,26 @@
 <?php
 
-/*
+
+/* @author LunCore team
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
 ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
 ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
 ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
 ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
 ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
 ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+ *
+ *
+ * @author LunCore team
+ * @link http://vk.com/luncore
+ *
+ *
+ */
 
 namespace pocketmine\inventory;
 
@@ -35,11 +48,10 @@ class ChestInventory extends ContainerInventory {
 		return $this->holder;
 	}
 
-	/**
-	 * @param bool $withAir
-	 *
-	 * @return array|\pocketmine\item\Item[]
-	 */
+    /**
+     * @param bool $includeEmpty
+     * @return array|\pocketmine\item\Item[]
+     */
 	public function getContents(bool $includeEmpty = false) : array{
 		if($includeEmpty){
 			$contents = [];

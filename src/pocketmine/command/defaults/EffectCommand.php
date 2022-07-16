@@ -1,13 +1,7 @@
 <?php
 
-/*
- ╔╗──╔╗╔╗╔╗─╔╗╔══╗╔══╗╔═══╗╔═══╗
- ║║──║║║║║╚═╝║║╔═╝║╔╗║║╔═╗║║╔══╝
- ║║──║║║║║╔╗─║║║──║║║║║╚═╝║║╚══╗
- ║║──║║║║║║╚╗║║║──║║║║║╔╗╔╝║╔══╝
- ║╚═╗║╚╝║║║─║║║╚═╗║╚╝║║║║║─║╚══╗
- ╚══╝╚══╝╚╝─╚╝╚══╝╚══╝╚╝╚╝─╚═══╝
-*/
+
+
 
 namespace pocketmine\command\defaults;
 
@@ -29,7 +23,7 @@ class EffectCommand extends VanillaCommand {
 		parent::__construct(
 			$name,
 			"%pocketmine.command.effect.description",
-			"%commands.effect.usage"
+			"/leffect <игрок> <эффект> [кол-во секунд] [уровень] [убратьЧастицы] ИЛИ /effect <игрок> clear"
 		);
 		$this->setPermission("pocketmine.command.effect;pocketmine.command.effect.other");
 	}
